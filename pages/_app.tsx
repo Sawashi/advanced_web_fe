@@ -6,6 +6,7 @@ import { rootStore } from '../stores'
 import '@fontsource/poppins'
 
 export const theme = getTheme()
+
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <Provider {...rootStore}>
