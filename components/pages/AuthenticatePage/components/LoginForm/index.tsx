@@ -1,6 +1,5 @@
 import { Link, Stack, Text, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { get } from "lodash";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
