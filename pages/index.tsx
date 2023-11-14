@@ -1,7 +1,13 @@
-import Head from 'next/head'
-import Header from 'components/Header'
+import Head from "next/head";
+import Header from "components/Header";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
+  const { push } = useRouter();
+  useEffect(() => {
+    push("/landing/page");
+  }, []);
   return (
     <div>
       <Head>
@@ -11,7 +17,7 @@ const Home = () => {
       </Head>
       <Header />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
