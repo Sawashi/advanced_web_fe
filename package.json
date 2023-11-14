@@ -23,6 +23,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/poppins": "^4.5.10",
+    "@types/react-slick": "^0.23.12",
     "@types/react-table": "^7.7.14",
     "axios": "^0.21.4",
     "dotenv": "^16.0.0",
@@ -36,9 +37,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
+    "react-icons": "^4.11.0",
     "react-inlinesvg": "^3.0.2",
     "react-loading-skeleton": "^3.3.1",
     "react-responsive": "^9.0.2",
+    "react-slick": "^0.29.0",
     "react-table": "^7.8.0"
   },
   "devDependencies": {
