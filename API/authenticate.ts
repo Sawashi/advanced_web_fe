@@ -2,83 +2,113 @@ import {
   ILoginDataReq,
   ILoginDataRes,
   IForgotPasswordRequest,
-  IResetPasswordRequest,
   ISignUpData,
-  IServerError
-} from 'interfaces/authentication'
-import { IUser } from 'interfaces/user'
-import { CommonError } from 'types'
-import { api, auth, errorHandler } from '.'
+  IServerError,
+  IResetPasswordRequest,
+} from "interfaces/authentication";
+import { IUser, IVerifyTokenResponse } from "interfaces/user";
+import { CommonError } from "types";
+import { api, auth, errorHandler } from ".";
 
-export async function login(loginData: ILoginDataReq): Promise<ILoginDataRes | IServerError> {
+export async function login(
+  loginData: ILoginDataReq
+): Promise<ILoginDataRes | IServerError> {
   try {
-    const response = await api.post(`/auth/login`, loginData)
-    return response.data
+    const response = await api.post(`/auth/login`, loginData);
+    return response.data;
   } catch (err) {
-    errorHandler((<CommonError>err)?.response?.data?.error)
-    throw new Error((<CommonError>err)?.response?.data?.error?.message)
+    errorHandler((<CommonError>err)?.response?.data?.error);
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
 
-export async function forgotPassword(userData: IForgotPasswordRequest) {
+export async function forgotPassword(
+  userData: IForgotPasswordRequest
+): Promise<Boolean | IServerError> {
   try {
     await api.post(`/auth/forgot-password`, userData, {
-      headers: auth()
-    })
-    return undefined
+      headers: auth(),
+    });
+    return true;
   } catch (err) {
-    throw new Error((<CommonError>err)?.response?.data?.error?.message)
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
 
-export async function resetPassword(resetData: IResetPasswordRequest) {
+export async function resetPassword(data: IResetPasswordRequest) {
   try {
-    await api.post(`/auth/reset-password`, resetData, {
-      headers: auth()
-    })
-
-    return undefined
+    const response = await api.post(`/auth/reset-password`, data, {
+      headers: auth(),
+    });
+    return response.data;
   } catch (err) {
-    throw new Error((<CommonError>err)?.response?.data?.error?.message)
+    errorHandler((<CommonError>err)?.response?.data?.error);
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
-
-export async function changePassword(oldPassword: string, newPassword: string): Promise<void | IServerError> {
+export async function changePassword(
+  oldPassword: string,
+  newPassword: string
+): Promise<void | IServerError> {
   try {
     const passwords = {
       oldPassword,
-      newPassword
-    }
+      newPassword,
+    };
     await api.patch(`/auth/change-password`, passwords, {
-      headers: auth()
-    })
-    return undefined
+      headers: auth(),
+    });
+    return undefined;
   } catch (err) {
-    errorHandler((<CommonError>err)?.response?.data?.error)
-    throw new Error((<CommonError>err)?.response?.data?.error?.message)
+    errorHandler((<CommonError>err)?.response?.data?.error);
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
 
-export async function signUp(userData: Omit<ISignUpData, 'id'>): Promise<IServerError> {
+export async function signUp(
+  userData: Omit<ISignUpData, "id">
+): Promise<IServerError> {
   try {
-    const response = await api.post(`/auth/sign-up`, userData)
-    return response?.data
+    const response = await api.post(`/auth/sign-up`, userData);
+    return response?.data;
   } catch (err) {
-    errorHandler((<CommonError>err)?.response?.data?.error)
-    throw new Error((<CommonError>err)?.response?.data?.error?.message)
+    errorHandler((<CommonError>err)?.response?.data?.error);
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
 
 export async function getCurrentUser(): Promise<IUser> {
   try {
     const response = await api.get(`/auth/me`, {
-      headers: auth()
-    })
-    const data: IUser = response?.data ?? {}
-    return data
+      headers: auth(),
+    });
+    const data: IUser = response?.data ?? {};
+    return data;
   } catch (err) {
-    const error = (<CommonError>err)?.response?.data?.error
-    errorHandler(error)
-    return {} as IUser
+    const error = (<CommonError>err)?.response?.data?.error;
+    errorHandler(error);
+    return {} as IUser;
+  }
+}
+
+export async function verifyToken(
+  token: string
+): Promise<IVerifyTokenResponse> {
+  try {
+    const response = await api.post(
+      `/auth/verify-token`,
+      JSON.stringify(token),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data: IVerifyTokenResponse = response?.data ?? {};
+    return data;
+  } catch (err) {
+    const error = (<CommonError>err)?.response?.data?.error;
+    errorHandler(error);
+    return {} as IVerifyTokenResponse;
   }
 }
