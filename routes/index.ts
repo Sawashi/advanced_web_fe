@@ -1,7 +1,10 @@
+import AuthenticationRouter from "./auth.router";
+
 const routes = {
   home: {
-    value: '/'
-  }
-}
+    value: "/",
+  },
+  auth: AuthenticationRouter,
+};
 
-export default routes
+export default routes;
