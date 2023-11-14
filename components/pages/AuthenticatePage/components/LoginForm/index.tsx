@@ -1,4 +1,4 @@
-import { Link, Stack, Text, useToast } from "@chakra-ui/react";
+import { HStack, Link, Stack, Text, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
@@ -79,11 +79,21 @@ const LoginForm = () => {
             label="Password"
             placeholder="Your password"
           />
-          <Text width="full" align="right" fontSize="sm">
-            <Link href={`${routes.auth.forgotPassword.value}`} color="blue.600">
-              Forgot Password?
-            </Link>
-          </Text>
+          <HStack>
+            <Text width="full" align="right" fontSize="sm">
+              <Link href={`${routes.auth.register.value}`} color="black.600">
+                Not a member? Sign up now
+              </Link>
+            </Text>
+            <Text width="full" align="right" fontSize="sm">
+              <Link
+                href={`${routes.auth.resetPassword.value}`}
+                color="blue.600"
+              >
+                Forgot Password?
+              </Link>
+            </Text>
+          </HStack>
           <SubmitButton type="submit" isLoading={isSubmitting || isLoading}>
             Log in
           </SubmitButton>

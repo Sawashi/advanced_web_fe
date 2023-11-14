@@ -1,2 +1,2 @@
-// INFO: String,[aA-zZ]+[0-9]+[~!@#$%^&*()_+`-=[]\;',./{}|:"<>?], min: 6 chars, max: 12 chars
-export const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~!@#$%^&*()_+`\-=[\]\\;',.\/{}|:"<>?]).{6,12}$/
+export const PASSWORD_PATTERN =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

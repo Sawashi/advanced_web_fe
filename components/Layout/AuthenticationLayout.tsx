@@ -19,7 +19,7 @@ const AuthenticationLayout = (props: IAuthenticationLayoutProps) => {
   return (
     <>
       <Head>
-        <title>{title || 'Ono'}</title>
+        <title>{title}</title>
         <link rel="icon" href="/assets/icons/logo.svg" />
       </Head>
       <chakra.main>{children}</chakra.main>

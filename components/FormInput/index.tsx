@@ -135,33 +135,6 @@ const FormInput = (props: IFormItemProps) => {
       {children ? (
         children
       ) : type !== "number" ? (
-        // <Controller
-        //   name={name}
-        //   control={control}
-        //   rules={{ required: isRequired ? `${label ?? startCase(name)} is required` : false }}
-        //   render={({ field }) => (
-        //     <Input
-        //       height={height}
-        //       type={type}
-        //       autoComplete={autoComplete ?? name}
-        //       placeholder={placeholder}
-        //       isReadOnly={readonly}
-        //       color={inputColor}
-        //       maxLength={maxLength}
-        //       {...disabledProps}
-        //       {...field}
-        //       onChange={v => {
-        //         field.onChange(v)
-        //         onChange?.(v)
-        //       }}
-        //       onFocusCapture={() => onFocusCapture?.()}
-
-        //       // {...register(name, {
-        //       //   required: isRequired ? `${label ?? startCase(name)} is required` : false
-        //       // })}
-        //     />
-        //   )}
-        // />
         <Input
           height={height}
           type={type}
@@ -178,19 +151,6 @@ const FormInput = (props: IFormItemProps) => {
           })}
         />
       ) : (
-        // <Input
-        //   height={height}
-        //   type={type}
-        //   autoComplete={autoComplete ?? name}
-        //   placeholder={placeholder}
-        //   isReadOnly={readonly}
-        //   color={inputColor}
-        //   maxLength={maxLength}
-        //   {...disabledProps}
-        //   {...register(name, {
-        //     required: isRequired ? `${label ?? startCase(name)} is required` : false
-        //   })}
-        // />
         <Controller
           name={name}
           control={control}

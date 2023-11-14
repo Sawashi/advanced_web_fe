@@ -87,7 +87,7 @@ const Header = () => {
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"#"}
+            href={"./auth/login"}
           >
             Sign In
           </Button>
