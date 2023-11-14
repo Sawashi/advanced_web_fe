@@ -1,13 +1,7 @@
-const isProd = process.env.NODE_ENV === 'production'
-const withPWA = require('next-pwa')
-
-module.exports = withPWA({
+module.exports = {
   reactStrictMode: true,
   env: {
-    API_URL: process.env.API_URL
+    API_URL: process.env.API_URL,
+    BASE_URL: process.env.BASE_URL,
   },
-  pwa: {
-    disable: true,
-    dest: 'public'
-  }
-})
+};

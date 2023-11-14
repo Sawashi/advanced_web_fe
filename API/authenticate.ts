@@ -22,18 +22,6 @@ export async function login(
   }
 }
 
-export async function forgotPassword(
-  userData: IForgotPasswordRequest
-): Promise<Boolean | IServerError> {
-  try {
-    await api.post(`/auth/forgot-password`, userData, {
-      headers: auth(),
-    });
-    return true;
-  } catch (err) {
-    throw new Error((<CommonError>err)?.response?.data?.error?.message);
-  }
-}
 
 export async function resetPassword(data: IResetPasswordRequest) {
   try {

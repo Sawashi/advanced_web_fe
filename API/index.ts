@@ -3,9 +3,11 @@ import { AuthenticateParams } from "enums/auth";
 import { IRequestHeader, IServerError } from "interfaces/authentication";
 
 const { API_URL } = process.env;
+console.log("API_URL", API_URL);
 
 export const api = axios.create({
   baseURL: API_URL,
+  timeout: 10000,
 });
 
 export function auth(): IRequestHeader {
@@ -13,11 +15,11 @@ export function auth(): IRequestHeader {
     return {};
   }
 
-  const headers = { Authorization: "" };
+  const headers = { Authorization: "", "Content-Type": "" };
   const accessToken =
     localStorage.getItem(AuthenticateParams.ACCESS_TOKEN) || "";
   headers.Authorization = `Bearer ${accessToken}`;
-
+  headers["Content-Type"] = "application/json";
   return headers;
 }
 

@@ -92,13 +92,11 @@ const SetPasswordForm = () => {
       const response: IVerifyTokenResponse = await verifyToken(token)
       if (!response?.isValidToken) {
         showError(setPasswordInvalidTokenDescription)
-        router.push(`${routes.auth.expiredToken.value}`)
       } else {
         setResetPasswordToken(token)
       }
     } catch (error) {
       showError(setPasswordInvalidTokenDescription)
-      router.push(`${routes.auth.expiredToken.value}`)
     } finally {
       setIsLoading(false)
     }
