@@ -2,7 +2,7 @@ import AuthenticationRouter from "./auth.router";
 
 const routes = {
   home: {
-    value: "/",
+    value: "/home",
   },
   auth: AuthenticationRouter,
 };

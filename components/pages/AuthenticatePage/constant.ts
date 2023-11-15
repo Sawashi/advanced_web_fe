@@ -1,23 +1,23 @@
 export enum EAuthenticatePageType {
   LOGIN = "login",
-  SET_PASSWORD = "setPassword",
+  REGISTER = "register",
   RESET_PASSWORD = "resetPassword",
 }
 
 export enum EAuthenticatePageName {
   LOGIN = "Login",
-  SET_PASSWORD = "Set Password",
+  REGISTER = "Register",
   RESET_PASSWORD = "Reset Password",
 }
 
 export enum EAuthenticatePageTitle {
   LOGIN = "Log in to your account",
-  SET_PASSWORD = "Set password",
+  REGISTER = "Register",
   RESET_PASSWORD = "Create new password",
 }
 
 export enum EAuthenticatePageGuide {
   LOGIN = "Welcome back! Please enter your details.",
-  SET_PASSWORD = "Your password must be between 6 and 12 characters long.",
+  REGISTER = "Ready to join? Please enter your details and start journey with us.",
   RESET_PASSWORD = "Your password must be between 6 and 12 characters long.",
 }

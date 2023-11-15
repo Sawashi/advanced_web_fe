@@ -1,13 +1,13 @@
 const AuthenticationRouter = {
   value: "/auth",
   login: {
-    value: "/login",
+    value: "/auth/login",
   },
   register: {
-    value: "/register",
+    value: "/auth/register",
   },
   resetPassword: {
-    value: "/reset-password",
+    value: "/auth/reset-password",
   },
 };
 

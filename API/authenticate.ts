@@ -9,6 +9,7 @@ import {
 import { IUser, IVerifyTokenResponse } from "interfaces/user";
 import { CommonError } from "types";
 import { api, auth, errorHandler } from ".";
+import { IRegisterSchema } from "constants/validation/auth";
 
 export async function login(
   loginData: ILoginDataReq
@@ -53,10 +54,15 @@ export async function changePassword(
 }
 
 export async function signUp(
-  userData: Omit<ISignUpData, "id">
-): Promise<IServerError> {
+  userData: IRegisterSchema
+): Promise<IServerError | IUser> {
   try {
-    const response = await api.post(`/auth/sign-up`, userData);
+    const response = await api.post<
+      {},
+      {
+        data: IUser;
+      }
+    >(`/auth/register`, userData);
     return response?.data;
   } catch (err) {
     errorHandler((<CommonError>err)?.response?.data?.error);

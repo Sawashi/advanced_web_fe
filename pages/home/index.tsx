@@ -1,8 +1,10 @@
-import Head from "next/head";
 import Header from "components/Header";
-import { Box, Center, Image, Text } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import withAuth from "HOCs/withAuth";
+import { observer } from "mobx-react";
+
 const Home = () => {
   const [dataToShow, setDataToShow] = useState<any[]>([]);
 
@@ -24,6 +26,7 @@ const Home = () => {
     const newData = await handleFetchDataRandom();
     setDataToShow(dataToShow.concat(newData));
   };
+  
   useEffect(() => {
     const fetchData = async () => {
       const result = await handleFetchDataRandom();
@@ -31,6 +34,7 @@ const Home = () => {
     };
     fetchData();
   }, []);
+
   return (
     <div>
       <Header />
@@ -69,4 +73,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withAuth(observer(Home));

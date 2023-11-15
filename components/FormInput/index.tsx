@@ -75,19 +75,6 @@ const FormInput = (props: IFormItemProps) => {
     formState: { errors },
     control,
   } = useFormContext();
-  let pattern: { value: RegExp; message: string } | undefined;
-  switch (name) {
-    case "dateOfBirth":
-      //*INFO: validate (MM/DD/YYYY), with a year between 1900 and 2099
-      pattern = {
-        value:
-          /^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d$/,
-        message: "Please enter a valid date",
-      };
-      break;
-    default:
-      pattern = undefined;
-  }
 
   const disabledProps = disabled
     ? {
@@ -106,6 +93,7 @@ const FormInput = (props: IFormItemProps) => {
       alignSelf={!label || hideLabel ? "flex-end" : undefined}
       className={className}
       width={width}
+      isRequired={isRequired}
     >
       <HStack
         spacing="14px"
@@ -122,6 +110,7 @@ const FormInput = (props: IFormItemProps) => {
             marginBottom={0}
             marginInlineEnd={0}
             minWidth="200px"
+            requiredIndicator={<span style={{ color: "red" }}>*</span>}
           >
             {label}
           </FormLabel>

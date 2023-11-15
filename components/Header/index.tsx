@@ -1,38 +1,31 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { observer } from "mobx-react";
-import { useAuth } from "hooks/useAuth";
 import { useStores } from "hooks/useStores";
 import {
   Box,
   Flex,
-  Text,
   IconButton,
   Button,
   Stack,
-  Collapse,
-  Icon,
   Popover,
   PopoverTrigger,
-  PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import {
-  HamburgerIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-} from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import IconComponent from "components/Icon";
+import routes from "routes";
+import { useRouter } from "next/router";
 
 const Header = () => {
   const { authStore } = useStores();
   const { isOpen, onToggle } = useDisclosure();
+  const router = useRouter();
 
   const onLogout = (e: any) => {
     e.preventDefault();
     authStore.logout();
+    router.replace(routes.auth.login.value);
   };
 
   const Content = useMemo(() => {
@@ -44,7 +37,7 @@ const Header = () => {
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"./auth/login"}
+            href={routes.auth.login.value}
           >
             Sign In
           </Button>
@@ -55,7 +48,7 @@ const Header = () => {
             fontWeight={600}
             color={"white"}
             bg={"red.400"}
-            href={"#"}
+            href={routes.auth.register.value}
             _hover={{
               bg: "red.500",
             }}

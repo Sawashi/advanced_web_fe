@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import Icon from "components/Icon";
 import LoginForm from "./components/LoginForm";
 import ResetPasswordForm from "./components/ResetPasswordForm";
-import SetPasswordForm from "./components/SetPasswordForm";
+import RegisterForm from "./components/RegisterForm";
 import {
   EAuthenticatePageGuide,
   EAuthenticatePageName,
@@ -24,9 +24,9 @@ const AuthenticatePage = (props: ILoginProps) => {
 
   function getTitle(): string {
     switch (pageType) {
-      case EAuthenticatePageType.SET_PASSWORD:
-        setNamePage?.(EAuthenticatePageName.SET_PASSWORD);
-        return EAuthenticatePageTitle.SET_PASSWORD;
+      case EAuthenticatePageType.REGISTER:
+        setNamePage?.(EAuthenticatePageName.REGISTER);
+        return EAuthenticatePageTitle.REGISTER;
       case EAuthenticatePageType.RESET_PASSWORD:
         setNamePage?.(EAuthenticatePageName.RESET_PASSWORD);
         return EAuthenticatePageTitle.RESET_PASSWORD;
@@ -41,8 +41,8 @@ const AuthenticatePage = (props: ILoginProps) => {
 
   function getDescription(): string {
     switch (pageType) {
-      case EAuthenticatePageType.SET_PASSWORD:
-        return EAuthenticatePageGuide.SET_PASSWORD;
+      case EAuthenticatePageType.REGISTER:
+        return EAuthenticatePageGuide.REGISTER;
       case EAuthenticatePageType.RESET_PASSWORD:
         return EAuthenticatePageGuide.RESET_PASSWORD;
       case EAuthenticatePageType.LOGIN:
@@ -77,8 +77,8 @@ const AuthenticatePage = (props: ILoginProps) => {
               {getDescription()}
             </Text>
           </VStack>
-          {pageType === EAuthenticatePageType.SET_PASSWORD && (
-            <SetPasswordForm />
+          {pageType === EAuthenticatePageType.REGISTER && (
+            <RegisterForm />
           )}
           {pageType === EAuthenticatePageType.RESET_PASSWORD && (
             <ResetPasswordForm />
