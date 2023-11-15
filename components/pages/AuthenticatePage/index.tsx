@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import Icon from "components/Icon";
 import LoginForm from "./components/LoginForm";
 import ResetPasswordForm from "./components/ResetPasswordForm";
-import RegisterForm from "./components/SetPasswordForm";
+import RegisterForm from "./components/RegisterForm";
 import {
   EAuthenticatePageGuide,
   EAuthenticatePageName,

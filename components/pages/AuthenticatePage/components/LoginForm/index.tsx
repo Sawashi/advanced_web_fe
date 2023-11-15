@@ -10,13 +10,10 @@ import {
   loginFailedDescription,
   loginSuccessDescription,
 } from "constants/messages/auth.messages";
-import { LoginSchema } from "constants/validation/auth";
+import { ILoginSchema, LoginSchema } from "constants/validation/auth";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
 import { SubmitButton } from "../../authenticatePage.styles";
-import * as yup from "yup";
-
-export type ILoginSchema = yup.InferType<typeof LoginSchema>;
 
 const LoginForm = () => {
   const method = useForm<ILoginSchema>({
