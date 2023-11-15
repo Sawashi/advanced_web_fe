@@ -59,7 +59,7 @@ const Home = () => {
               borderRadius="xl"
               mb={2}
               sx={{ display: "inline-block", margin: "4% 0%" }}
-              src={image.urls.raw}
+              src={image.urls.regular}
               alt="Alt"
             />
           ))}
