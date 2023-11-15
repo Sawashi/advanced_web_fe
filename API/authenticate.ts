@@ -1,8 +1,6 @@
 import {
   ILoginDataReq,
   ILoginDataRes,
-  IForgotPasswordRequest,
-  ISignUpData,
   IServerError,
   IResetPasswordRequest,
   IRefreshTokenResponse,
@@ -76,15 +74,18 @@ export async function signUp(
 export async function getCurrentUser(): Promise<IUser> {
   try {
     let response = await api.get(`/auth/me`);
-    if (response?.status === 401) {
-      await refreshToken();
-      response = await api.get(`/auth/me`, {
-        headers: auth(),
-      });
-    }
     const data: IUser = response?.data ?? {};
     return data;
   } catch (err) {
+    // @ts-ignore
+    if (err?.response?.status === 401) {
+      await refreshToken();
+      let response = await api.get(`/auth/me`, {
+        headers: auth(),
+      });
+      const data: IUser = response?.data ?? {};
+      return data;
+    }
     const error = (<CommonError>err)?.response?.data?.error;
     errorHandler(error);
     return {} as IUser;
