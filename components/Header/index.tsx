@@ -11,6 +11,13 @@ import {
   PopoverTrigger,
   useColorModeValue,
   useDisclosure,
+  Avatar,
+  Portal,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  Link,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import IconComponent from "components/Icon";
@@ -59,28 +66,48 @@ const Header = () => {
       );
     }
     return (
-      <>
-        <Button
-          as={"a"}
-          display={{ base: "none", md: "inline-flex" }}
-          fontSize={"sm"}
-          fontWeight={600}
-          color={"white"}
-          bg={"red.400"}
-          href={"#"}
-          _hover={{
-            bg: "red.500",
-          }}
-          onClick={onLogout}
-        >
-          Log out
-        </Button>
-      </>
+      <Popover>
+        <PopoverTrigger>
+          <Avatar
+            size={"md"}
+            name={`${authStore.user?.firstName} ${authStore.user?.lastName}`}
+            _hover={{
+              cursor: "pointer",
+            }}
+          />
+        </PopoverTrigger>
+        <Portal>
+          <PopoverContent>
+            <PopoverHeader
+              fontSize={"lg"}
+              textAlign={"center"}
+              fontWeight={600}
+            >{`${authStore.user?.firstName} ${authStore.user?.lastName}`}</PopoverHeader>
+            <PopoverBody>
+              <Link href={routes.user.profile.value}>
+                <a>Profile</a>
+              </Link>
+            </PopoverBody>
+            <PopoverFooter>
+              <Button
+                variant={"link"}
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"md"}
+                fontWeight={600}
+                onClick={onLogout}
+                leftIcon={<IconComponent iconName="ic-logout.svg" size={20} />}
+              >
+                Log out
+              </Button>
+            </PopoverFooter>
+          </PopoverContent>
+        </Portal>
+      </Popover>
     );
   }, [authStore.user]);
 
   return (
-    <Box>
+    <Box w={"100%"}>
       <Flex
         bg={useColorModeValue("white", "gray.800")}
         color={useColorModeValue("gray.600", "white")}
@@ -111,7 +138,13 @@ const Header = () => {
           justify={{ base: "center", md: "start" }}
           alignItems={{ base: "center", md: "center" }}
         >
-          <IconComponent iconName="logo.svg" size={50} />
+          <IconComponent
+            iconName="logo.svg"
+            size={50}
+            onClick={() => {
+              router.push(routes.home.value);
+            }}
+          />
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -120,6 +153,7 @@ const Header = () => {
         <Stack
           flex={{ base: 1, md: 0 }}
           justify={"flex-end"}
+          alignItems={"center"}
           direction={"row"}
           spacing={6}
         >
@@ -133,7 +167,6 @@ const Header = () => {
 const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
-  const popoverContentBgColor = useColorModeValue("white", "gray.800");
 
   return (
     <Stack direction={"row"} spacing={4}>

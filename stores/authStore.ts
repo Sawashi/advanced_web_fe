@@ -1,5 +1,9 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
-import { getCurrentUser, login as loginAPI } from "API/authenticate";
+import {
+  editProfile,
+  getCurrentUser,
+  login as loginAPI,
+} from "API/authenticate";
 import { AuthenticateParams, ErrorMessageEnum } from "enums/auth";
 import { ILoginDataReq, ILoginDataRes } from "interfaces/authentication";
 import { IUser } from "interfaces/user";
@@ -81,6 +85,16 @@ class AuthStore {
       );
     }
     return false;
+  }
+
+  public async editProfile(data: Partial<IUser>) {
+    const res = await editProfile(data);
+    if (res) {
+      this.user = {
+        ...this.user,
+        ...res,
+      };
+    }
   }
 }
 

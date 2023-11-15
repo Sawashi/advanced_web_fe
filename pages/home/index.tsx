@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import withAuth from "HOCs/withAuth";
 import { observer } from "mobx-react";
+import UserLayout from "components/Layout/UserLayout";
 
 const Home = () => {
   const [dataToShow, setDataToShow] = useState<any[]>([]);
@@ -26,7 +27,7 @@ const Home = () => {
     const newData = await handleFetchDataRandom();
     setDataToShow(dataToShow.concat(newData));
   };
-  
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await handleFetchDataRandom();
@@ -36,8 +37,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <Header />
+    <UserLayout title="Home">
       <InfiniteScroll
         dataLength={dataToShow.length}
         next={handleLoadMore}
@@ -69,7 +69,7 @@ const Home = () => {
           ))}
         </Box>
       </InfiniteScroll>
-    </div>
+    </UserLayout>
   );
 };
 

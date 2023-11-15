@@ -2,6 +2,7 @@ import axios from "axios";
 import { AuthenticateParams } from "enums/auth";
 import { IRequestHeader, IServerError } from "interfaces/authentication";
 import { getCookie, setCookie } from "cookies-next";
+import routes from "routes";
 
 export const api = axios.create({
   baseURL: process.env.API_URL || "",
@@ -34,6 +35,7 @@ export const errorHandler = (error: IServerError): void => {
 function redirectLogin(): void {
   setCookie(AuthenticateParams.ACCESS_TOKEN, "");
   setCookie(AuthenticateParams.REFRESH_TOKEN, "");
+  window.location.href = routes.auth.login.value;
 }
 
 api.interceptors.request.use(

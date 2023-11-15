@@ -5,11 +5,14 @@ import {
   ISignUpData,
   IServerError,
   IResetPasswordRequest,
+  IRefreshTokenResponse,
 } from "interfaces/authentication";
 import { IUser, IVerifyTokenResponse } from "interfaces/user";
 import { CommonError } from "types";
 import { api, auth, errorHandler } from ".";
 import { IRegisterSchema } from "constants/validation/auth";
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
+import { AuthenticateParams } from "enums/auth";
 
 export async function login(
   loginData: ILoginDataReq
@@ -72,7 +75,33 @@ export async function signUp(
 
 export async function getCurrentUser(): Promise<IUser> {
   try {
-    const response = await api.get(`/auth/me`);
+    let response = await api.get(`/auth/me`);
+    if (response?.status === 401) {
+      await refreshToken();
+      response = await api.get(`/auth/me`, {
+        headers: auth(),
+      });
+    }
+    const data: IUser = response?.data ?? {};
+    return data;
+  } catch (err) {
+    const error = (<CommonError>err)?.response?.data?.error;
+    errorHandler(error);
+    return {} as IUser;
+  }
+}
+
+export async function editProfile(userData: Partial<IUser>): Promise<IUser> {
+  try {
+    const response = await api.patch(
+      `/auth/me`,
+      {
+        ...userData,
+      },
+      {
+        headers: auth(),
+      }
+    );
     const data: IUser = response?.data ?? {};
     return data;
   } catch (err) {
@@ -101,5 +130,27 @@ export async function verifyToken(
     const error = (<CommonError>err)?.response?.data?.error;
     errorHandler(error);
     return {} as IVerifyTokenResponse;
+  }
+}
+
+export async function refreshToken() {
+  const refreshToken = getCookie(AuthenticateParams.REFRESH_TOKEN);
+  try {
+    const response = await api.post(
+      `/auth/refresh`,
+      {
+        refresh: refreshToken,
+      },
+      {
+        headers: auth(),
+      }
+    );
+    const data: IRefreshTokenResponse = response?.data ?? {};
+    setCookie(AuthenticateParams.ACCESS_TOKEN, data?.accessToken);
+    return data;
+  } catch (err) {
+    deleteCookie(AuthenticateParams.ACCESS_TOKEN);
+    deleteCookie(AuthenticateParams.REFRESH_TOKEN);
+    return {} as ILoginDataRes;
   }
 }

@@ -11,16 +11,16 @@ const withAuth = <P extends object>(
     const { authStore } = useStores();
 
     useEffect(() => {
-      if (authStore.checkAccessToken()) {
-        authStore.fetchCurrentUser();
+      if (authStore.checkAccessToken?.()) {
+        authStore.fetchCurrentUser?.();
       }
     }, []);
 
     useEffect(() => {
-      if (!authStore.user || !authStore.user.id) {
+      if ((!authStore.user || !authStore.user.id) && !authStore.isLoading) {
         router.push(routes.auth.login.value);
       }
-    }, [authStore.user]);
+    }, [authStore.user, authStore.isLoading]);
 
     return <WrappedComponent {...props} />;
   };
