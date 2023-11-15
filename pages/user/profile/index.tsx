@@ -153,27 +153,13 @@ function UserProfileEdit() {
           <ModalHeader>Change password</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl>
-              <FormLabel>Old password</FormLabel>
-              <Input placeholder="Enter old password" />
-            </FormControl>
-
-            <FormControl mt={4}>
-              <FormLabel>New password</FormLabel>
-              <Input placeholder="Enter new password" />
-            </FormControl>
-
-            <FormControl mt={4}>
-              <FormLabel>Re-enter new password</FormLabel>
-              <Input placeholder="Re-enter new password" />
-            </FormControl>
+            <Text>This feature is not available yet</Text>
           </ModalBody>
 
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
-              Close
+              Got it!
             </Button>
-            <Button colorScheme="blue">Submit</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
