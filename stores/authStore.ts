@@ -31,22 +31,17 @@ class AuthStore {
 
   public async login(loginData: ILoginDataReq): Promise<void> {
     this.isLoading = true;
-
     try {
       const response = await loginAPI(loginData);
-      const { token, isInactive } = response as ILoginDataRes;
-
-      if (isInactive) {
-        this.isLoading = false;
-        throw new Error(ErrorMessageEnum.ACCOUNT_DISABLED_PLEASE_CONTACT_ADMIN);
-      }
-
-      if (typeof token === "string") {
-        localStorage.setItem(AuthenticateParams.ACCESS_TOKEN, token);
-        this.accessToken = token;
-        await this.fetchCurrentUser();
-        this.isLoading = false;
-      }
+      const { accessToken, refreshToken } = response as ILoginDataRes;
+      this.rootStore.cookiesStore.setItem(
+        AuthenticateParams.ACCESS_TOKEN,
+        accessToken
+      );
+      this.rootStore.cookiesStore.setItem(
+        AuthenticateParams.REFRESH_TOKEN,
+        refreshToken
+      );
     } catch (error) {
       this.isLoading = false;
       console.error(error);
@@ -57,9 +52,10 @@ class AuthStore {
   public async fetchCurrentUser() {
     runInAction(async () => {
       this.isLoading = true;
-      this.accessToken = localStorage.getItem(
+      const accessToken = this.rootStore.cookiesStore.getItem(
         AuthenticateParams.ACCESS_TOKEN
-      ) as string;
+      );
+      this.accessToken = accessToken || "";
       this.user = await getCurrentUser();
       this.isLoading = false;
     });
@@ -69,18 +65,21 @@ class AuthStore {
     this.user = {} as IUser;
     this.accessToken = "";
     this.isLoading = false;
-    localStorage.setItem(AuthenticateParams.ACCESS_TOKEN, "");
+    this.rootStore.cookiesStore.removeItem(AuthenticateParams.ACCESS_TOKEN);
+    this.rootStore.cookiesStore.removeItem(AuthenticateParams.REFRESH_TOKEN);
   }
 
   public setForgotPasswordEmail(email: string) {
     this.forgotPasswordEmail = email;
   }
 
-  public getLocalStorageAccessToken(): string | null {
+  public checkAccessToken(): boolean {
     if (typeof window !== "undefined") {
-      return localStorage.getItem(AuthenticateParams.ACCESS_TOKEN);
+      return this.rootStore.cookiesStore.hasItem(
+        AuthenticateParams.ACCESS_TOKEN
+      );
     }
-    return null;
+    return false;
   }
 }
 

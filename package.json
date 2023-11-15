@@ -27,6 +27,7 @@
     "@types/react-slick": "^0.23.12",
     "@types/react-table": "^7.7.14",
     "axios": "^0.21.4",
+    "cookies-next": "^4.0.0",
     "dotenv": "^16.0.0",
     "framer-motion": "^10.12.12",
     "lighthouse": "^8.4.0",

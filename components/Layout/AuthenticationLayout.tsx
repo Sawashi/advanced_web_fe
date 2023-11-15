@@ -1,21 +1,21 @@
-import { chakra } from '@chakra-ui/react'
-import Head from 'next/head'
-import React, { ReactNode, useEffect } from 'react'
-import { useStores } from 'hooks/useStores'
+import { chakra } from "@chakra-ui/react";
+import Head from "next/head";
+import React, { ReactNode, useEffect } from "react";
+import { useStores } from "hooks/useStores";
 
 interface IAuthenticationLayoutProps {
-  title?: string
-  children?: ReactNode
+  title?: string;
+  children?: ReactNode;
 }
 
 const AuthenticationLayout = (props: IAuthenticationLayoutProps) => {
-  const { title, children } = props
-  const { authStore } = useStores()
+  const { title, children } = props;
+  const { authStore } = useStores();
   useEffect(() => {
-    if (authStore.getLocalStorageAccessToken()) {
-      authStore.fetchCurrentUser()
+    if (authStore.checkAccessToken()) {
+      authStore.fetchCurrentUser();
     }
-  }, [])
+  }, []);
   return (
     <>
       <Head>
@@ -24,7 +24,7 @@ const AuthenticationLayout = (props: IAuthenticationLayoutProps) => {
       </Head>
       <chakra.main>{children}</chakra.main>
     </>
-  )
-}
+  );
+};
 
-export default AuthenticationLayout
+export default AuthenticationLayout;

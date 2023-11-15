@@ -22,7 +22,6 @@ export async function login(
   }
 }
 
-
 export async function resetPassword(data: IResetPasswordRequest) {
   try {
     const response = await api.post(`/auth/reset-password`, data, {
@@ -67,9 +66,7 @@ export async function signUp(
 
 export async function getCurrentUser(): Promise<IUser> {
   try {
-    const response = await api.get(`/auth/me`, {
-      headers: auth(),
-    });
+    const response = await api.get(`/auth/me`);
     const data: IUser = response?.data ?? {};
     return data;
   } catch (err) {

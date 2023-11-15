@@ -1,5 +1,6 @@
 export enum AuthenticateParams {
   ACCESS_TOKEN = "accessToken",
+  REFRESH_TOKEN = "refreshToken",
 }
 
 export enum ErrorMessageEnum {
