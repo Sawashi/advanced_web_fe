@@ -1,4 +1,3 @@
-"use server";
 import { makeObservable } from "mobx";
 import { RootStore } from "stores";
 import { setCookie, getCookie, hasCookie } from "cookies-next";

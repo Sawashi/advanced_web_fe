@@ -14,18 +14,12 @@ import { LoginSchema } from "constants/validation/auth";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
 import { SubmitButton } from "../../authenticatePage.styles";
+import * as yup from "yup";
 
-export interface ILoginFormData {
-  email: string;
-  password: string;
-}
+export type ILoginSchema = yup.InferType<typeof LoginSchema>;
 
 const LoginForm = () => {
-  const method = useForm<ILoginFormData>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+  const method = useForm<ILoginSchema>({
     resolver: yupResolver(LoginSchema),
   });
   const { authStore } = useStores();
@@ -44,7 +38,7 @@ const LoginForm = () => {
     }
   }, [authStore.user]);
 
-  async function onSubmit(data: ILoginFormData): Promise<void> {
+  async function onSubmit(data: ILoginSchema): Promise<void> {
     try {
       const { email, password } = data;
       await authStore.login({ email, password });
