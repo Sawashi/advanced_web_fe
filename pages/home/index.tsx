@@ -26,7 +26,7 @@ const Home = () => {
     const newData = await handleFetchDataRandom();
     setDataToShow(dataToShow.concat(newData));
   };
-  
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await handleFetchDataRandom();

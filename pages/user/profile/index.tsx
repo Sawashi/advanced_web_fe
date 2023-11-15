@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Button,
   Flex,
@@ -26,18 +24,17 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@chakra-ui/react";
+import withAuth from "HOCs/withAuth";
+import { useStores } from "hooks/useStores";
+import { observer } from "mobx-react";
 
-export default function UserProfileEdit() {
-  const mockData = { name: "Kiet Le" };
+function UserProfileEdit() {
+  const { authStore } = useStores();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <div>
-      <Flex
-        minH={"100vh"}
-        align={"center"}
-        justify={"center"}
-        backgroundImage="url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
-      >
+      <Flex minH={"100vh"} align={"center"} justify={"center"}>
         <Stack
           spacing={4}
           w={"full"}
@@ -79,8 +76,7 @@ export default function UserProfileEdit() {
                 </FormControl>
               </Box>
               <Button sx={{ width: "100%", margin: "2% 0" }} onClick={onOpen}>
-                {" "}
-                Change password{" "}
+                Change password
               </Button>
               <Grid templateColumns="repeat(2, 1fr)" gap={2}>
                 <GridItem w="100%">
@@ -112,10 +108,13 @@ export default function UserProfileEdit() {
             <GridItem w="100%" position={"relative"}>
               <AbsoluteCenter>
                 <Center>
-                  <Avatar size="xl" name={mockData.name} />
+                  <Avatar
+                    size="xl"
+                    name={`${authStore.user?.firstName} ${authStore.user?.lastName}`}
+                  />
                 </Center>
                 <Center sx={{ padding: "2%" }}>
-                  <Text fontSize="2xl">{mockData.name}</Text>
+                  <Text fontSize="2xl">{authStore.user?.firstName}</Text>
                 </Center>
               </AbsoluteCenter>
             </GridItem>
@@ -155,3 +154,4 @@ export default function UserProfileEdit() {
     </div>
   );
 }
+export default withAuth(observer(UserProfileEdit));
