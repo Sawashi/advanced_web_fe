@@ -78,7 +78,11 @@ const Header = () => {
         </PopoverTrigger>
         <Portal>
           <PopoverContent>
-            <PopoverHeader>{`${authStore.user?.firstName} ${authStore.user?.lastName}`}</PopoverHeader>
+            <PopoverHeader
+              fontSize={"lg"}
+              textAlign={"center"}
+              fontWeight={600}
+            >{`${authStore.user?.firstName} ${authStore.user?.lastName}`}</PopoverHeader>
             <PopoverBody>
               <Link href={routes.user.profile.value}>
                 <a>Profile</a>
@@ -103,7 +107,7 @@ const Header = () => {
   }, [authStore.user]);
 
   return (
-    <Box>
+    <Box w={"100%"}>
       <Flex
         bg={useColorModeValue("white", "gray.800")}
         color={useColorModeValue("gray.600", "white")}
@@ -134,7 +138,13 @@ const Header = () => {
           justify={{ base: "center", md: "start" }}
           alignItems={{ base: "center", md: "center" }}
         >
-          <IconComponent iconName="logo.svg" size={50} />
+          <IconComponent
+            iconName="logo.svg"
+            size={50}
+            onClick={() => {
+              router.push(routes.home.value);
+            }}
+          />
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
           </Flex>

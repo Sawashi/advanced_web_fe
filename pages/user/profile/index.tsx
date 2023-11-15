@@ -25,6 +25,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import withAuth from "HOCs/withAuth";
+import UserLayout from "components/Layout/UserLayout";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 
@@ -33,7 +34,7 @@ function UserProfileEdit() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <div>
+    <UserLayout title="Profile">
       <Flex minH={"100vh"} align={"center"} justify={"center"}>
         <Stack
           spacing={4}
@@ -151,7 +152,7 @@ function UserProfileEdit() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </UserLayout>
   );
 }
 export default withAuth(observer(UserProfileEdit));
