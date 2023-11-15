@@ -2,12 +2,12 @@ import axios from "axios";
 import { AuthenticateParams } from "enums/auth";
 import { IRequestHeader, IServerError } from "interfaces/authentication";
 
-const { API_URL } = process.env;
-console.log("API_URL", API_URL);
-
 export const api = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
+  baseURL: process.env.API_URL || "",
+  timeout: 30000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export function auth(): IRequestHeader {
