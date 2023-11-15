@@ -39,13 +39,9 @@ const LoginForm = () => {
   } = method;
 
   useEffect(() => {
-    // if (authStore.user && authStore.user.id) {
-    //   if (get(authStore.user, "role", "") === "SuperAdmin") {
-    //     router.push(routes.superAdmin.value);
-    //   } else {
-    //     router.push(routes.fleetManager.setFleet.value);
-    //   }
-    // }
+    if (authStore.user && authStore.user.id) {
+      router.push(routes.home.value);
+    }
   }, [authStore.user]);
 
   async function onSubmit(data: ILoginFormData): Promise<void> {

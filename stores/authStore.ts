@@ -42,6 +42,7 @@ class AuthStore {
         AuthenticateParams.REFRESH_TOKEN,
         refreshToken
       );
+      await this.fetchCurrentUser();
     } catch (error) {
       this.isLoading = false;
       console.error(error);

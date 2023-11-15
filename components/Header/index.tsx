@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { observer } from "mobx-react";
 import { useAuth } from "hooks/useAuth";
 import { useStores } from "hooks/useStores";
@@ -24,17 +24,68 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
+import IconComponent from "components/Icon";
+
 const Header = () => {
-  const { testStore, authStore } = useStores();
-  const { loginHandler } = useAuth();
-
-  useEffect(() => {
-    loginHandler();
-  }, []);
-
-  console.log("testStore?.status", testStore?.status);
-  console.log("authStore?.user", authStore?.user);
+  const { authStore } = useStores();
   const { isOpen, onToggle } = useDisclosure();
+
+  const onLogout = (e: any) => {
+    e.preventDefault();
+    authStore.logout();
+  };
+
+  const Content = useMemo(() => {
+    if (!authStore.user?.id) {
+      return (
+        <>
+          <Button
+            as={"a"}
+            fontSize={"sm"}
+            fontWeight={400}
+            variant={"link"}
+            href={"./auth/login"}
+          >
+            Sign In
+          </Button>
+          <Button
+            as={"a"}
+            display={{ base: "none", md: "inline-flex" }}
+            fontSize={"sm"}
+            fontWeight={600}
+            color={"white"}
+            bg={"red.400"}
+            href={"#"}
+            _hover={{
+              bg: "red.500",
+            }}
+          >
+            Sign Up
+          </Button>
+        </>
+      );
+    }
+    return (
+      <>
+        <Button
+          as={"a"}
+          display={{ base: "none", md: "inline-flex" }}
+          fontSize={"sm"}
+          fontWeight={600}
+          color={"white"}
+          bg={"red.400"}
+          href={"#"}
+          _hover={{
+            bg: "red.500",
+          }}
+          onClick={onLogout}
+        >
+          Log out
+        </Button>
+      </>
+    );
+  }, [authStore.user]);
+
   return (
     <Box>
       <Flex
@@ -62,15 +113,12 @@ const Header = () => {
             aria-label={"Toggle Navigation"}
           />
         </Flex>
-        <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-            color={useColorModeValue("gray.800", "white")}
-          >
-            Logo
-          </Text>
-
+        <Flex
+          flex={{ base: 1 }}
+          justify={{ base: "center", md: "start" }}
+          alignItems={{ base: "center", md: "center" }}
+        >
+          <IconComponent iconName="logo.svg" size={50} />
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -82,34 +130,13 @@ const Header = () => {
           direction={"row"}
           spacing={6}
         >
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={"./auth/login"}
-          >
-            Sign In
-          </Button>
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"red.400"}
-            href={"#"}
-            _hover={{
-              bg: "red.500",
-            }}
-          >
-            Sign Up
-          </Button>
+          {Content}
         </Stack>
       </Flex>
     </Box>
   );
 };
+
 const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
