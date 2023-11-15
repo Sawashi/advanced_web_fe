@@ -40,6 +40,20 @@ export const RegisterSchema = yup.object().shape({
   lastName: yup.string().required("This field is required"),
 });
 
+export const EditProfileSchema = yup.object().shape({
+  dob: yup.string().test("Invalid date", "Invalid date", (value) => {
+    if (value) {
+      if (!DATE_PATTERN.test(value)) return false;
+      const date = new Date(value);
+      return !isNaN(date.getTime());
+    }
+    return true;
+  }),
+  firstName: yup.string().required("This field is required"),
+  lastName: yup.string().required("This field is required"),
+});
+
 export type ILoginSchema = yup.InferType<typeof LoginSchema>;
 export type IForgotPasswordSchema = yup.InferType<typeof ForgotPasswordSchema>;
 export type IRegisterSchema = yup.InferType<typeof RegisterSchema>;
+export type IEditProfileSchema = yup.InferType<typeof EditProfileSchema>;

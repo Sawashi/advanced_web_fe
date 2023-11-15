@@ -18,10 +18,8 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
         <link rel="icon" href="/assets/icons/logo.svg" />
       </Head>
       <chakra.main>
-        <>
-          <Header />
-          {children}
-        </>
+        <Header />
+        {children}
       </chakra.main>
     </>
   );

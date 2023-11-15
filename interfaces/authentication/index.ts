@@ -21,18 +21,10 @@ export interface IForgotPasswordRequest {
   platform: string;
 }
 
-export interface IForgotPasswordResponse {
-  message: string;
-}
-
 export interface IResetPasswordRequest {
   newPassword: string;
   confirmNewPassword: string;
   resetPasswordToken: string;
-}
-
-export interface IResetPasswordResponse {
-  message: string;
 }
 
 export interface IServerError {
@@ -44,4 +36,8 @@ export interface IServerError {
 
 export interface IRequestHeader {
   Authorization?: string;
+}
+
+export interface IRefreshTokenResponse {
+  accessToken: string;
 }
