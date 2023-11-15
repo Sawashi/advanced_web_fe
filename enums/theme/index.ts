@@ -1,13 +1,13 @@
 export enum ThemeMode {
-  LIGHT = 'white',
-  DARK = 'black'
+  LIGHT = "white",
+  DARK = "black",
 }
 
 export enum NavLink {
-  LINK = 'link',
-  BUTTON = 'button',
-  DROPDOWN = 'dropdown',
-  EMPTY_DROPDOWN = 'empty-dropdown'
+  LINK = "link",
+  BUTTON = "button",
+  DROPDOWN = "dropdown",
+  EMPTY_DROPDOWN = "empty-dropdown",
 }
 
 export enum EZIndexLayer {
@@ -24,14 +24,14 @@ export enum EZIndexLayer {
   // https://chakra-ui.com/docs/components/modal
   MODAL = 1400,
   OVERLAY = 1500,
-  TOAST = 9999
+  TOAST = 9999,
 }
 
 export enum EBreakPoint {
-  BASE = 'base',
-  XS = 'xs',
-  SM = 'sm',
-  MD = 'md',
-  LG = 'lg',
-  XL = 'xl'
+  BASE = "base",
+  XS = "xs",
+  SM = "sm",
+  MD = "md",
+  LG = "lg",
+  XL = "xl",
 }

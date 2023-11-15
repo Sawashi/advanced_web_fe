@@ -1,3 +1,13 @@
 export interface IUser {
-  email: string
+  createdAt?: Date;
+  dob?: string;
+  email?: string;
+  firstName?: string;
+  id?: string;
+  lastName?: string;
+  updatedAt?: Date;
+}
+
+export interface IVerifyTokenResponse {
+  isValidToken: boolean;
 }
