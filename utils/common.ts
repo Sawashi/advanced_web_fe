@@ -1,15 +1,10 @@
 /* eslint-disable max-lines */
-import { Dispatch, SetStateAction } from 'react'
 import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import { EAccountType } from 'enums/user'
 import capitalize from 'lodash/capitalize'
 import get from 'lodash/get'
 import { NextRouter } from 'next/router'
-import { ETokenKey, PLATFORM } from 'API/constants'
-import { EDeviceType } from 'components/MultiCarousel/constants'
-import { ICarouseItem } from 'interfaces/listing'
-import { ICoordinate } from 'types'
+import { Dispatch, SetStateAction } from 'react'
 dayjs.extend(isSameOrBefore)
 
 export function thousandSeparator(number: number, locale: string = 'vi'): string {
@@ -118,45 +113,12 @@ export function getCensorAddress(address: string, buildiumPropertyId: number): s
   return `#${buildiumPropertyId}, ${city}, ${state}`
 }
 
-export function getAuthenticateStorageKey(platform: PLATFORM): ETokenKey {
-  switch (platform) {
-    case PLATFORM.OWNER:
-      return ETokenKey.OWNER_ACCESS_TOKEN
-    case PLATFORM.CMS:
-      return ETokenKey.CMS_ACCESS_TOKEN
-    default:
-      return ETokenKey.WEBSITE_ACCESS_TOKEN
-  }
-}
-
-export function getAccountType(platform: PLATFORM): EAccountType {
-  switch (platform) {
-    case PLATFORM.OWNER:
-      return EAccountType.OWNER
-    case PLATFORM.CMS:
-      return EAccountType.STAFF
-    default:
-      return EAccountType.CUSTOMER
-  }
-}
-
 export function checkValidCoordinates(lat: number, lng: number): boolean {
   return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && !isNaN(lat) && !isNaN(lng)
 }
 
 export function roundNumberToFixedDigits(number: string | number, digits = 2): string {
   return Number.parseFloat(`${number}`).toFixed(digits)
-}
-
-//*INFO: export function get center of coordinates array of object with lat and lng
-export function getCenterOfCoordinates(coordinates: ICoordinate[]): [number, number] {
-  const validCoordinates: ICoordinate[] = getValidArray<ICoordinate>(
-    coordinates.filter(coordinate => checkValidCoordinates(coordinate[0], coordinate[1]))
-  )
-  const totalLat: number = validCoordinates.reduce((total, coordinate) => total + Number(coordinate[0]), 0)
-  const totalLng: number = validCoordinates.reduce((total, coordinate) => total + Number(coordinate[1]), 0)
-  const [lat, lng] = [Number(totalLat / validCoordinates.length), Number(totalLng / validCoordinates.length)]
-  return [lat, lng]
 }
 
 export function getDirtyValues(dirtyFields: object | boolean, allValues: object): object {
@@ -170,12 +132,6 @@ export function getDirtyValues(dirtyFields: object | boolean, allValues: object)
       return [key, getDirtyValues(dirtyFields[key], allValues[key])]
     })
   )
-}
-
-export function getDefaultSlide(defaultSlide: ICarouseItem[], defaultImageUrl: string): ICarouseItem[] {
-  const newDefaultSlide: ICarouseItem[] = defaultSlide
-  newDefaultSlide[0].url = defaultImageUrl ? defaultImageUrl : defaultSlide[0].url
-  return newDefaultSlide
 }
 
 export function isNullEmptyBlank(text: string): boolean {
@@ -226,18 +182,6 @@ export function formatUSPhoneNumber(phoneNumber: string): string {
     return ['(', match[2], ') ', match[3], '-', match[4]].join('')
   }
   return ''
-}
-
-export function getDeviceType(isMobile?: boolean, isTablet?: boolean): EDeviceType {
-  if (isMobile) {
-    return EDeviceType.MOBILE
-  }
-
-  if (isTablet) {
-    return EDeviceType.TABLET
-  }
-
-  return EDeviceType.DESKTOP
 }
 
 export function getFullName(firstName?: string, lastName?: string, middleName?: string): string {

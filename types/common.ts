@@ -1,5 +1,4 @@
 export * from './query'
-export * from './select'
 
 export type BaseStyle = Record<string, any>
 export type CommonError = any
@@ -15,4 +14,9 @@ declare global {
     gtag: any
     amplitude: any
   }
+}
+
+export interface IOption {
+  label: string
+  value: string
 }

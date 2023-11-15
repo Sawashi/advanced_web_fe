@@ -182,6 +182,7 @@ const FormInput = (props: IFormItemProps) => {
             visible={!!get(errors, `${name}.message`, "")}
           />
           <FormErrorMessage className={errorClassName}>
+            {/* @ts-ignore */}
             {get(errors, `${name}.message`, "")}
           </FormErrorMessage>
         </HStack>

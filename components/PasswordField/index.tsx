@@ -56,6 +56,7 @@ const PasswordField = (props: IPasswordField) => {
       />
       <HStack mt={1}>
         <Icon iconName="ic-error-form.svg" alt="" size={15} visible={!!get(errors, `${name}.message`, '')} />
+        {/* @ts-ignore */}
         <FormErrorMessage>{errors[name] && errors[name]?.message}</FormErrorMessage>
       </HStack>
     </FormControl>
