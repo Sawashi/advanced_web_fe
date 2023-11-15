@@ -48,7 +48,7 @@ const Header = () => {
             fontWeight={600}
             color={"white"}
             bg={"red.400"}
-            href={"#"}
+            href={routes.auth.register.value}
             _hover={{
               bg: "red.500",
             }}
