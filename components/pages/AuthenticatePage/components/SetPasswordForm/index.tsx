@@ -23,7 +23,7 @@ export interface ISetPasswordFormData {
   confirmNewPassword: string
 }
 
-const SetPasswordForm = () => {
+const RegisterForm = () => {
   const method = useForm<ISetPasswordFormData>()
   const toast = useToast()
   const {
@@ -125,4 +125,4 @@ const SetPasswordForm = () => {
   )
 }
 
-export default SetPasswordForm
+export default RegisterForm
