@@ -1,28 +1,50 @@
-# Check out https://hub.docker.com/_/node to select a new base image
-FROM node:12-alpine
+#
+# Development Build Stage
+#
+FROM node:20-alpine AS development
+RUN apk add --no-cache libc6-compat
 
-# Install node compile native
-RUN apk add g++ make python3
+WORKDIR /app
 
-RUN mkdir -p /home/app
+COPY package.json yarn.lock ./
+RUN yarn --frozen-lockfile
 
-WORKDIR /home/app
+#
+# Production Build Stage
+#
+FROM node:20-alpine AS build
 
-COPY package*.json ./
-COPY yarn.lock ./
+WORKDIR /app
 
-RUN yarn install --frozen-lockfile
-# Bundle app source code
+COPY --from=development /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn install
-
-# Install next-boost for deploy in production
-RUN yarn add next-boost
+ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN yarn build
 
-# Bind to all network interfaces so that it can be mapped to the host OS
-ENV HOST=0.0.0.0
+#
+# Production Stage
+#
+FROM node:20-alpine AS production
 
-CMD [ "yarn", "start:production" ]
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=build --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/public ./public
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD ["yarn", "start"]
