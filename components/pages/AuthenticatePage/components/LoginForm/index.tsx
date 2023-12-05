@@ -1,4 +1,17 @@
-import { HStack, Link, Stack, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Stack,
+  Text,
+  chakra,
+  useToast,
+} from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
@@ -14,7 +27,7 @@ import { ILoginSchema, LoginSchema } from "constants/validation/auth";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
 import { SubmitButton } from "../../authenticatePage.styles";
-
+import { FaFacebook, FaGoogle } from "react-icons/fa";
 const LoginForm = () => {
   const method = useForm<ILoginSchema>({
     resolver: yupResolver(LoginSchema),
@@ -68,11 +81,6 @@ const LoginForm = () => {
           />
           <HStack>
             <Text width="full" align="right" fontSize="sm">
-              <Link href={`${routes.auth.register.value}`} color="black.600">
-                Not a member? Sign up now
-              </Link>
-            </Text>
-            <Text width="full" align="right" fontSize="sm">
               <Link
                 href={`${routes.auth.resetPassword.value}`}
                 color="blue.600"
@@ -84,6 +92,37 @@ const LoginForm = () => {
           <SubmitButton type="submit" isLoading={isSubmitting || isLoading}>
             Log in
           </SubmitButton>
+          <HStack>
+            <Divider />
+            <Text textStyle="sm" whiteSpace="nowrap" color="fg.muted">
+              or continue with
+            </Text>
+            <Divider />
+          </HStack>
+          <HStack spacing={2}>
+            <Button
+              flex="1"
+              leftIcon={<Icon as={FaGoogle} />}
+              colorScheme="red"
+              variant="solid"
+            >
+              Google
+            </Button>
+            <Button
+              flex="1"
+              leftIcon={<Icon as={FaFacebook} />}
+              colorScheme="facebook"
+              variant="solid"
+            >
+              Facebook
+            </Button>
+          </HStack>
+          <Text width="full" align="center" textAlign="center" fontSize="sm">
+            Not a member?{" "}
+            <Link href={`${routes.auth.register.value}`} color="black.600">
+              <chakra.span color="blue.500">Sign up now</chakra.span>
+            </Link>
+          </Text>
         </Stack>
       </form>
     </FormProvider>

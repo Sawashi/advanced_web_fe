@@ -1,4 +1,4 @@
-import { HStack, Stack, useToast, Text, Link } from "@chakra-ui/react";
+import { HStack, Stack, useToast, Text, Link, chakra } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -84,8 +84,9 @@ const RegisterForm = () => {
 
           <HStack>
             <Text width="full" align="center" fontSize="sm">
+              Already a member?{" "}
               <Link href={`${routes.auth.login.value}`} color="black.600">
-                Already a member? Sign in now
+                <chakra.span color="blue.500">Sign in now</chakra.span>
               </Link>
             </Text>
           </HStack>
