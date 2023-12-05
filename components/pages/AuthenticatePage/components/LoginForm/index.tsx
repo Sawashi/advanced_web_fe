@@ -44,7 +44,7 @@ const LoginForm = () => {
   });
 
   const { authStore, cookiesStore } = useStores();
-  const { isLoading } = authStore;
+  const { isLoading, getSSOError, setSSOError } = authStore;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [timeResendActivation, setTimeResendActivation] = React.useState(0);
   const toast = useToast();
@@ -118,10 +118,17 @@ const LoginForm = () => {
     );
     if (newWindow) {
       timer = setInterval(() => {
-        const aToken = cookiesStore.getItem(AuthenticateParams.ACCESS_TOKEN);
-        if (aToken) {
-          authStore.fetchCurrentUser();
+        const errorSSO = getSSOError();
+        if (errorSSO) {
+          setSSOError("");
           clearInterval(timer);
+        } else {
+          const aToken = cookiesStore.getItem(AuthenticateParams.ACCESS_TOKEN);
+
+          if (aToken) {
+            authStore.fetchCurrentUser();
+            clearInterval(timer);
+          }
         }
       }, 500);
     }

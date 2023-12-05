@@ -1,18 +1,18 @@
+import { Stack, Image, Text } from "@chakra-ui/react";
 import { AuthenticateParams } from "enums/auth";
 import { useStores } from "hooks/useStores";
 import { ILoginDataRes } from "interfaces/authentication";
 import { useSearchParams } from "next/navigation";
+import React from "react";
 import { useEffect } from "react";
 
 const SocialLoginSuccess = () => {
   const searchParams = useSearchParams();
   const { cookiesStore } = useStores();
 
-  console.log(searchParams.get("result"));
-
   useEffect(() => {
     if (searchParams.get("result")) {
-      const result = JSON.parse(
+      let result = JSON.parse(
         searchParams.get("result") as string
       ) as ILoginDataRes;
       const {
@@ -31,9 +31,26 @@ const SocialLoginSuccess = () => {
         window.close();
       }, 500);
     }
-  });
+  }, [searchParams]);
 
-  return <div>Success</div>;
+  return (
+    <Stack
+      w="100%"
+      h="100vh"
+      alignItems="center"
+      justifyContent="center"
+      spacing="4"
+      px="4"
+    >
+      <Image src="/assets/icons/logo.svg" alt="logo" width="100px" />
+      <Text fontSize="2xl" fontWeight="bold" textAlign="center">
+        Login successfully!
+      </Text>
+      <Text fontSize="md" textAlign="center">
+        Please wait a moment...
+      </Text>
+    </Stack>
+  );
 };
 
 export default SocialLoginSuccess;
