@@ -3,6 +3,7 @@ import {
   editProfile,
   getCurrentUser,
   login as loginAPI,
+  resendVerificationEmail,
 } from "API/authenticate";
 import { AuthenticateParams, ErrorMessageEnum } from "enums/auth";
 import { ILoginDataReq, ILoginDataRes } from "interfaces/authentication";
@@ -49,7 +50,6 @@ class AuthStore {
       await this.fetchCurrentUser();
     } catch (error) {
       this.isLoading = false;
-      console.error(error);
       throw new Error((<CommonError>error)?.message);
     }
   }
@@ -94,6 +94,14 @@ class AuthStore {
         ...this.user,
         ...res,
       };
+    }
+  }
+
+  public async resendActivationEmail(email: string) {
+    try {
+      await resendVerificationEmail({ email });
+    } catch (error) {
+      throw new Error((<CommonError>error)?.message);
     }
   }
 }

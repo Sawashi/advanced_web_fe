@@ -4,6 +4,8 @@ import {
   IServerError,
   IResetPasswordRequest,
   IRefreshTokenResponse,
+  IResendVerificationDataReq,
+  IResendVerificationDataRes,
 } from "interfaces/authentication";
 import { IUser, IVerifyTokenResponse } from "interfaces/user";
 import { CommonError } from "types";
@@ -19,8 +21,7 @@ export async function login(
     const response = await api.post(`/auth/login`, loginData);
     return response.data;
   } catch (err) {
-    errorHandler((<CommonError>err)?.response?.data?.error);
-    throw new Error((<CommonError>err)?.response?.data?.error?.message);
+    throw new Error((<CommonError>err)?.response?.data?.error);
   }
 }
 
@@ -35,6 +36,7 @@ export async function resetPassword(data: IResetPasswordRequest) {
     throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
+
 export async function changePassword(
   oldPassword: string,
   newPassword: string
@@ -153,5 +155,19 @@ export async function refreshToken() {
     deleteCookie(AuthenticateParams.ACCESS_TOKEN);
     deleteCookie(AuthenticateParams.REFRESH_TOKEN);
     return {} as ILoginDataRes;
+  }
+}
+
+export async function resendVerificationEmail(
+  loginData: IResendVerificationDataReq
+): Promise<IResendVerificationDataRes | IServerError> {
+  try {
+    const response = await api.post(
+      `/auth/resend-verification-email`,
+      loginData
+    );
+    return response.data;
+  } catch (err) {
+    throw new Error((<CommonError>err)?.response?.data?.error);
   }
 }
