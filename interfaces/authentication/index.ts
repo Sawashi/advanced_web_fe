@@ -12,6 +12,8 @@ export interface IResendVerificationDataReq {
 export interface ILoginDataRes {
   accessToken: string;
   refreshToken: string;
+  accessTokenExpiresIn: number;
+  refreshTokenExpiresIn: number;
   user: IUser;
 }
 

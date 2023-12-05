@@ -1,4 +1,6 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
+import { makePersistable } from "mobx-persist-store";
+
 import {
   editProfile,
   getCurrentUser,
@@ -13,6 +15,12 @@ import { CommonError } from "types";
 
 class AuthStore {
   rootStore: RootStore;
+  public accessToken: string = "";
+  public isLoading: boolean = false;
+  public user: IUser = {
+    email: "",
+  };
+  public forgotPasswordEmail: string = "";
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -25,27 +33,36 @@ class AuthStore {
       fetchCurrentUser: action,
       logout: action,
     });
-  }
 
-  public accessToken: string = "";
-  public isLoading: boolean = false;
-  public user: IUser = {
-    email: "",
-  };
-  public forgotPasswordEmail: string = "";
+    makePersistable(this, {
+      name: "authStore",
+      properties: ["user"],
+    });
+  }
 
   public async login(loginData: ILoginDataReq): Promise<void> {
     this.isLoading = true;
     try {
       const response = await loginAPI(loginData);
-      const { accessToken, refreshToken } = response as ILoginDataRes;
+      const {
+        accessToken,
+        refreshToken,
+        accessTokenExpiresIn,
+        refreshTokenExpiresIn,
+      } = response as ILoginDataRes;
       this.rootStore.cookiesStore.setItem(
         AuthenticateParams.ACCESS_TOKEN,
-        accessToken
+        accessToken,
+        {
+          expiresIn: accessTokenExpiresIn,
+        }
       );
       this.rootStore.cookiesStore.setItem(
         AuthenticateParams.REFRESH_TOKEN,
-        refreshToken
+        refreshToken,
+        {
+          expiresIn: refreshTokenExpiresIn,
+        }
       );
       await this.fetchCurrentUser();
     } catch (error) {
