@@ -57,7 +57,6 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       const tempArr1 = await handleFetchData("polar");
-      console.log(tempArr1);
       const tempArr2 = await handleFetchData("cat");
       const tempArr3 = await handleFetchData("bird");
       let result: any[][] = [tempArr1, tempArr2, tempArr3];

@@ -106,6 +106,7 @@ function UserProfileEdit() {
                 name={`${authStore.user?.firstName ?? ""} ${
                   authStore.user?.lastName ?? ""
                 }`}
+                src={authStore.user?.avatar}
               />
             </Center>
             <Center>

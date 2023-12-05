@@ -17,6 +17,11 @@ export interface ILoginDataRes {
   user: IUser;
 }
 
+export interface ILoginSSOErrorRes {
+  message: string;
+  statusCode: string;
+}
+
 export interface IResendVerificationDataRes {
   message: string;
 }

@@ -6,6 +6,8 @@ export interface IUser {
   id?: string;
   lastName?: string;
   updatedAt?: Date;
+  avatar?: string;
+  role?: string;
 }
 
 export interface IVerifyTokenResponse {

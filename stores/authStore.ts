@@ -21,6 +21,7 @@ class AuthStore {
     email: "",
   };
   public forgotPasswordEmail: string = "";
+  public errorSSO: string = "";
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -120,6 +121,14 @@ class AuthStore {
     } catch (error) {
       throw new Error((<CommonError>error)?.message);
     }
+  }
+
+  public setSSOError(error: string) {
+    this.errorSSO = error;
+  }
+
+  public getSSOError() {
+    return this?.errorSSO;
   }
 }
 

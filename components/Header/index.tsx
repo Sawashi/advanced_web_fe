@@ -74,6 +74,7 @@ const Header = () => {
             _hover={{
               cursor: "pointer",
             }}
+            src={authStore.user?.avatar}
           />
         </PopoverTrigger>
         <Portal>

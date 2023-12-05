@@ -36,14 +36,15 @@ import { useStores } from "hooks/useStores";
 import routes from "routes";
 import { SubmitButton } from "../../authenticatePage.styles";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
+import { AuthenticateParams, ELoginSocial } from "enums/auth";
 const LoginForm = () => {
   // @ts-ignore
   const method = useForm<ILoginSchema>({
     resolver: yupResolver(LoginSchema),
   });
 
-  const { authStore } = useStores();
-  const { isLoading } = authStore;
+  const { authStore, cookiesStore } = useStores();
+  const { isLoading, getSSOError, setSSOError } = authStore;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [timeResendActivation, setTimeResendActivation] = React.useState(0);
   const toast = useToast();
@@ -102,6 +103,37 @@ const LoginForm = () => {
     }
   };
 
+  const redirectToSSO = async (type: ELoginSocial) => {
+    const url = `${process.env.API_URL}/auth/login/${type}`;
+    let timer: NodeJS.Timeout;
+
+    const w = 500;
+    const h = 600;
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    const newWindow = window.open(
+      url,
+      "_blank",
+      `width=${w},height=${h},top=${top},left=${left}`
+    );
+    if (newWindow) {
+      timer = setInterval(() => {
+        const errorSSO = getSSOError();
+        if (errorSSO) {
+          setSSOError("");
+          clearInterval(timer);
+        } else {
+          const aToken = cookiesStore.getItem(AuthenticateParams.ACCESS_TOKEN);
+
+          if (aToken) {
+            authStore.fetchCurrentUser();
+            clearInterval(timer);
+          }
+        }
+      }, 500);
+    }
+  };
+
   return (
     <FormProvider {...method}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -143,6 +175,7 @@ const LoginForm = () => {
               leftIcon={<Icon as={FaGoogle} />}
               colorScheme="red"
               variant="solid"
+              onClick={() => redirectToSSO(ELoginSocial.GOOGLE)}
             >
               Google
             </Button>
@@ -151,6 +184,7 @@ const LoginForm = () => {
               leftIcon={<Icon as={FaFacebook} />}
               colorScheme="facebook"
               variant="solid"
+              onClick={() => redirectToSSO(ELoginSocial.FACEBOOK)}
             >
               Facebook
             </Button>
