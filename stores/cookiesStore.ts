@@ -7,14 +7,21 @@ class CookiesStore {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-
     makeObservable(this, {});
   }
 
-  setItem(key: string, value: string) {
+  setItem(
+    key: string,
+    value: string,
+    options?: {
+      expiresIn?: number;
+    }
+  ) {
     setCookie(key, value, {
       maxAge: 3 * 24 * 60 * 60,
-      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      expires: options?.expiresIn
+        ? new Date(options?.expiresIn)
+        : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     });
   }
 
