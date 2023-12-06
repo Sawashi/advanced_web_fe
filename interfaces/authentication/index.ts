@@ -5,10 +5,25 @@ export interface ILoginDataReq {
   password: string;
 }
 
+export interface IResendVerificationDataReq {
+  email: string;
+}
+
 export interface ILoginDataRes {
   accessToken: string;
   refreshToken: string;
+  accessTokenExpiresIn: number;
+  refreshTokenExpiresIn: number;
   user: IUser;
+}
+
+export interface ILoginSSOErrorRes {
+  message: string;
+  statusCode: string;
+}
+
+export interface IResendVerificationDataRes {
+  message: string;
 }
 
 export interface ISignUpData {

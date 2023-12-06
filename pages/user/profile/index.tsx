@@ -145,11 +145,16 @@ function UserProfileEdit() {
             <Center>
               <Avatar
                 size="2xl"
-                name={`${authStore.user?.firstName} ${authStore.user?.lastName}`}
+                name={`${authStore.user?.firstName ?? ""} ${
+                  authStore.user?.lastName ?? ""
+                }`}
+                src={authStore.user?.avatar}
               />
             </Center>
             <Center>
-              <Text fontSize="2xl">{`${authStore.user?.firstName} ${authStore.user?.lastName}`}</Text>
+              <Text fontSize="2xl">{`${authStore.user?.firstName ?? ""} ${
+                authStore.user?.lastName ?? ""
+              }`}</Text>
             </Center>
             <VStack spacing={8} w="100%">
               <FormInput
