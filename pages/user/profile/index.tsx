@@ -36,8 +36,10 @@ import {
 } from "constants/validation/auth";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { PASSWORD_PATTERN } from "constants/common";
+import { changePassword, getCurrentUser, refreshToken } from "API/authenticate";
 
 function UserProfileEdit() {
   const { authStore } = useStores();
@@ -79,6 +81,46 @@ function UserProfileEdit() {
       toast({
         status: "error",
         description: "Edit profile failed",
+      });
+    }
+  };
+
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
+
+  const handleOldPasswordChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const inputOldPassword = event.target.value;
+    setOldPassword(inputOldPassword);
+    const isOldPasswordValid = PASSWORD_PATTERN.test(inputOldPassword);
+    setIsOldPasswordValid(isOldPasswordValid);
+  };
+
+  const handleNewPasswordChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const inputNewPassword = event.target.value;
+    setNewPassword(inputNewPassword);
+    const isNewPasswordValid = PASSWORD_PATTERN.test(inputNewPassword);
+    setIsNewPasswordValid(isNewPasswordValid);
+  };
+
+  const handleSubmitModal = async () => {
+    await getCurrentUser();
+    try {
+      await changePassword(oldPassword, newPassword, authStore.accessToken);
+      toast({
+        status: "success",
+        description: "Changed password",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        status: "error",
+        description: "Change password failed",
       });
     }
   };
@@ -153,7 +195,50 @@ function UserProfileEdit() {
           <ModalHeader>Change password</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>This feature is not available yet</Text>
+            <Box
+              maxW="md"
+              mx="auto"
+              mt={8}
+              p={4}
+              borderWidth="1px"
+              borderRadius="lg"
+            >
+              <FormControl isInvalid={!isOldPasswordValid}>
+                <FormLabel>Old Password</FormLabel>
+                <Input
+                  type="password"
+                  placeholder="Enter your old password"
+                  value={oldPassword}
+                  onChange={handleOldPasswordChange}
+                />
+              </FormControl>
+
+              <FormControl mt={4} isInvalid={!isNewPasswordValid}>
+                <FormLabel>New Password</FormLabel>
+                <Input
+                  type="password"
+                  placeholder="Enter your new password"
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
+                />
+                {!isNewPasswordValid && (
+                  <Text color="red.500" fontSize="sm" mt={2}>
+                    Password must have at least one lowercase letter, one
+                    uppercase letter, one digit, and one special character.
+                    Minimum length is 8 characters.
+                  </Text>
+                )}
+              </FormControl>
+
+              <Button
+                colorScheme="teal"
+                mt={4}
+                onClick={handleSubmitModal}
+                isDisabled={!isNewPasswordValid || !isOldPasswordValid}
+              >
+                Change Password
+              </Button>
+            </Box>
           </ModalBody>
 
           <ModalFooter>

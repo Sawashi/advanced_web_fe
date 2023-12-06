@@ -65,14 +65,16 @@ export async function verifyToken(token: string) {
 }
 export async function changePassword(
   oldPassword: string,
-  newPassword: string
+  newPassword: string,
+  token: string
 ): Promise<void | IServerError> {
   try {
     const passwords = {
       oldPassword,
       newPassword,
+      token
     };
-    await api.patch(`/auth/change-password`, passwords, {
+    await api.post(`/auth/me/change-password`, passwords, {
       headers: auth(),
     });
     return undefined;
