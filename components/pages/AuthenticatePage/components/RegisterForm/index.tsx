@@ -1,6 +1,14 @@
-import { HStack, Stack, useToast, Text, Link, chakra } from "@chakra-ui/react";
+import {
+  HStack,
+  Stack,
+  useToast,
+  Text,
+  Link,
+  chakra,
+  Button,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import PasswordField from "components/PasswordField";
 import { SubmitButton } from "../../authenticatePage.styles";
@@ -9,8 +17,14 @@ import { signUp } from "API/authenticate";
 import routes from "routes";
 import FormInput from "components/FormInput";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useStores } from "hooks/useStores";
+import { set } from "lodash";
 
 const RegisterForm = () => {
+  const [timeResendActivation, setTimeResendActivation] = React.useState(0);
+  const { authStore, cookiesStore } = useStores();
+  const [resendMail, setResendMail] = React.useState("");
+  const [showResendActivation, setShowResendActivation] = useState(false);
   const method = useForm<IRegisterSchema>({
     mode: "all",
     reValidateMode: "onChange",
@@ -39,14 +53,33 @@ const RegisterForm = () => {
   async function onSubmit(data: IRegisterSchema): Promise<void> {
     try {
       const res = await signUp(data);
+      setResendMail(data.email);
+      setShowResendActivation(true);
       if (res) {
-        showSuccess("Successfully");
-        router.push(routes.auth.login.value);
+        showSuccess("Successfully. Please check your email.");
       }
     } catch (error) {
-      showError("Register failed");
+      showError("Register failed, try again");
     }
   }
+
+  const onResendActivation = async () => {
+    if (timeResendActivation === 0) {
+      const email = resendMail;
+      await authStore?.resendActivationEmail(email);
+      toast({
+        status: "success",
+        description: "Verification email sent successfully, check your email.",
+      });
+      setTimeResendActivation(60);
+      const interval = setInterval(() => {
+        setTimeResendActivation((prev) => prev - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(interval);
+      }, 60000);
+    }
+  };
 
   return (
     <FormProvider {...method}>
@@ -90,10 +123,19 @@ const RegisterForm = () => {
               </Link>
             </Text>
           </HStack>
-
           <SubmitButton type="submit" isLoading={isSubmitting}>
             Submit
           </SubmitButton>
+          {showResendActivation ? (
+            <>
+              <Button colorScheme="blue" onClick={onResendActivation}>
+                Resend Activation{" "}
+                {timeResendActivation > 0 && `(${timeResendActivation})`}
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
         </Stack>
       </form>
     </FormProvider>
