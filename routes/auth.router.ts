@@ -9,6 +9,9 @@ const AuthenticationRouter = {
   resetPassword: {
     value: "/auth/reset-password",
   },
+  forgotPassword: {
+    value: "/auth/forgot-password",
+  },
 };
 
 export default AuthenticationRouter;
