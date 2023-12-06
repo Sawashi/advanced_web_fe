@@ -7,6 +7,7 @@ import {
   chakra,
   AlertIcon,
   Alert,
+  Button,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -91,6 +92,14 @@ const ForgotPasswordForm = () => {
           <SubmitButton type="submit" isLoading={isSubmitting}>
             Submit
           </SubmitButton>
+          <Button
+            variant="solid"
+            onClick={() => {
+              router.push(routes.auth.login.value);
+            }}
+          >
+            Back to login
+          </Button>
         </Stack>
       </form>
     </FormProvider>
