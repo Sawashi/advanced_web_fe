@@ -12,6 +12,7 @@ import {
   EAuthenticatePageType,
 } from "./constant";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
+import VerifyEmailForm from "./components/VerifyEmailForm";
 
 export interface ILoginProps {
   type?: EAuthenticatePageType;
@@ -37,6 +38,9 @@ const AuthenticatePage = (props: ILoginProps) => {
       case EAuthenticatePageType.FORGOT_PASSWORD:
         setNamePage?.(EAuthenticatePageName.FORGOT_PASSWORD);
         return EAuthenticatePageTitle.FORGOT_PASSWORD;
+      case EAuthenticatePageType.VERIFY_EMAIL:
+        setNamePage?.(EAuthenticatePageName.VERIFY_EMAIL);
+        return EAuthenticatePageTitle.VERIFY_EMAIL;
       default:
         setNamePage?.(EAuthenticatePageName.LOGIN);
         return EAuthenticatePageTitle.LOGIN;
@@ -53,6 +57,8 @@ const AuthenticatePage = (props: ILoginProps) => {
         return EAuthenticatePageGuide.LOGIN;
       case EAuthenticatePageType.FORGOT_PASSWORD:
         return EAuthenticatePageGuide.FORGOT_PASSWORD;
+      case EAuthenticatePageType.VERIFY_EMAIL:
+        return EAuthenticatePageGuide.VERIFY_EMAIL;
       default:
         return EAuthenticatePageGuide.LOGIN;
     }
@@ -85,6 +91,9 @@ const AuthenticatePage = (props: ILoginProps) => {
           {pageType === EAuthenticatePageType.LOGIN && <LoginForm />}
           {pageType === EAuthenticatePageType.FORGOT_PASSWORD && (
             <ForgotPasswordForm />
+          )}
+          {pageType === EAuthenticatePageType.VERIFY_EMAIL && (
+            <VerifyEmailForm />
           )}
         </Box>
       </Box>

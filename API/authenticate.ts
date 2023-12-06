@@ -50,6 +50,19 @@ export async function forgotPassword(data: IForgotPasswordRequest) {
     throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
+export async function verifyToken(token: string) { 
+  console.log("Sent verify token request: "+token);
+  try {
+    const response = await api.post(`/auth/verify-email`, {token}, {
+      headers: auth(),
+    });
+    console.log("Verify token response: "+JSON.stringify(response.data));
+    return response.data;
+  } catch (err) {
+    errorHandler((<CommonError>err)?.response?.data?.error);
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
+  }
+}
 export async function changePassword(
   oldPassword: string,
   newPassword: string
