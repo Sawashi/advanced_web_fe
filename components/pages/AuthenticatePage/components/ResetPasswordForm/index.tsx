@@ -3,7 +3,7 @@ import get from "lodash/get";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { resetPassword, verifyToken } from "API/authenticate";
+import { resetPassword } from "API/authenticate";
 import PasswordField from "components/PasswordField";
 import { PASSWORD_PATTERN } from "constants/common";
 import {
@@ -21,6 +21,7 @@ import { SubmitButton } from "../../authenticatePage.styles";
 export interface IResetPasswordFormData {
   newPassword: string;
   confirmNewPassword: string;
+  token: string;
 }
 
 const ResetPasswordForm = () => {
@@ -39,8 +40,9 @@ const ResetPasswordForm = () => {
   useEffect(() => {
     if (!isQueryReady) return;
     const query = router && get(router, "query", {});
-    const token = get(query, "resetPasswordToken", "");
-    checkToken(token);
+    const token = get(query, "token", "");
+    setResetPasswordToken(token);
+    setIsLoading(false);
   }, [isQueryReady]);
 
   const showError = (error?: string): void => {
@@ -53,8 +55,9 @@ const ResetPasswordForm = () => {
   const showSuccess = (message?: string): void => {
     toast({
       status: "success",
-      description: message || "Successfully",
+      description: message || "Change password successfully",
     });
+    router.push(routes.auth.login.value);
   };
 
   async function onSubmit(data: IResetPasswordFormData): Promise<void> {
@@ -70,7 +73,7 @@ const ResetPasswordForm = () => {
       }
       const result = await resetPassword({
         ...data,
-        resetPasswordToken: resetPasswordToken,
+        token: resetPasswordToken,
       });
       if (!result) {
         showError(setPasswordFailedDescription);
@@ -83,21 +86,6 @@ const ResetPasswordForm = () => {
       }
     } catch (error) {
       showError(setPasswordFailedDescription);
-    }
-  }
-
-  async function checkToken(token: string): Promise<void> {
-    try {
-      const response: IVerifyTokenResponse = await verifyToken(token);
-      if (!response?.isValidToken) {
-        showError(setPasswordInvalidTokenDescription);
-      } else {
-        setResetPasswordToken(token);
-      }
-    } catch (error) {
-      showError(setPasswordInvalidTokenDescription);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -122,8 +110,8 @@ const ResetPasswordForm = () => {
         <Stack spacing="6">
           <PasswordField
             name="newPassword"
-            label="Your Password"
-            placeholder="Your Password"
+            label="Your new password"
+            placeholder="Your new password"
           />
           <PasswordField
             name="confirmNewPassword"

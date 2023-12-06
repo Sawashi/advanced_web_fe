@@ -4,6 +4,7 @@ import {
   IServerError,
   IResetPasswordRequest,
   IRefreshTokenResponse,
+  IForgotPasswordRequest,
 } from "interfaces/authentication";
 import { IUser, IVerifyTokenResponse } from "interfaces/user";
 import { CommonError } from "types";
@@ -25,8 +26,22 @@ export async function login(
 }
 
 export async function resetPassword(data: IResetPasswordRequest) {
+  console.log("Sent reset password request: "+JSON.stringify(data));
   try {
     const response = await api.post(`/auth/reset-password`, data, {
+      headers: auth(),
+    });
+    console.log("Reset password response: "+JSON.stringify(response.data));
+    return response.data;
+  } catch (err) {
+    errorHandler((<CommonError>err)?.response?.data?.error);
+    throw new Error((<CommonError>err)?.response?.data?.error?.message);
+  }
+}
+export async function forgotPassword(data: IForgotPasswordRequest) {
+  console.log("Sent forgot password request: "+JSON.stringify(data));
+  try {
+    const response = await api.post(`/auth/forgot-password`, data, {
       headers: auth(),
     });
     return response.data;
@@ -109,28 +124,6 @@ export async function editProfile(userData: Partial<IUser>): Promise<IUser> {
     const error = (<CommonError>err)?.response?.data?.error;
     errorHandler(error);
     return {} as IUser;
-  }
-}
-
-export async function verifyToken(
-  token: string
-): Promise<IVerifyTokenResponse> {
-  try {
-    const response = await api.post(
-      `/auth/verify-token`,
-      JSON.stringify(token),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data: IVerifyTokenResponse = response?.data ?? {};
-    return data;
-  } catch (err) {
-    const error = (<CommonError>err)?.response?.data?.error;
-    errorHandler(error);
-    return {} as IVerifyTokenResponse;
   }
 }
 

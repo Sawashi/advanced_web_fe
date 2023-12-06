@@ -11,6 +11,7 @@ import {
   EAuthenticatePageTitle,
   EAuthenticatePageType,
 } from "./constant";
+import ForgotPasswordForm from "./components/ForgotPasswordForm";
 
 export interface ILoginProps {
   type?: EAuthenticatePageType;
@@ -33,6 +34,9 @@ const AuthenticatePage = (props: ILoginProps) => {
       case EAuthenticatePageType.LOGIN:
         setNamePage?.(EAuthenticatePageName.LOGIN);
         return EAuthenticatePageTitle.LOGIN;
+      case EAuthenticatePageType.FORGOT_PASSWORD:
+        setNamePage?.(EAuthenticatePageName.FORGOT_PASSWORD);
+        return EAuthenticatePageTitle.FORGOT_PASSWORD;
       default:
         setNamePage?.(EAuthenticatePageName.LOGIN);
         return EAuthenticatePageTitle.LOGIN;
@@ -47,6 +51,8 @@ const AuthenticatePage = (props: ILoginProps) => {
         return EAuthenticatePageGuide.RESET_PASSWORD;
       case EAuthenticatePageType.LOGIN:
         return EAuthenticatePageGuide.LOGIN;
+      case EAuthenticatePageType.FORGOT_PASSWORD:
+        return EAuthenticatePageGuide.FORGOT_PASSWORD;
       default:
         return EAuthenticatePageGuide.LOGIN;
     }
@@ -56,12 +62,7 @@ const AuthenticatePage = (props: ILoginProps) => {
     <Box minHeight={isOverflow ? "810px" : "100vh"}>
       <Box width="full" maxWidth="xl" marginX="auto" paddingY="188px">
         <Box maxWidth="416px" marginX={{ base: 8, md: "auto" }}>
-          <Icon
-            iconName="logo.svg"
-            width={140}
-            height={55}
-            
-          />
+          <Icon iconName="logo.svg" width={140} height={55} />
           <VStack marginBottom={12} width="full" alignItems="flex-start">
             <Heading
               fontSize="24px"
@@ -77,13 +78,14 @@ const AuthenticatePage = (props: ILoginProps) => {
               {getDescription()}
             </Text>
           </VStack>
-          {pageType === EAuthenticatePageType.REGISTER && (
-            <RegisterForm />
-          )}
+          {pageType === EAuthenticatePageType.REGISTER && <RegisterForm />}
           {pageType === EAuthenticatePageType.RESET_PASSWORD && (
             <ResetPasswordForm />
           )}
           {pageType === EAuthenticatePageType.LOGIN && <LoginForm />}
+          {pageType === EAuthenticatePageType.FORGOT_PASSWORD && (
+            <ForgotPasswordForm />
+          )}
         </Box>
       </Box>
     </Box>

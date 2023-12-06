@@ -82,7 +82,7 @@ const LoginForm = () => {
           <HStack>
             <Text width="full" align="right" fontSize="sm">
               <Link
-                href={`${routes.auth.resetPassword.value}`}
+                href={`${routes.auth.forgotPassword.value}`}
                 color="blue.600"
               >
                 Forgot Password?

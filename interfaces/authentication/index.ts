@@ -18,13 +18,12 @@ export interface ISignUpData {
 
 export interface IForgotPasswordRequest {
   email: string;
-  platform: string;
 }
 
 export interface IResetPasswordRequest {
   newPassword: string;
   confirmNewPassword: string;
-  resetPasswordToken: string;
+  token: string;
 }
 
 export interface IServerError {
