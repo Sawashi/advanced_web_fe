@@ -43,7 +43,7 @@ const VerifyEmailForm = () => {
   const { authStore } = useStores();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [successMessage, setSuccessMessage] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<boolean>(false);
   useEffect(() => {
     if (!isQueryReady) return;
     const query = router && get(router, "query", {});

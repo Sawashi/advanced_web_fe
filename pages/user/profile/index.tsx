@@ -117,7 +117,6 @@ function UserProfileEdit() {
         description: "Changed password",
       });
     } catch (error) {
-      console.log(error);
       toast({
         status: "error",
         description: "Change password failed",
