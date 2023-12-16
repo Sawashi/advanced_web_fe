@@ -60,10 +60,8 @@ const ForgotPasswordForm = () => {
       const res = await forgotPassword(data);
       if (res) {
         showSuccess("Successfully");
-        console.log(JSON.stringify(res));
       }
     } catch (error) {
-      console.log(error);
       showError("Failed to send mail for retrieve password");
     }
   }

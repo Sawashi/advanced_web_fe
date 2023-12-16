@@ -2,7 +2,6 @@ import { HStack, Stack, VStack, chakra } from "@chakra-ui/react";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
-import Header from "components/Header";
 import UserHeader from "components/Header/UserHeader";
 import SideBar, { ISidebarRefProps } from "./components/Sidebar";
 

@@ -271,6 +271,18 @@ export const colors: Colors = {
     800: pink800,
     900: pink900,
   },
+  primary: {
+    50: primary50,
+    100: primary100,
+    200: primary200,
+    300: primary300,
+    400: primary400,
+    500: primary500,
+    600: primary600,
+    700: primary700,
+    800: primary800,
+    900: primary900,
+  },
   brand: {
     primary: {
       50: primary50,
