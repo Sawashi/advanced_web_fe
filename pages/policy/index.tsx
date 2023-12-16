@@ -4,8 +4,8 @@ import Header from "components/Header";
 const Policy = () => {
   return (
     <>
+      <Header />
       <Box p="8" maxW="90%" m="auto" mt="4" mb="4" ml="4" mr="4">
-        <Header />
         <Text p="5"></Text>
         <Heading mt="4" mb="4" size="2xl">
           Privacy Policy

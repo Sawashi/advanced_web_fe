@@ -27,12 +27,10 @@ export async function login(
 }
 
 export async function resetPassword(data: IResetPasswordRequest) {
-  console.log("Sent reset password request: "+JSON.stringify(data));
   try {
     const response = await api.post(`/auth/reset-password`, data, {
       headers: auth(),
     });
-    console.log("Reset password response: "+JSON.stringify(response.data));
     return response.data;
   } catch (err) {
     errorHandler((<CommonError>err)?.response?.data?.error);
@@ -40,7 +38,6 @@ export async function resetPassword(data: IResetPasswordRequest) {
   }
 }
 export async function forgotPassword(data: IForgotPasswordRequest) {
-  console.log("Sent forgot password request: "+JSON.stringify(data));
   try {
     const response = await api.post(`/auth/forgot-password`, data, {
       headers: auth(),
@@ -51,13 +48,15 @@ export async function forgotPassword(data: IForgotPasswordRequest) {
     throw new Error((<CommonError>err)?.response?.data?.error?.message);
   }
 }
-export async function verifyToken(token: string) { 
-  console.log("Sent verify token request: "+token);
+export async function verifyToken(token: string) {
   try {
-    const response = await api.post(`/auth/verify-email`, {token}, {
-      headers: auth(),
-    });
-    console.log("Verify token response: "+JSON.stringify(response.data));
+    const response = await api.post(
+      `/auth/verify-email`,
+      { token },
+      {
+        headers: auth(),
+      }
+    );
     return response.data;
   } catch (err) {
     errorHandler((<CommonError>err)?.response?.data?.error);
@@ -74,7 +73,7 @@ export async function changePassword(
     const passwords = {
       oldPassword,
       newPassword,
-      token
+      token,
     };
     await api.post(`/auth/me/change-password`, passwords, {
       headers: auth(),

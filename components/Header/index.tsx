@@ -1,243 +1,113 @@
-import { useMemo } from "react";
-import { observer } from "mobx-react";
-import { useStores } from "hooks/useStores";
 import {
-  Box,
-  Flex,
-  IconButton,
-  Button,
-  Stack,
-  Popover,
-  PopoverTrigger,
-  useColorModeValue,
-  useDisclosure,
   Avatar,
-  Portal,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  Link,
+  Button,
+  HStack,
+  Image,
+  Progress,
+  Tooltip,
+  VStack,
+  Text,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import IconComponent from "components/Icon";
-import routes from "routes";
+import SvgIcon from "components/SvgIcon";
+import { useStores } from "hooks/useStores";
+import { observer } from "mobx-react";
 import { useRouter } from "next/router";
+import React, { useCallback, useEffect } from "react";
+import routes from "routes";
+import { gray500 } from "theme/colors.theme";
 
-const Header = () => {
-  const { authStore } = useStores();
-  const { isOpen, onToggle } = useDisclosure();
+export interface IHeaderProps {}
+
+const Header = (props: IHeaderProps) => {
   const router = useRouter();
+  const { authStore } = useStores();
+  const { user } = authStore;
 
-  const onLogout = (e: any) => {
-    e.preventDefault();
-    authStore.logout();
-    router.replace(routes.auth.login.value);
+  const name =
+    (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
+
+  const onClickLogo = () => {
+    router.push(routes.user.home.value);
   };
 
-  const Content = useMemo(() => {
-    if (!authStore.user?.id) {
+  const ButtonsActions = useCallback(() => {
+    if (!user?.id) {
       return (
         <>
           <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={routes.auth.login.value}
-          >
-            Sign In
-          </Button>
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"red.400"}
-            href={routes.auth.register.value}
+            variant={"primary"}
             _hover={{
-              bg: "red.500",
+              bgColor: "gray.200",
+            }}
+            onClick={() => {
+              router.push(routes.auth.login.value);
             }}
           >
-            Sign Up
+            <Text>Log in</Text>
+          </Button>
+
+          <Button
+            variant={"outline"}
+            _hover={{
+              bgColor: "gray.200",
+            }}
+            onClick={() => {
+              router.push(routes.auth.register.value);
+            }}
+          >
+            <Text>Sign up</Text>
           </Button>
         </>
       );
     }
+
     return (
-      <Popover>
-        <PopoverTrigger>
-          <Avatar
-            size={"md"}
-            name={`${authStore.user?.firstName} ${authStore.user?.lastName}`}
-            _hover={{
-              cursor: "pointer",
-            }}
-            src={authStore.user?.avatar}
-          />
-        </PopoverTrigger>
-        <Portal>
-          <PopoverContent>
-            <PopoverHeader
-              fontSize={"lg"}
-              textAlign={"center"}
-              fontWeight={600}
-            >{`${authStore.user?.firstName} ${authStore.user?.lastName}`}</PopoverHeader>
-            <PopoverBody>
-              <Link href={routes.user.profile.value}>
-                <a>Profile</a>
-              </Link>
-            </PopoverBody>
-            <PopoverFooter>
-              <Button
-                variant={"link"}
-                display={{ base: "none", md: "inline-flex" }}
-                fontSize={"md"}
-                fontWeight={600}
-                onClick={onLogout}
-                leftIcon={<IconComponent iconName="ic-logout.svg" size={20} />}
-              >
-                Log out
-              </Button>
-            </PopoverFooter>
-          </PopoverContent>
-        </Portal>
-      </Popover>
-    );
-  }, [authStore.user]);
-
-  return (
-    <Box w={"100%"}>
-      <Flex
-        bg={useColorModeValue("white", "gray.800")}
-        color={useColorModeValue("gray.600", "white")}
-        minH={"60px"}
-        py={{ base: 2 }}
-        px={{ base: 4 }}
-        borderBottom={1}
-        borderStyle={"solid"}
-        borderColor={useColorModeValue("gray.200", "gray.900")}
-        align={"center"}
+      <Button
+        variant={"primary"}
+        _hover={{
+          bgColor: "gray.200",
+        }}
+        onClick={() => {
+          router.push(routes.user.home.value);
+        }}
       >
-        <Flex
-          flex={{ base: 1, md: "auto" }}
-          ml={{ base: -2 }}
-          display={{ base: "flex", md: "none" }}
-        >
-          <IconButton
-            onClick={onToggle}
-            icon={
-              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
-            }
-            variant={"ghost"}
-            aria-label={"Toggle Navigation"}
-          />
-        </Flex>
-        <Flex
-          flex={{ base: 1 }}
-          justify={{ base: "center", md: "start" }}
-          alignItems={{ base: "center", md: "center" }}
-        >
-          <IconComponent
-            iconName="logo.svg"
-            size={50}
-            onClick={() => {
-              router.push(routes.home.value);
-            }}
-          />
-          <Flex display={{ base: "none", md: "flex" }} ml={10}>
-            <DesktopNav />
-          </Flex>
-        </Flex>
+        <Text>Go to my classes</Text>
+      </Button>
+    );
+  }, [user]);
 
-        <Stack
-          flex={{ base: 1, md: 0 }}
-          justify={"flex-end"}
-          alignItems={"center"}
-          direction={"row"}
-          spacing={6}
-        >
-          {Content}
-        </Stack>
-      </Flex>
-    </Box>
-  );
-};
-
-const DesktopNav = () => {
-  const linkColor = useColorModeValue("gray.600", "gray.200");
-  const linkHoverColor = useColorModeValue("gray.800", "white");
+  useEffect(() => {
+    try {
+      authStore.fetchCurrentUser();
+    } catch (error) {}
+  }, []);
 
   return (
-    <Stack direction={"row"} spacing={4}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
-          <Popover trigger={"hover"} placement={"bottom-start"}>
-            <PopoverTrigger>
-              <Box
-                as="a"
-                p={2}
-                href={navItem.href ?? "#"}
-                fontSize={"sm"}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: "none",
-                  color: linkHoverColor,
-                }}
-              >
-                {navItem.label}
-              </Box>
-            </PopoverTrigger>
-          </Popover>
-        </Box>
-      ))}
-    </Stack>
+    <VStack w={"100%"} spacing={0} position={"relative"}>
+      <HStack
+        w={"100%"}
+        h={62}
+        alignItems={"center"}
+        p={5}
+        borderBottomWidth={1}
+        borderBottomColor={"gray.300"}
+      >
+        <HStack w={"full"} alignItems={"center"} gap={5} flex={1}>
+          <Image
+            src="/assets/icons/logo.svg"
+            alt="logo"
+            objectFit={"contain"}
+            w={10}
+            onClick={onClickLogo}
+            _hover={{ cursor: "pointer" }}
+          />
+        </HStack>
+        <HStack alignItems={"center"} gap={3}>
+          <ButtonsActions />
+        </HStack>
+      </HStack>
+    </VStack>
   );
 };
 
-interface NavItem {
-  label: string;
-  subLabel?: string;
-  children?: Array<NavItem>;
-  href?: string;
-}
-
-const NAV_ITEMS: Array<NavItem> = [
-  {
-    label: "Latest",
-    children: [
-      {
-        label: "Explore Design Work",
-        subLabel: "Trending Design to inspire you",
-        href: "#",
-      },
-      {
-        label: "New & Noteworthy",
-        subLabel: "Up-and-coming Designers",
-        href: "#",
-      },
-    ],
-  },
-  {
-    label: "Category",
-    children: [
-      {
-        label: "Job Board",
-        subLabel: "Find your dream design job",
-        href: "#",
-      },
-      {
-        label: "Freelance Projects",
-        subLabel: "An exclusive list for contract work",
-        href: "#",
-      },
-    ],
-  },
-  {
-    label: "About",
-    href: "#",
-  },
-];
 export default observer(Header);

@@ -5,16 +5,16 @@ const white = "#FFFFFF";
 const black = "#000000";
 
 // gray
-const gray50 = "#FAFAFA";
-const gray100 = "#F5F5F5";
-const gray200 = "#E8E8E8";
-const gray300 = "#D7D7D7";
-const gray400 = "#A9A9A9";
-const gray500 = "#767676";
-const gray600 = "#575757";
-const gray700 = "#444444";
-const gray800 = "#323232";
-const gray900 = "#222222";
+export const gray50 = "#FAFAFA";
+export const gray100 = "#F5F5F5";
+export const gray200 = "#E8E8E8";
+export const gray300 = "#D7D7D7";
+export const gray400 = "#A9A9A9";
+export const gray500 = "#767676";
+export const gray600 = "#575757";
+export const gray700 = "#444444";
+export const gray800 = "#323232";
+export const gray900 = "#222222";
 
 // blue
 const blue50 = "#F0F7FF";
@@ -270,6 +270,18 @@ export const colors: Colors = {
     700: pink700,
     800: pink800,
     900: pink900,
+  },
+  primary: {
+    50: primary50,
+    100: primary100,
+    200: primary200,
+    300: primary300,
+    400: primary400,
+    500: primary500,
+    600: primary600,
+    700: primary700,
+    800: primary800,
+    900: primary900,
   },
   brand: {
     primary: {

@@ -1,10 +1,8 @@
 import {
   Alert,
   AlertIcon,
-  Box,
   Button,
   HStack,
-  Link,
   Spinner,
   Stack,
   useToast,
@@ -12,22 +10,10 @@ import {
 import get from "lodash/get";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { resetPassword, verifyToken } from "API/authenticate";
-import PasswordField from "components/PasswordField";
-import { PASSWORD_PATTERN } from "constants/common";
-import {
-  invalidPasswordDescription,
-  notMatchedPasswordDescription,
-  setPasswordFailedDescription,
-  setPasswordInvalidTokenDescription,
-  setPasswordSuccessDescription,
-} from "constants/messages/auth.messages";
+import { useForm } from "react-hook-form";
+import { verifyToken } from "API/authenticate";
 import { useStores } from "hooks/useStores";
-import { IVerifyTokenResponse } from "interfaces/user";
 import routes from "routes";
-import { SubmitButton } from "../../authenticatePage.styles";
-import { set } from "lodash";
 
 export interface IVerifyEmailFormData {
   newPassword: string;
@@ -63,7 +49,6 @@ const VerifyEmailForm = () => {
         setSuccessMessage(false);
       }
     }
-    console.log(token);
     verifyTokenAtFirst(token);
   }, [isQueryReady]);
 

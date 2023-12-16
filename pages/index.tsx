@@ -21,6 +21,7 @@ import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 // And react-slick as our Carousel Lib
 import Slider from "react-slick";
 import Header from "components/Header";
+import { observer } from "mobx-react";
 
 const settings = {
   dots: true,
@@ -316,4 +317,4 @@ const Blob = (props: IconProps) => {
   );
 };
 
-export default Home;
+export default observer(Home);
