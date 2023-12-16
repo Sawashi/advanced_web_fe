@@ -58,7 +58,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (authStore.user && authStore.user.id) {
-      router.push(routes.user.dashboard.value);
+      router.push(routes.user.home.value);
     }
   }, [authStore.user]);
 

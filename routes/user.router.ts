@@ -3,8 +3,14 @@ const UserRouter = {
   profile: {
     value: "/user/profile",
   },
-  dashboard: {
-    value: "/user/dashboard",
+  home: {
+    value: "/user/home",
+  },
+  classes: {
+    value: "/user/classes",
+  },
+  class: {
+    value: (id: string) => `/user/class/${id}`,
   },
 };
 

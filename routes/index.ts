@@ -4,7 +4,7 @@ import UserRouter from "./user.router";
 
 const routes = {
   auth: AuthenticationRouter,
-  user: UserRouter
+  user: UserRouter,
 };
 
 export default routes;

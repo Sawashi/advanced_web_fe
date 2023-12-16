@@ -143,7 +143,7 @@ const Header = () => {
             iconName="logo.svg"
             size={50}
             onClick={() => {
-              router.push(routes.user.dashboard.value);
+              router.push(routes.user.home.value);
             }}
           />
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
