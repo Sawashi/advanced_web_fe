@@ -6,6 +6,7 @@ import { useStores } from "hooks/useStores";
 import routes from "routes";
 import NavLink, { INavLinkProps } from "../NavLink";
 import { EUserPageName } from "constants/pages/common";
+import { observer } from "mobx-react";
 
 export interface ISidebarRefProps {
   onExpand: () => void;
@@ -14,9 +15,9 @@ export interface ISidebarRefProps {
 interface ISidebarProps {}
 const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const router = useRouter();
-  const { authStore } = useStores();
+  const { authStore, settingStore } = useStores();
+  const { isSideBarExpanded, setSideBarExpanded } = settingStore;
   const { user } = authStore;
-  const [isExpanded, setIsExpanded] = React.useState(true);
 
   function getLinkProps(
     href: string,
@@ -27,13 +28,14 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
       isActive,
       href,
       icon: `${iconName}.svg`,
-      isExpanded,
+      isExpanded: isSideBarExpanded,
     };
   }
 
   useImperativeHandle(ref, () => ({
     onExpand: () => {
-      setIsExpanded(!isExpanded);
+      const isSideBarExpanded = Boolean(settingStore.isSideBarExpanded);
+      setSideBarExpanded(!isSideBarExpanded);
     },
   }));
 
@@ -87,7 +89,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
               authStore.logout();
             }}
             icon={"ic-logout.svg"}
-            isExpanded={isExpanded}
+            isExpanded={isSideBarExpanded}
           />
         </Stack>
       </VStack>
@@ -95,4 +97,4 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   );
 });
 
-export default SideBar;
+export default observer(SideBar);
