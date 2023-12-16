@@ -1,8 +1,7 @@
 import axios from "axios";
 import { AuthenticateParams } from "enums/auth";
-import { IRequestHeader, IServerError } from "interfaces/authentication";
-import { getCookie, setCookie } from "cookies-next";
-import routes from "routes";
+import { IRequestHeader } from "interfaces/authentication";
+import { getCookie } from "cookies-next";
 
 export const api = axios.create({
   baseURL: process.env.API_URL || "",
@@ -22,20 +21,6 @@ export function auth(): IRequestHeader {
   headers.Authorization = `Bearer ${accessToken}`;
   headers["Content-Type"] = "application/json";
   return headers;
-}
-
-export const errorHandler = (error: IServerError): void => {
-  switch (error?.statusCode) {
-    case 401:
-      redirectLogin();
-      break;
-  }
-};
-
-function redirectLogin(): void {
-  setCookie(AuthenticateParams.ACCESS_TOKEN, "");
-  setCookie(AuthenticateParams.REFRESH_TOKEN, "");
-  window.location.href = routes.auth.login.value;
 }
 
 api.interceptors.request.use(

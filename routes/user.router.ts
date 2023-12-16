@@ -12,6 +12,9 @@ const UserRouter = {
   owned_classes: {
     value: "/user/classes/owned",
   },
+  teaching_classes: {
+    value: "/user/classes/teaching",
+  },
   class: {
     value: (id: string) => `/user/class/${id}`,
   },

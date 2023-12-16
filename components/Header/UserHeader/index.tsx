@@ -95,7 +95,7 @@ const UserHeader = ({ onExpand }: IUserHeaderProps) => {
               src={authStore.user?.avatar}
               name={name}
               onClick={() => {
-                router.push(routes.user.profile.value);
+                
               }}
             />
           </Tooltip>

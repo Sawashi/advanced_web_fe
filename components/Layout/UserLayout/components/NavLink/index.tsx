@@ -20,7 +20,6 @@ const NavLink = (props: INavLinkProps) => {
   return (
     <Link
       className={undefined}
-      display="block"
       onClick={onClick}
       paddingY={3}
       pl={4}

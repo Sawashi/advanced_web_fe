@@ -56,16 +56,15 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
         height="full"
         overflowX="hidden"
         overflowY="auto"
-        paddingX={2}
         justifyContent={"space-between"}
         divider={<Divider h={0.5} bgColor={"gray.400"} />}
         py={3}
       >
-        <Stack
+        <VStack
           spacing={2}
-          marginX={3}
           width="full"
           flex={1}
+          px={5}
           divider={<Divider h={0.4} bgColor={"gray.400"} />}
         >
           <NavLink
@@ -74,10 +73,15 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
           />
 
           <NavLink
-            label={EUserPageName.YOUR_CLASSES}
+            label={EUserPageName.TEACHING}
+            {...getLinkProps(routes.user.owned_classes.value, "ic-teacher")}
+          />
+
+          <NavLink
+            label={EUserPageName.OWNED}
             {...getLinkProps(routes.user.owned_classes.value, "ic-rocket")}
           />
-        </Stack>
+        </VStack>
         <Stack w="full" alignSelf={"end"}>
           <NavLink
             label={EUserPageName.SETTINGS}
