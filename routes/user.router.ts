@@ -6,8 +6,11 @@ const UserRouter = {
   home: {
     value: "/user/home",
   },
-  classes: {
-    value: "/user/classes",
+  enrolled_classes: {
+    value: "/user/classes/enrolled",
+  },
+  owned_classes: {
+    value: "/user/classes/owned",
   },
   class: {
     value: (id: string) => `/user/class/${id}`,

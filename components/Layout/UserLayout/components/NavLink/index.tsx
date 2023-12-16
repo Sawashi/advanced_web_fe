@@ -10,10 +10,11 @@ export interface INavLinkProps extends LinkProps {
   icon: string;
   href?: string;
   onClick?: () => void;
+  isExpanded?: boolean;
 }
 
 const NavLink = (props: INavLinkProps) => {
-  const { icon, isActive, label, href, onClick } = props;
+  const { icon, isActive, label, href, onClick, isExpanded = true } = props;
   const isSVGIcon = icon?.endsWith(".svg");
 
   return (
@@ -22,8 +23,7 @@ const NavLink = (props: INavLinkProps) => {
       display="block"
       onClick={onClick}
       paddingY={3}
-      paddingLeft={4}
-      paddingRight={4}
+      pl={4}
       href={href}
       borderRadius="lg"
       fontWeight={600}
@@ -41,7 +41,7 @@ const NavLink = (props: INavLinkProps) => {
         color: "gray.900",
       }}
     >
-      <HStack spacing={3}>
+      <HStack spacing={3} minW={isExpanded ? "240px" : undefined}>
         {isSVGIcon ? (
           <SvgIcon
             iconName={icon}
@@ -51,9 +51,11 @@ const NavLink = (props: INavLinkProps) => {
         ) : (
           <Icon iconName={icon} size={30} alt="" />
         )}
-        <Text as="span" flexGrow={1} color="gray.500">
-          {label}
-        </Text>
+        {isExpanded ? (
+          <Text as="span" flexGrow={1} color="gray.500">
+            {label}
+          </Text>
+        ) : null}
       </HStack>
     </Link>
   );

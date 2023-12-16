@@ -1,13 +1,24 @@
 import { Box, HStack, Image } from "@chakra-ui/react";
+import SvgIcon from "components/SvgIcon";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import React from "react";
+import routes from "routes";
+import { gray500 } from "theme/colors.theme";
 
-const UserHeader = () => {
+export interface IUserHeaderProps {
+  onExpand?: () => void;
+}
+
+const UserHeader = ({ onExpand }: IUserHeaderProps) => {
   const router = useRouter();
 
   const onClickLogo = () => {
-    router.push("/");
+    router.push(routes.user.home.value);
+  };
+
+  const onExpandSidebar = () => {
+    onExpand?.();
   };
 
   return (
@@ -18,7 +29,14 @@ const UserHeader = () => {
       p={5}
       borderBottomWidth={1}
       borderBottomColor={"gray.300"}
+      spacing={5}
     >
+      <SvgIcon
+        iconName={"ic-menu.svg"}
+        size={30}
+        onClick={onExpandSidebar}
+        color={gray500}
+      />
       <Image
         src="/assets/icons/logo.svg"
         alt="logo"

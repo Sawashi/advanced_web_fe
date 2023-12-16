@@ -126,7 +126,7 @@ function UserProfileEdit() {
 
   return (
     <UserLayout title="Profile">
-      <Flex minH={"100vh"} align={"center"} justify={"center"}>
+      <Flex align={"center"} justify={"center"}>
         <Stack
           spacing={4}
           w={"full"}

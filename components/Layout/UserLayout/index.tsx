@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
 import Header from "components/Header";
 import UserHeader from "components/Header/UserHeader";
-import SideBar from "./components/Sidebar";
+import SideBar, { ISidebarRefProps } from "./components/Sidebar";
 
 interface IAuthenticationLayoutProps {
   title?: string;
@@ -13,6 +13,8 @@ interface IAuthenticationLayoutProps {
 
 const UserLayout = (props: IAuthenticationLayoutProps) => {
   const { title, children } = props;
+  const sideBarRef = React.useRef<ISidebarRefProps>(null);
+
   return (
     <>
       <Head>
@@ -20,16 +22,22 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
         <link rel="icon" href="/assets/icons/logo.svg" />
       </Head>
       <chakra.main height={"100vh"} flexDir={"column"} display={"flex"}>
-          <UserHeader />
-          <HStack
-            background="background.primary"
-            alignItems="stretch"
-            flex={1}
-            spacing={0}
-          >
-            <SideBar />
+        <UserHeader
+          onExpand={() => {
+            sideBarRef.current?.onExpand();
+          }}
+        />
+        <HStack
+          background="background.primary"
+          alignItems="stretch"
+          flex={1}
+          spacing={0}
+        >
+          <SideBar ref={sideBarRef} />
+          <Stack h={"100%"} overflow={"auto"} w={"full"}>
             {children}
-          </HStack>
+          </Stack>
+        </HStack>
       </chakra.main>
     </>
   );
