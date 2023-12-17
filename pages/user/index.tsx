@@ -7,7 +7,7 @@ const UserPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(routes.main.value);
+    router.replace(routes.user.home.value);
   }, []);
 
   return (
