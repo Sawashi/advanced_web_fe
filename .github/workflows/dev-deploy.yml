@@ -2,7 +2,7 @@ name: Build & Deploy
 
 on:
   push:
-    branches: [chore/AW-46]
+    branches: [dev]
 
 jobs:
   deploy:
