@@ -163,7 +163,7 @@ const FormInput = (props: IFormItemProps) => {
         />
       )}
       {!hideErrorMessage && (
-        <HStack mt={1}>
+        <HStack mt={1} alignItems={"center"}>
           <Icon
             iconName="ic-error-form.svg"
             alt=""

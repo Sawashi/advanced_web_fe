@@ -1,5 +1,5 @@
 import Modal from "components/Modal";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Button,
   HStack,
@@ -10,6 +10,11 @@ import {
 } from "@chakra-ui/react";
 import FormInput from "components/FormInput";
 import { useForm, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  ClassCodeSchema,
+  IClassCodeSchema,
+} from "constants/validation/classes";
 
 const JoinClassModal = ({
   isVisible,
@@ -18,13 +23,31 @@ const JoinClassModal = ({
   isVisible: boolean;
   onClose: () => void;
 }) => {
-  const method = useForm({
+  const method = useForm<IClassCodeSchema>({
     defaultValues: {
       classCode: "",
     },
+    resolver: yupResolver(ClassCodeSchema),
+    reValidateMode: "onChange",
+    mode: "all",
   });
 
-  const Title = () => {
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid },
+  } = method;
+
+  const onCloseModal = () => {
+    onClose();
+    reset();
+  };
+
+  const onSubmit = (data: IClassCodeSchema) => {
+    console.log(data);
+  };
+
+  const Title = useCallback(() => {
     return (
       <HStack w="full" justifyContent={"space-between"}>
         <Text fontSize={20} fontWeight={600}>
@@ -33,23 +56,21 @@ const JoinClassModal = ({
 
         <Button
           variant="primary"
-          isDisabled={true}
+          isDisabled={!isValid}
           size="md"
-          onClick={() => {
-            onClose();
-          }}
+          onClick={handleSubmit(onSubmit)}
           w={100}
         >
           Join
         </Button>
       </HStack>
     );
-  };
+  }, [isValid]);
 
   return (
     <Modal
       isVisible={isVisible}
-      onClose={onClose}
+      onClose={onCloseModal}
       title={<Title />}
       size="full"
     >

@@ -13,7 +13,7 @@ export const getClassesAsOwner = async (
   queries?: URLQueryType<{}>
 ) => {
   const response = await api.get<IClassesAsStudentResponse>(
-    UsersApiRouters.get.classes_as_student.value(userId, {
+    UsersApiRouters.get.classes_as_owner.value(userId, {
       ...queries,
     })
   );
@@ -35,7 +35,7 @@ export const useGetClassesAsOwner = (
   // @ts-ignore
   return useQuery<IClassesAsStudentResponse, Error, IClassesAsStudentResponse>({
     queryKey: [
-      UsersApiRouters.get.classes_as_student.value(userId, queries),
+      UsersApiRouters.get.classes_as_owner.value(userId, queries),
       userId,
     ],
     queryFn: () => getClassesAsOwner(userId, queries),
