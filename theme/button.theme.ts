@@ -26,6 +26,11 @@ export const CustomButton = {
         background: "primary.600",
         boxShadow: "0 0 0 2px primary.500",
       },
+      _disabled: {
+        background: "gray.400",
+        color: "white",
+        cursor: "not-allowed",
+      },
     },
   },
   defaultProps: {

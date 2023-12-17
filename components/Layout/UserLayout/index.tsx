@@ -1,10 +1,11 @@
-import { HStack, Stack, VStack, chakra } from "@chakra-ui/react";
+import { HStack, Stack, VStack, chakra, useDisclosure } from "@chakra-ui/react";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
 import UserHeader from "components/Header/UserHeader";
 import SideBar, { ISidebarRefProps } from "./components/Sidebar";
 import { observer } from "mobx-react";
+import JoinClassModal from "components/pages/HomePage/JoinClassModal";
 
 interface IAuthenticationLayoutProps {
   title?: string;
@@ -14,6 +15,7 @@ interface IAuthenticationLayoutProps {
 const UserLayout = (props: IAuthenticationLayoutProps) => {
   const { title, children } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
     <>
@@ -26,6 +28,7 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
           onExpand={() => {
             sideBarRef.current?.onExpand();
           }}
+          onJoinClass={onOpen}
         />
         <HStack
           background="background.primary"
@@ -37,6 +40,7 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
           <Stack h={"100%"} overflow={"auto"} w={"full"} flex={1}>
             {children}
           </Stack>
+          <JoinClassModal isVisible={isOpen} onClose={onClose} />
         </HStack>
       </chakra.main>
     </>

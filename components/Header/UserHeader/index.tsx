@@ -18,9 +18,10 @@ import { gray500 } from "theme/colors.theme";
 
 export interface IUserHeaderProps {
   onExpand?: () => void;
+  onJoinClass?: () => void;
 }
 
-const UserHeader = ({ onExpand }: IUserHeaderProps) => {
+const UserHeader = ({ onExpand, onJoinClass }: IUserHeaderProps) => {
   const router = useRouter();
   const { settingStore: spinnerStore, authStore } = useStores();
   const { isHeaderLoading } = spinnerStore;
@@ -68,6 +69,7 @@ const UserHeader = ({ onExpand }: IUserHeaderProps) => {
             _hover={{
               bgColor: "gray.200",
             }}
+            onClick={onJoinClass}
           >
             <SvgIcon iconName={"ic-add.svg"} size={30} />
           </Button>
@@ -94,9 +96,7 @@ const UserHeader = ({ onExpand }: IUserHeaderProps) => {
               size={"sm"}
               src={authStore.user?.avatar}
               name={name}
-              onClick={() => {
-                
-              }}
+              onClick={() => {}}
             />
           </Tooltip>
         </HStack>

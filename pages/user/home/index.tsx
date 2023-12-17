@@ -93,7 +93,6 @@ const Home = () => {
 
         <VStack
           w="full"
-          h="full"
           alignItems={"start"}
           justifyContent="space-between"
           p={5}
