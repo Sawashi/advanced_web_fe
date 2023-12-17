@@ -17,7 +17,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const router = useRouter();
   const { authStore, settingStore } = useStores();
   const { isSideBarExpanded, setSideBarExpanded } = settingStore;
-  const { user } = authStore;
 
   function getLinkProps(
     href: string,
@@ -50,31 +49,41 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
       zIndex={EZIndexLayer.NAV}
       borderRightWidth={1}
       borderRightColor={"gray.300"}
+      px={5}
     >
       <VStack
         display="flex"
-        height="full"
+        flex={1}
+        width="full"
+        h={"full"}
         overflowX="hidden"
         overflowY="auto"
-        paddingX={2}
         justifyContent={"space-between"}
         divider={<Divider h={0.5} bgColor={"gray.400"} />}
         py={3}
       >
         <Stack
-          spacing={2}
-          marginX={3}
           width="full"
           flex={1}
-          divider={<Divider h={0.4} bgColor={"gray.400"} />}
+          divider={<Divider h={"1px"} bgColor={"gray.400"} />}
         >
+          <NavLink
+            label={EUserPageName.HOME}
+            {...getLinkProps(routes.user.home.value, "ic-home")}
+          />
+
           <NavLink
             label={EUserPageName.ENROLLED}
             {...getLinkProps(routes.user.enrolled_classes.value, "ic-enrolled")}
           />
 
           <NavLink
-            label={EUserPageName.YOUR_CLASSES}
+            label={EUserPageName.TEACHING}
+            {...getLinkProps(routes.user.teaching_classes.value, "ic-teacher")}
+          />
+
+          <NavLink
+            label={EUserPageName.OWNED}
             {...getLinkProps(routes.user.owned_classes.value, "ic-rocket")}
           />
         </Stack>

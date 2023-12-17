@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
+import { observer } from "mobx-react";
 
 const withAuth = <P extends object>(
   WrappedComponent: React.ComponentType<P>
@@ -25,7 +26,7 @@ const withAuth = <P extends object>(
     return <WrappedComponent {...props} />;
   };
 
-  return Wrapper;
+  return observer(Wrapper);
 };
 
 export default withAuth;

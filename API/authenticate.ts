@@ -8,12 +8,13 @@ import {
   IResendVerificationDataReq,
   IResendVerificationDataRes,
 } from "interfaces/authentication";
-import { IUser, IVerifyTokenResponse } from "interfaces/user";
+import { IUser } from "interfaces/user";
 import { CommonError } from "types";
-import { api, auth, errorHandler } from ".";
+import { api, auth } from ".";
 import { IRegisterSchema } from "constants/validation/auth";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { AuthenticateParams } from "enums/auth";
+import { errorHandler } from "./helpers";
 
 export async function login(
   loginData: ILoginDataReq

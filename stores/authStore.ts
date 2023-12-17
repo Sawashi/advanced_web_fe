@@ -69,6 +69,8 @@ class AuthStore {
     } catch (error) {
       this.isLoading = false;
       throw new Error((<CommonError>error)?.message);
+    } finally {
+      this.isLoading = false;
     }
   }
 
@@ -90,6 +92,7 @@ class AuthStore {
     this.isLoading = false;
     this.rootStore.cookiesStore.removeItem(AuthenticateParams.ACCESS_TOKEN);
     this.rootStore.cookiesStore.removeItem(AuthenticateParams.REFRESH_TOKEN);
+    this.rootStore.queryClient?.clear();
   }
 
   public setForgotPasswordEmail(email: string) {
