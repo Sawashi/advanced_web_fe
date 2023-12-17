@@ -1,0 +1,57 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [chore/AW-46]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.DEV_ENV }}" > .env
+
+      - name: Build image
+        run: docker build -t registry.digitalocean.com/grade-master-hub/client-dev .
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITAL_OCEAN_CONTAINER_REGISTRY_ACCESS_TOKEN }}
+
+      - name: Login to Digital Ocean Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push image to Digital Ocean Container Registry
+        run: docker push registry.digitalocean.com/grade-master-hub/client-dev
+
+      - name: Copy .env & dev.swarm.yml to ssh
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_DEV_HOST }}
+          username: ${{ secrets.SSH_DEV_USER }}
+          key: ${{ secrets.SSH_DEV_KEY }}
+          overwrite: true
+          source: .env,dev.swarm.yml
+          target: /var/www/grade-master-hub-client-dev
+
+      - name: Deploy Stack
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_DEV_HOST }}
+          username: ${{ secrets.SSH_DEV_USER }}
+          key: ${{ secrets.SSH_DEV_KEY }}
+          script: |
+            mkdir -p /var/www/grade-master-hub-client-dev
+            cd /var/www/grade-master-hub-client-dev
+            export $(cat .env) && docker stack deploy -c dev.swarm.yml grade-master-hub-dev --with-registry-auth
+            rm .env dev.swarm.yml
