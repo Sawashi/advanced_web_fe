@@ -23,8 +23,8 @@ export const getUrlWithQuery = <T>(url: string, query: URLQueryType<T>) => {
 export const UsersApiRouters = {
   get: {
     classes_as_student: {
-      value: (userId: ID, query: URLQueryType<{}>) =>
-        `${API_URL}/users/${userId}/classes/student?${getQueries(query)}`,
+      value: (userId: ID, query?: URLQueryType<{}>) =>
+        `${API_URL}/users/${userId}/classes/student?${getQueries(query ?? {})}`,
     },
     classes_as_teacher: {
       value: (userId: ID, query: URLQueryType<{}>) =>
@@ -33,6 +33,11 @@ export const UsersApiRouters = {
     classes_as_owner: {
       value: (userId: ID, query: URLQueryType<{}>) =>
         `${API_URL}/users/${userId}/owned-classes?${getQueries(query)}`,
+    },
+  },
+  post: {
+    join_class_with_class_code: {
+      value: `${API_URL}/classes/join-with-code`,
     },
   },
 };

@@ -9,6 +9,9 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  validateStatus: (status) => {
+    return status >= 200 && status < 500 && status !== 401;
+  },
 });
 
 export function auth(): IRequestHeader {

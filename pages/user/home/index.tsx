@@ -99,7 +99,7 @@ const Home = () => {
         >
           {getValidArray(showingList)?.map((item) =>
             checkValidArray(item?.data) ? (
-              <VStack w="full" alignItems={"start"}>
+              <VStack w="full" alignItems={"start"} key={item?.title}>
                 <HStack
                   w="full"
                   flex={1}

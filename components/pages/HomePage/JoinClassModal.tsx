@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
   ListItem,
+  useToast,
 } from "@chakra-ui/react";
 import FormInput from "components/FormInput";
 import { useForm, FormProvider } from "react-hook-form";
@@ -15,14 +16,22 @@ import {
   ClassCodeSchema,
   IClassCodeSchema,
 } from "constants/validation/classes";
+import { usePostJoinClassViaClassCode } from "API/post/post.classes.join-class";
+import { useStores } from "hooks/useStores";
+import { useGetClassesAsStudent } from "API/get/get.classes.student";
 
-const JoinClassModal = ({
-  isVisible,
-  onClose,
-}: {
+type JoinClassModalProps = {
   isVisible: boolean;
   onClose: () => void;
-}) => {
+};
+
+const JoinClassModal = ({ isVisible, onClose }: JoinClassModalProps) => {
+  const { mutateAsync, isLoading } = usePostJoinClassViaClassCode();
+  const { authStore } = useStores();
+  const { refetch } = useGetClassesAsStudent(authStore?.user?.id ?? "", {
+    limit: 3,
+  });
+  const toast = useToast();
   const method = useForm<IClassCodeSchema>({
     defaultValues: {
       classCode: "",
@@ -43,8 +52,26 @@ const JoinClassModal = ({
     reset();
   };
 
-  const onSubmit = (data: IClassCodeSchema) => {
-    console.log(data);
+  const onSubmit = async (values: IClassCodeSchema) => {
+    const { data } = await mutateAsync(values?.classCode);
+
+    if (data?.message && data?.error && data?.statusCode >= 400) {
+      toast({
+        description: data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        description: "Join class successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      await refetch();
+      onCloseModal();
+    }
   };
 
   const Title = useCallback(() => {
@@ -60,12 +87,13 @@ const JoinClassModal = ({
           size="md"
           onClick={handleSubmit(onSubmit)}
           w={100}
+          isLoading={isLoading}
         >
           Join
         </Button>
       </HStack>
     );
-  }, [isValid]);
+  }, [isValid, isLoading]);
 
   return (
     <Modal
@@ -108,8 +136,8 @@ const JoinClassModal = ({
             <VStack alignItems={"start"} w={"full"}>
               <Text fontWeight={600}>To sign in with a class code</Text>
               <UnorderedList>
-                <ListItem>Use an authorized account</ListItem>
-                <ListItem>
+                <ListItem key={1}>Use an authorized account</ListItem>
+                <ListItem key={2}>
                   Use a class code with 5-7 letters or numbers, and no spaces or
                   symbols
                 </ListItem>
