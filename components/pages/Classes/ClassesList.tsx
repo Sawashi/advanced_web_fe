@@ -1,5 +1,5 @@
 import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
-import { IClass } from "interfaces/class";
+import { IClass } from "interfaces/classes";
 import React from "react";
 import { getValidArray } from "utils/common";
 
@@ -103,7 +103,7 @@ const ClassesList = ({ classes }: ClassesListProps) => {
       flexWrap={"wrap"}
       justifyContent={"start"}
     >
-      {getValidArray([...classes, ...classes])?.map(renderClassItem)}
+      {getValidArray([...classes])?.map(renderClassItem)}
     </HStack>
   );
 };
