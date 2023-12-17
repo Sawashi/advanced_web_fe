@@ -39,5 +39,8 @@ export const UsersApiRouters = {
     join_class_with_class_code: {
       value: `${API_URL}/classes/join-with-code`,
     },
+    join_class_with_token: {
+      value: `${API_URL}/classes/join-with-token`,
+    },
   },
 };
