@@ -10,6 +10,8 @@ const queryClient = new QueryClient();
 export const theme = getTheme();
 
 const App = ({ Component, pageProps }: AppProps) => {
+  rootStore.setQueryClient(queryClient);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Provider {...rootStore}>

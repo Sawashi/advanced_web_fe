@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
 import UserHeader from "components/Header/UserHeader";
 import SideBar, { ISidebarRefProps } from "./components/Sidebar";
+import { observer } from "mobx-react";
 
 interface IAuthenticationLayoutProps {
   title?: string;
@@ -42,4 +43,4 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
   );
 };
 
-export default withAuth(UserLayout);
+export default withAuth(observer(UserLayout));

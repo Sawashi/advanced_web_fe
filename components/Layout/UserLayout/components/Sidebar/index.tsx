@@ -17,7 +17,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const router = useRouter();
   const { authStore, settingStore } = useStores();
   const { isSideBarExpanded, setSideBarExpanded } = settingStore;
-  const { user } = authStore;
 
   function getLinkProps(
     href: string,

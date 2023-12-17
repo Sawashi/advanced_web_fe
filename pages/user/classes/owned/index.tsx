@@ -1,7 +1,6 @@
 import withAuth from "HOCs/withAuth";
 import { observer } from "mobx-react";
 import UserLayout from "components/Layout/UserLayout";
-import { useGetClassesAsStudent } from "API/get/get.classes.student";
 import { useStores } from "hooks/useStores";
 import { useEffect } from "react";
 import ClassesList from "components/pages/Classes/ClassesList";
