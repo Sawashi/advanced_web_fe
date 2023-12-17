@@ -8,9 +8,9 @@ export interface IClassesAsStudentResponse {
   meta: IMetaResponse;
 }
 
-export const getClassesAsStudent = async (userId: string) => {
+export const getClassesAsTeacher = async (userId: string) => {
   const response = await api.get<IClassesAsStudentResponse>(
-    UsersApiRouters.get.classes_as_student.value(userId, {
+    UsersApiRouters.get.classes_as_teacher.value(userId, {
       sortBy: "updatedAt",
       page: 1,
       limit: 10,
@@ -20,17 +20,17 @@ export const getClassesAsStudent = async (userId: string) => {
   return response.data;
 };
 
-export const useGetClassesAsStudent = (userId: string) => {
+export const useGetClassesAsTeacher = (userId: string) => {
   // @ts-ignore
   return useQuery<IClassesAsStudentResponse, Error, IClassesAsStudentResponse>({
     queryKey: [
-      UsersApiRouters.get.classes_as_student.value(userId, {
+      UsersApiRouters.get.classes_as_teacher.value(userId, {
         sortBy: "updatedAt",
         page: 1,
         limit: 10,
       }),
     ],
-    queryFn: () => getClassesAsStudent(userId),
+    queryFn: () => getClassesAsTeacher(userId),
     enabled: !!userId,
   });
 };

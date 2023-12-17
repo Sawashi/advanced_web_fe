@@ -80,7 +80,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
 
           <NavLink
             label={EUserPageName.TEACHING}
-            {...getLinkProps(routes.user.owned_classes.value, "ic-teacher")}
+            {...getLinkProps(routes.user.teaching_classes.value, "ic-teacher")}
           />
 
           <NavLink

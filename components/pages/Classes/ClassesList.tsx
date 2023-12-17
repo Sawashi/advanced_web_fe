@@ -1,5 +1,5 @@
 import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
-import { IClass } from "API/get/get.classes.student";
+import { IClass } from "interfaces/class";
 import React from "react";
 import { getValidArray } from "utils/common";
 
@@ -92,9 +92,19 @@ const ClassesList = ({ classes }: ClassesListProps) => {
   };
 
   return (
-    <VStack alignItems={"flex-start"} w={"full"} p={5}>
-      {getValidArray(classes)?.map(renderClassItem)}
-    </VStack>
+    <HStack
+      alignItems={"start"}
+      w={"full"}
+      p={5}
+      overflowX={"hidden"}
+      overflowY={"auto"}
+      spacing={5}
+      columnGap={5}
+      flexWrap={"wrap"}
+      justifyContent={"start"}
+    >
+      {getValidArray([...classes, ...classes])?.map(renderClassItem)}
+    </HStack>
   );
 };
 
