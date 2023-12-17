@@ -1,7 +1,8 @@
 import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
+import SvgIcon from "components/SvgIcon";
 import { IClass } from "interfaces/classes";
 import React from "react";
-import { getValidArray } from "utils/common";
+import { checkValidArray, getValidArray } from "utils/common";
 
 export type ClassesListProps = {
   classes: IClass[];
@@ -93,7 +94,7 @@ const ClassesList = ({ classes }: ClassesListProps) => {
 
   return (
     <HStack
-      alignItems={"start"}
+      alignItems={checkValidArray(classes) ? "start" : "center"}
       w={"full"}
       p={5}
       overflowX={"hidden"}
@@ -101,9 +102,18 @@ const ClassesList = ({ classes }: ClassesListProps) => {
       spacing={5}
       columnGap={5}
       flexWrap={"wrap"}
-      justifyContent={"start"}
+      justifyContent={checkValidArray(classes) ? "start" : "center"}
     >
-      {getValidArray([...classes])?.map(renderClassItem)}
+      {checkValidArray(classes) ? (
+        getValidArray(classes)?.map(renderClassItem)
+      ) : (
+        <VStack>
+          <SvgIcon iconName={"ic-empty.svg"} size={100} />
+          <Text fontSize={25} fontWeight={600} textAlign={"center"}>
+            No class found
+          </Text>
+        </VStack>
+      )}
     </HStack>
   );
 };
