@@ -47,12 +47,8 @@ export const getClassesAsStudent = async (userId: string) => {
 };
 
 export const useGetClassesAsStudent = (userId: string) => {
-  return useQuery<
-    IClassesAsStudentResponse,
-    Error,
-    IClassesAsStudentResponse,
-    any
-  >({
+  // @ts-ignore
+  return useQuery<IClassesAsStudentResponse, Error, IClassesAsStudentResponse>({
     queryKey: [
       UsersApiRouters.get.classes_as_student.value(userId, {
         sortBy: "updatedAt",
@@ -61,5 +57,6 @@ export const useGetClassesAsStudent = (userId: string) => {
       }),
     ],
     queryFn: () => getClassesAsStudent(userId),
+    enabled: !!userId,
   });
 };

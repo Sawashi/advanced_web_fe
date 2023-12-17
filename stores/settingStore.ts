@@ -29,6 +29,10 @@ class SettingStore {
     this.isHeaderLoading = true;
   }
 
+  setHeaderLoading(isLoading: boolean): void {
+    this.isHeaderLoading = isLoading;
+  }
+
   hideHeaderLoading(): void {
     this.isHeaderLoading = false;
   }

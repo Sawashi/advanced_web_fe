@@ -50,23 +50,29 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
       zIndex={EZIndexLayer.NAV}
       borderRightWidth={1}
       borderRightColor={"gray.300"}
+      px={5}
     >
       <VStack
         display="flex"
-        height="full"
+        flex={1}
+        width="full"
+        h={"full"}
         overflowX="hidden"
         overflowY="auto"
         justifyContent={"space-between"}
         divider={<Divider h={0.5} bgColor={"gray.400"} />}
         py={3}
       >
-        <VStack
-          spacing={2}
+        <Stack
           width="full"
           flex={1}
-          px={5}
-          divider={<Divider h={0.4} bgColor={"gray.400"} />}
+          divider={<Divider h={"1px"} bgColor={"gray.400"} />}
         >
+          <NavLink
+            label={EUserPageName.HOME}
+            {...getLinkProps(routes.user.home.value, "ic-home")}
+          />
+
           <NavLink
             label={EUserPageName.ENROLLED}
             {...getLinkProps(routes.user.enrolled_classes.value, "ic-enrolled")}
@@ -81,7 +87,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
             label={EUserPageName.OWNED}
             {...getLinkProps(routes.user.owned_classes.value, "ic-rocket")}
           />
-        </VStack>
+        </Stack>
         <Stack w="full" alignSelf={"end"}>
           <NavLink
             label={EUserPageName.SETTINGS}

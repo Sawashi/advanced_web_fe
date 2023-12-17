@@ -20,9 +20,9 @@ const NavLink = (props: INavLinkProps) => {
   return (
     <Link
       className={undefined}
+      display="block"
       onClick={onClick}
       paddingY={3}
-      pl={4}
       href={href}
       borderRadius="lg"
       fontWeight={600}
@@ -40,7 +40,7 @@ const NavLink = (props: INavLinkProps) => {
         color: "gray.900",
       }}
     >
-      <HStack spacing={3} minW={isExpanded ? "240px" : undefined}>
+      <HStack spacing={3} minW={isExpanded ? "250px" : undefined} px={3}>
         {isSVGIcon ? (
           <SvgIcon
             iconName={icon}

@@ -33,7 +33,7 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
           spacing={0}
         >
           <SideBar ref={sideBarRef} />
-          <Stack h={"100%"} overflow={"auto"} w={"full"}>
+          <Stack h={"100%"} overflow={"auto"} w={"full"} flex={1}>
             {children}
           </Stack>
         </HStack>

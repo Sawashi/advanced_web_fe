@@ -4,4 +4,5 @@ export enum EUserPageName {
   SETTINGS = "Settings",
   OWNED = "Owned",
   TEACHING = "Teaching",
+  HOME = "Home",
 }
