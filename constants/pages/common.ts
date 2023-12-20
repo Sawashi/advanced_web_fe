@@ -5,4 +5,5 @@ export enum EUserPageName {
   OWNED = "Owned",
   TEACHING = "Teaching",
   HOME = "Home",
+  CHANGE_PASSWORD = "Change Password",
 }

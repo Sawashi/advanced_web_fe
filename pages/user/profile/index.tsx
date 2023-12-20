@@ -3,18 +3,13 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Heading,
   Input,
   Stack,
   useColorModeValue,
-  HStack,
   Avatar,
   Center,
   Box,
-  Grid,
-  GridItem,
   Text,
-  AbsoluteCenter,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -39,11 +34,13 @@ import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { PASSWORD_PATTERN } from "constants/common";
-import { changePassword, getCurrentUser, refreshToken } from "API/authenticate";
+import { changePassword, getCurrentUser } from "API/authenticate";
+import { useRouter } from "next/router";
+import routes from "routes";
 
 function UserProfileEdit() {
   const { authStore } = useStores();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
   const toast = useToast();
   const methods = useForm({
     defaultValues: {
@@ -111,7 +108,7 @@ function UserProfileEdit() {
   const handleSubmitModal = async () => {
     await getCurrentUser();
     try {
-      await changePassword(oldPassword, newPassword, authStore.accessToken);
+      await changePassword(oldPassword, newPassword);
       toast({
         status: "success",
         description: "Changed password",
@@ -133,28 +130,26 @@ function UserProfileEdit() {
           maxW={"60%"}
           bg={useColorModeValue("white", "gray.700")}
           rounded={"xl"}
-          boxShadow={"lg"}
           p={6}
           my={12}
         >
-          <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
-            User Profile
-          </Heading>
           <FormProvider {...methods}>
-            <Center>
-              <Avatar
-                size="2xl"
-                name={`${authStore.user?.firstName ?? ""} ${
-                  authStore.user?.lastName ?? ""
-                }`}
-                src={authStore.user?.avatar}
-              />
-            </Center>
-            <Center>
-              <Text fontSize="2xl">{`${authStore.user?.firstName ?? ""} ${
+            <Avatar
+              size="2xl"
+              name={`${authStore.user?.firstName ?? ""} ${
                 authStore.user?.lastName ?? ""
-              }`}</Text>
-            </Center>
+              }`}
+              src={authStore.user?.avatar}
+            />
+
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color={useColorModeValue("gray.800", "white")}
+            >{`${authStore.user?.firstName ?? ""} ${
+              authStore.user?.lastName ?? ""
+            }`}</Text>
+
             <VStack spacing={8} w="100%">
               <FormInput
                 name="firstName"
@@ -170,9 +165,10 @@ function UserProfileEdit() {
               />
 
               <Button
-                bg={"blue.500"}
+                bg={"primary.500"}
                 color={"white"}
                 w="full"
+                py={3}
                 isDisabled={!isValid}
                 onClick={handleSubmit(onSubmit)}
                 _hover={{
@@ -183,75 +179,17 @@ function UserProfileEdit() {
               </Button>
               <Button
                 sx={{ width: "100%", margin: "2% 0" }}
-                onClick={onOpen}
+                onClick={() => {
+                  router.push(routes.user.profile.change_password.value);
+                }}
                 variant={"link"}
               >
-                Change password
+                Change password?
               </Button>
             </VStack>
           </FormProvider>
         </Stack>
       </Flex>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Change password</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Box
-              maxW="md"
-              mx="auto"
-              mt={8}
-              p={4}
-              borderWidth="1px"
-              borderRadius="lg"
-            >
-              <FormControl isInvalid={!isOldPasswordValid}>
-                <FormLabel>Old Password</FormLabel>
-                <Input
-                  type="password"
-                  placeholder="Enter your old password"
-                  value={oldPassword}
-                  onChange={handleOldPasswordChange}
-                />
-              </FormControl>
-
-              <FormControl mt={4} isInvalid={!isNewPasswordValid}>
-                <FormLabel>New Password</FormLabel>
-                <Input
-                  type="password"
-                  placeholder="Enter your new password"
-                  value={newPassword}
-                  onChange={handleNewPasswordChange}
-                />
-                {!isNewPasswordValid && (
-                  <Text color="red.500" fontSize="sm" mt={2}>
-                    Password must have at least one lowercase letter, one
-                    uppercase letter, one digit, and one special character.
-                    Minimum length is 8 characters.
-                  </Text>
-                )}
-              </FormControl>
-
-              <Button
-                colorScheme="teal"
-                mt={4}
-                onClick={handleSubmitModal}
-                isDisabled={!isNewPasswordValid || !isOldPasswordValid}
-              >
-                Change Password
-              </Button>
-            </Box>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              Got it!
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </UserLayout>
   );
 }
