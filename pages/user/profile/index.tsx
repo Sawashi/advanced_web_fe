@@ -1,28 +1,10 @@
 import {
   Button,
   Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
   Stack,
   useColorModeValue,
-  HStack,
   Avatar,
-  Center,
-  Box,
-  Grid,
-  GridItem,
   Text,
-  AbsoluteCenter,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -38,18 +20,26 @@ import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { PASSWORD_PATTERN } from "constants/common";
-import { changePassword, getCurrentUser, refreshToken } from "API/authenticate";
+import { useRouter } from "next/router";
+import routes from "routes";
+import AvatarUpload from "components/AvatarUpload";
+import { useUpdateAvatar } from "API/post/post.user.avatar";
 
 function UserProfileEdit() {
   const { authStore } = useStores();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    mutateAsync: updateAvatar,
+    isSuccess: isUpdatedAvatar,
+    isError,
+  } = useUpdateAvatar();
+  const router = useRouter();
   const toast = useToast();
   const methods = useForm({
     defaultValues: {
       firstName: authStore.user?.firstName,
       lastName: authStore.user?.lastName,
       dob: authStore.user?.dob,
+      avatar: authStore.user?.avatar,
     },
     resolver: yupResolver(EditProfileSchema),
     reValidateMode: "onChange",
@@ -57,18 +47,9 @@ function UserProfileEdit() {
   });
   const {
     handleSubmit,
+    setError,
     formState: { isValid },
   } = methods;
-
-  useEffect(() => {
-    if (authStore.user) {
-      methods.reset({
-        firstName: authStore.user?.firstName,
-        lastName: authStore.user?.lastName,
-        dob: authStore.user?.dob,
-      });
-    }
-  }, [authStore.user]);
 
   const onSubmit = async (data: IEditProfileSchema) => {
     try {
@@ -85,44 +66,49 @@ function UserProfileEdit() {
     }
   };
 
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
-  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
-
-  const handleOldPasswordChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const inputOldPassword = event.target.value;
-    setOldPassword(inputOldPassword);
-    const isOldPasswordValid = PASSWORD_PATTERN.test(inputOldPassword);
-    setIsOldPasswordValid(isOldPasswordValid);
-  };
-
-  const handleNewPasswordChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const inputNewPassword = event.target.value;
-    setNewPassword(inputNewPassword);
-    const isNewPasswordValid = PASSWORD_PATTERN.test(inputNewPassword);
-    setIsNewPasswordValid(isNewPasswordValid);
-  };
-
-  const handleSubmitModal = async () => {
-    await getCurrentUser();
-    try {
-      await changePassword(oldPassword, newPassword, authStore.accessToken);
-      toast({
-        status: "success",
-        description: "Changed password",
-      });
-    } catch (error) {
-      toast({
-        status: "error",
-        description: "Change password failed",
-      });
+  const handleUploadFile = async (file: File) => {
+    if (file) {
+      if (
+        file.size > 5 * 1024 * 1024 ||
+        !["image/png", "image/jpg", "image/jpeg"].includes(file.type)
+      ) {
+        setError("avatar", {
+          type: "manual",
+          message: "File size must be less than 5MB and file type is image",
+        });
+      } else {
+        setError("avatar", { type: "", message: "" });
+        await updateAvatar({
+          avatar: file,
+        });
+      }
     }
   };
+
+  useEffect(() => {
+    if (authStore.user) {
+      methods.reset({
+        firstName: authStore.user?.firstName,
+        lastName: authStore.user?.lastName,
+        dob: authStore.user?.dob,
+      });
+    }
+  }, [authStore.user]);
+
+  useEffect(() => {
+    if (isUpdatedAvatar) {
+      toast({
+        status: "success",
+        description: "Update avatar successfully",
+      });
+    }
+    if (isError) {
+      toast({
+        status: "error",
+        description: "Update avatar failed",
+      });
+    }
+  }, [isUpdatedAvatar, isError]);
 
   return (
     <UserLayout title="Profile">
@@ -133,28 +119,24 @@ function UserProfileEdit() {
           maxW={"60%"}
           bg={useColorModeValue("white", "gray.700")}
           rounded={"xl"}
-          boxShadow={"lg"}
           p={6}
           my={12}
         >
-          <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
-            User Profile
-          </Heading>
           <FormProvider {...methods}>
-            <Center>
-              <Avatar
-                size="2xl"
-                name={`${authStore.user?.firstName ?? ""} ${
-                  authStore.user?.lastName ?? ""
-                }`}
-                src={authStore.user?.avatar}
-              />
-            </Center>
-            <Center>
-              <Text fontSize="2xl">{`${authStore.user?.firstName ?? ""} ${
-                authStore.user?.lastName ?? ""
-              }`}</Text>
-            </Center>
+            <AvatarUpload
+              src={authStore.user?.avatar ?? ""}
+              handleUploadFile={handleUploadFile}
+              error={methods?.formState?.errors?.avatar?.message}
+            />
+
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color={useColorModeValue("gray.800", "white")}
+            >{`${authStore.user?.firstName ?? ""} ${
+              authStore.user?.lastName ?? ""
+            }`}</Text>
+
             <VStack spacing={8} w="100%">
               <FormInput
                 name="firstName"
@@ -170,9 +152,10 @@ function UserProfileEdit() {
               />
 
               <Button
-                bg={"blue.500"}
+                bg={"primary.500"}
                 color={"white"}
                 w="full"
+                py={3}
                 isDisabled={!isValid}
                 onClick={handleSubmit(onSubmit)}
                 _hover={{
@@ -183,75 +166,17 @@ function UserProfileEdit() {
               </Button>
               <Button
                 sx={{ width: "100%", margin: "2% 0" }}
-                onClick={onOpen}
+                onClick={() => {
+                  router.push(routes.user.profile.change_password.value);
+                }}
                 variant={"link"}
               >
-                Change password
+                Change password?
               </Button>
             </VStack>
           </FormProvider>
         </Stack>
       </Flex>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Change password</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Box
-              maxW="md"
-              mx="auto"
-              mt={8}
-              p={4}
-              borderWidth="1px"
-              borderRadius="lg"
-            >
-              <FormControl isInvalid={!isOldPasswordValid}>
-                <FormLabel>Old Password</FormLabel>
-                <Input
-                  type="password"
-                  placeholder="Enter your old password"
-                  value={oldPassword}
-                  onChange={handleOldPasswordChange}
-                />
-              </FormControl>
-
-              <FormControl mt={4} isInvalid={!isNewPasswordValid}>
-                <FormLabel>New Password</FormLabel>
-                <Input
-                  type="password"
-                  placeholder="Enter your new password"
-                  value={newPassword}
-                  onChange={handleNewPasswordChange}
-                />
-                {!isNewPasswordValid && (
-                  <Text color="red.500" fontSize="sm" mt={2}>
-                    Password must have at least one lowercase letter, one
-                    uppercase letter, one digit, and one special character.
-                    Minimum length is 8 characters.
-                  </Text>
-                )}
-              </FormControl>
-
-              <Button
-                colorScheme="teal"
-                mt={4}
-                onClick={handleSubmitModal}
-                isDisabled={!isNewPasswordValid || !isOldPasswordValid}
-              >
-                Change Password
-              </Button>
-            </Box>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              Got it!
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </UserLayout>
   );
 }

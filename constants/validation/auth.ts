@@ -51,9 +51,22 @@ export const EditProfileSchema = yup.object().shape({
   }),
   firstName: yup.string().required("This field is required"),
   lastName: yup.string().required("This field is required"),
+  avatar: yup.string(),
+});
+
+export const ChangePasswordSchema = yup.object().shape({
+  oldPassword: yup.string().required("This field is required"),
+  newPassword: yup
+    .string()
+    .required("This field is required")
+    .matches(
+      PASSWORD_PATTERN,
+      "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special case character"
+    ),
 });
 
 export type ILoginSchema = yup.InferType<typeof LoginSchema>;
 export type IForgotPasswordSchema = yup.InferType<typeof ForgotPasswordSchema>;
 export type IRegisterSchema = yup.InferType<typeof RegisterSchema>;
 export type IEditProfileSchema = yup.InferType<typeof EditProfileSchema>;
+export type IChangePasswordSchema = yup.InferType<typeof ChangePasswordSchema>;

@@ -67,19 +67,23 @@ export async function verifyToken(token: string) {
 
 export async function changePassword(
   oldPassword: string,
-  newPassword: string,
-  token: string
-): Promise<void | IServerError> {
+  newPassword: string
+): Promise<boolean | IServerError> {
   try {
-    const passwords = {
+    const payload = {
       oldPassword,
       newPassword,
-      token,
     };
-    await api.post(`/auth/me/change-password`, passwords, {
+    const result = await api.post(`/auth/me/change-password`, payload, {
       headers: auth(),
     });
-    return undefined;
+
+    if (result.status !== 200) {
+      return false;
+    }
+
+    return true;
+
   } catch (err) {
     errorHandler((<CommonError>err)?.response?.data?.error);
     throw new Error((<CommonError>err)?.response?.data?.error?.message);

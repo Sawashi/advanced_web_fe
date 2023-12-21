@@ -2,11 +2,16 @@ import { makeAutoObservable } from "mobx";
 import { RootStore } from ".";
 import { makePersistable } from "mobx-persist-store";
 
+type TSettingSidebar = {
+  dropDownName?: string;
+};
+
 class SettingStore {
   isLoading?: boolean | undefined = undefined;
   isHeaderLoading?: boolean | undefined = undefined;
   isSideBarExpanded: boolean = true;
   rootStore: RootStore;
+  settingSidebar: TSettingSidebar | undefined = undefined;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -44,5 +49,9 @@ class SettingStore {
   getSideBarExpanded(): boolean {
     return this.isSideBarExpanded || false;
   }
+
+  setSettingSidebar = (settingSidebar: TSettingSidebar) => {
+    this.settingSidebar = settingSidebar;
+  };
 }
 export default SettingStore;
