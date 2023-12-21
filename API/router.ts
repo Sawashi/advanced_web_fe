@@ -42,5 +42,8 @@ export const UsersApiRouters = {
     join_class_with_token: {
       value: `${API_URL}/classes/join-with-token`,
     },
+    avatar: {
+      value: `${API_URL}/auth/me/avatar`,
+    },
   },
 };

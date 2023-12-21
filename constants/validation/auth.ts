@@ -51,6 +51,7 @@ export const EditProfileSchema = yup.object().shape({
   }),
   firstName: yup.string().required("This field is required"),
   lastName: yup.string().required("This field is required"),
+  avatar: yup.string(),
 });
 
 export const ChangePasswordSchema = yup.object().shape({

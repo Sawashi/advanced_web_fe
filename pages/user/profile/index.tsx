@@ -1,23 +1,10 @@
 import {
   Button,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
   Stack,
   useColorModeValue,
   Avatar,
-  Center,
-  Box,
   Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -33,13 +20,18 @@ import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { PASSWORD_PATTERN } from "constants/common";
-import { changePassword, getCurrentUser } from "API/authenticate";
 import { useRouter } from "next/router";
 import routes from "routes";
+import AvatarUpload from "components/AvatarUpload";
+import { useUpdateAvatar } from "API/post/post.user.avatar";
 
 function UserProfileEdit() {
   const { authStore } = useStores();
+  const {
+    mutateAsync: updateAvatar,
+    isSuccess: isUpdatedAvatar,
+    isError,
+  } = useUpdateAvatar();
   const router = useRouter();
   const toast = useToast();
   const methods = useForm({
@@ -47,6 +39,7 @@ function UserProfileEdit() {
       firstName: authStore.user?.firstName,
       lastName: authStore.user?.lastName,
       dob: authStore.user?.dob,
+      avatar: authStore.user?.avatar,
     },
     resolver: yupResolver(EditProfileSchema),
     reValidateMode: "onChange",
@@ -54,18 +47,9 @@ function UserProfileEdit() {
   });
   const {
     handleSubmit,
+    setError,
     formState: { isValid },
   } = methods;
-
-  useEffect(() => {
-    if (authStore.user) {
-      methods.reset({
-        firstName: authStore.user?.firstName,
-        lastName: authStore.user?.lastName,
-        dob: authStore.user?.dob,
-      });
-    }
-  }, [authStore.user]);
 
   const onSubmit = async (data: IEditProfileSchema) => {
     try {
@@ -82,44 +66,49 @@ function UserProfileEdit() {
     }
   };
 
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
-  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
-
-  const handleOldPasswordChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const inputOldPassword = event.target.value;
-    setOldPassword(inputOldPassword);
-    const isOldPasswordValid = PASSWORD_PATTERN.test(inputOldPassword);
-    setIsOldPasswordValid(isOldPasswordValid);
-  };
-
-  const handleNewPasswordChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const inputNewPassword = event.target.value;
-    setNewPassword(inputNewPassword);
-    const isNewPasswordValid = PASSWORD_PATTERN.test(inputNewPassword);
-    setIsNewPasswordValid(isNewPasswordValid);
-  };
-
-  const handleSubmitModal = async () => {
-    await getCurrentUser();
-    try {
-      await changePassword(oldPassword, newPassword);
-      toast({
-        status: "success",
-        description: "Changed password",
-      });
-    } catch (error) {
-      toast({
-        status: "error",
-        description: "Change password failed",
-      });
+  const handleUploadFile = async (file: File) => {
+    if (file) {
+      if (
+        file.size > 5 * 1024 * 1024 ||
+        !["image/png", "image/jpg", "image/jpeg"].includes(file.type)
+      ) {
+        setError("avatar", {
+          type: "manual",
+          message: "File size must be less than 5MB and file type is image",
+        });
+      } else {
+        setError("avatar", { type: "", message: "" });
+        await updateAvatar({
+          avatar: file,
+        });
+      }
     }
   };
+
+  useEffect(() => {
+    if (authStore.user) {
+      methods.reset({
+        firstName: authStore.user?.firstName,
+        lastName: authStore.user?.lastName,
+        dob: authStore.user?.dob,
+      });
+    }
+  }, [authStore.user]);
+
+  useEffect(() => {
+    if (isUpdatedAvatar) {
+      toast({
+        status: "success",
+        description: "Update avatar successfully",
+      });
+    }
+    if (isError) {
+      toast({
+        status: "error",
+        description: "Update avatar failed",
+      });
+    }
+  }, [isUpdatedAvatar, isError]);
 
   return (
     <UserLayout title="Profile">
@@ -134,12 +123,10 @@ function UserProfileEdit() {
           my={12}
         >
           <FormProvider {...methods}>
-            <Avatar
-              size="2xl"
-              name={`${authStore.user?.firstName ?? ""} ${
-                authStore.user?.lastName ?? ""
-              }`}
-              src={authStore.user?.avatar}
+            <AvatarUpload
+              src={authStore.user?.avatar ?? ""}
+              handleUploadFile={handleUploadFile}
+              error={methods?.formState?.errors?.avatar?.message}
             />
 
             <Text
