@@ -45,5 +45,8 @@ export const UsersApiRouters = {
     avatar: {
       value: `${API_URL}/auth/me/avatar`,
     },
+    create_a_class: {
+      value: `${API_URL}/classes`,
+    },
   },
 };

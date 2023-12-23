@@ -1,14 +1,23 @@
-import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  HStack,
+  Text,
+  VStack,
+  useDisclosure,
+} from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { IClass } from "interfaces/classes";
 import React from "react";
 import { checkValidArray, getValidArray } from "utils/common";
+import CreateClassModal from "./CreateClassModal";
 
 export type ClassesListProps = {
   classes: IClass[];
 };
 
 const ClassesList = ({ classes }: ClassesListProps) => {
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const renderClassItem = (item: IClass, index: number) => {
     return (
       <VStack
@@ -112,8 +121,10 @@ const ClassesList = ({ classes }: ClassesListProps) => {
           <Text fontSize={25} fontWeight={600} textAlign={"center"}>
             No class found
           </Text>
+          <Button onClick={onOpen}>Create a class</Button>
         </VStack>
       )}
+      <CreateClassModal isVisible={isOpen} onClose={onClose} />
     </HStack>
   );
 };
