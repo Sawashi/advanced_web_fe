@@ -29,16 +29,16 @@ const blue800 = "#1E429F";
 const blue900 = "#233876";
 
 // red
-const red50 = "#FDF2F2";
-const red100 = "#FDE8E8";
-const red200 = "#FBD5D5";
-const red300 = "#F8B4B4";
-const red400 = "#F98080";
-const red500 = "#F05252";
-const red600 = "#E02424";
-const red700 = "#C81E1E";
-const red800 = "#9B1C1C";
-const red900 = "#771D1D";
+export const red50 = "#FDF2F2";
+export const red100 = "#FDE8E8";
+export const red200 = "#FBD5D5";
+export const red300 = "#F8B4B4";
+export const red400 = "#F98080";
+export const red500 = "#F05252";
+export const red600 = "#E02424";
+export const red700 = "#C81E1E";
+export const red800 = "#9B1C1C";
+export const red900 = "#771D1D";
 
 // orange
 const orange50 = "#FFF8F1";

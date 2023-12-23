@@ -24,6 +24,11 @@ export interface INavLinkProps extends LinkProps {
   isExpanded?: boolean;
   isCollapsed?: boolean;
   children?: React.ReactNode[];
+  _style?: {
+    iconColor?: string;
+    hoverBgColor?: string;
+    textColor?: string;
+  };
 }
 
 const NavLink = (props: INavLinkProps) => {
@@ -36,8 +41,10 @@ const NavLink = (props: INavLinkProps) => {
     isExpanded = true,
     isCollapsed = false,
     children,
+    _style,
   } = props;
   const isSVGIcon = icon?.endsWith(".svg");
+  const { hoverBgColor, textColor } = _style ?? {};
   const isHavingChildren = checkValidArray(children);
   const [collapsed, setCollapsed] = React.useState(isCollapsed);
 
@@ -59,7 +66,7 @@ const NavLink = (props: INavLinkProps) => {
         minW={isExpanded ? "250px" : undefined}
         bgColor={isActive ? "gray.200" : "transparent"}
         _hover={{
-          bg: "gray.200",
+          bg: hoverBgColor ?? "gray.200",
         }}
         cursor="pointer"
         position="relative"
@@ -79,7 +86,13 @@ const NavLink = (props: INavLinkProps) => {
               <SvgIcon
                 iconName={icon}
                 size={30}
-                color={isActive ? gray500 : "#767676"}
+                color={
+                  _style?.iconColor
+                    ? _style?.iconColor
+                    : isActive
+                    ? gray500
+                    : "#767676"
+                }
               />
             ) : (
               <Icon iconName={icon} size={30} alt="" />
@@ -88,7 +101,7 @@ const NavLink = (props: INavLinkProps) => {
               <Text
                 as="span"
                 flexGrow={1}
-                color="gray.500"
+                color={textColor ?? "gray.500"}
                 fontWeight={600}
                 fontSize="sm"
                 lineHeight="1.5rem"
@@ -118,13 +131,13 @@ const NavLink = (props: INavLinkProps) => {
             <SvgIcon
               iconName={collapsed ? "ic-up.svg" : "ic-down.svg"}
               size={30}
-              color="#767676"
+              color={"#767676"}
             />
           </Button>
         ) : null}
       </HStack>
 
-      <Collapse in={collapsed} animateOpacity>
+      <Collapse in={collapsed && isExpanded} animateOpacity>
         <VStack spacing={0} alignItems="flex-start" gap={2} mt={2} flex={1}>
           {children}
         </VStack>

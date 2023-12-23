@@ -1,13 +1,15 @@
 import { Flex, Stack, VStack, Divider } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { EZIndexLayer } from "enums/theme";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
 import NavLink, { INavLinkProps } from "../NavLink";
 import { EUserPageName } from "constants/pages/common";
 import { observer } from "mobx-react";
-import { getValidArray } from "utils/common";
+import { red300, red500 } from "theme/colors.theme";
+import { useMediaQuery } from "react-responsive";
+import { maxMobileWidth, maxTabletWidth } from "theme/globalStyles";
 
 export interface ISidebarRefProps {
   onExpand: () => void;
@@ -18,6 +20,11 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const router = useRouter();
   const { authStore, settingStore } = useStores();
   const { isSideBarExpanded, setSideBarExpanded } = settingStore;
+  const isMobile: boolean = useMediaQuery({ maxWidth: maxMobileWidth });
+  const isTabletMobile: boolean = useMediaQuery({ maxWidth: maxTabletWidth });
+
+  console.log("isMobile", isMobile);
+  console.log("isTabletMobile", isTabletMobile);
 
   function getLinkProps(
     href: string,
@@ -47,6 +54,14 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
       }),
     };
   }
+
+  useEffect(() => {
+    if (isMobile || isTabletMobile) {
+      setSideBarExpanded(false);
+    } else {
+      setSideBarExpanded(true);
+    }
+  }, [isMobile, isTabletMobile]);
 
   useImperativeHandle(ref, () => ({
     onExpand: () => {
@@ -124,6 +139,11 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
             }}
             icon={"ic-logout.svg"}
             isExpanded={isSideBarExpanded}
+            _style={{
+              iconColor: red500,
+              hoverBgColor: red300,
+              textColor: red500,
+            }}
           />
         </Stack>
       </VStack>
