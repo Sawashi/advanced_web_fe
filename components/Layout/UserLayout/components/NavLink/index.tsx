@@ -4,6 +4,7 @@ import {
   HStack,
   Link,
   LinkProps,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -24,6 +25,7 @@ export interface INavLinkProps extends LinkProps {
   isExpanded?: boolean;
   isCollapsed?: boolean;
   children?: React.ReactNode[];
+  isLoading?: boolean;
   _style?: {
     iconColor?: string;
     hoverBgColor?: string;
@@ -40,6 +42,7 @@ const NavLink = (props: INavLinkProps) => {
     onClick,
     isExpanded = true,
     isCollapsed = false,
+    isLoading = false,
     children,
     _style,
   } = props;
@@ -128,11 +131,15 @@ const NavLink = (props: INavLinkProps) => {
             bottom={0}
             margin={"auto"}
           >
-            <SvgIcon
-              iconName={collapsed ? "ic-up.svg" : "ic-down.svg"}
-              size={30}
-              color={"#767676"}
-            />
+            {!isLoading ? (
+              <SvgIcon
+                iconName={collapsed ? "ic-up.svg" : "ic-down.svg"}
+                size={30}
+                color={"#767676"}
+              />
+            ) : (
+              <Spinner size="sm" color="gray.500" />
+            )}
           </Button>
         ) : null}
       </HStack>

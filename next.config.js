@@ -18,6 +18,11 @@ const config = {
         destination: "/user/home",
         permanent: true,
       },
+      {
+        source: "/user",
+        destination: "/user/home",
+        permanent: true,
+      },
     ];
   },
 };

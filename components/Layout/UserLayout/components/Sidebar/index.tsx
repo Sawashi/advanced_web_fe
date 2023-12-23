@@ -120,10 +120,11 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
 
           <NavLink
             label={EUserPageName.ENROLLED}
+            isLoading={isLoadingStudentClasses}
             {...getLinkProps(
               routes.user.enrolled_classes.value,
               "ic-enrolled",
-              getValidArray(ownedClasses?.data)?.map((item) => {
+              getValidArray(studentClasses?.data)?.map((item) => {
                 return {
                   label: item?.name,
                   ...getLinkProps(
@@ -137,6 +138,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
 
           <NavLink
             label={EUserPageName.TEACHING}
+            isLoading={isLoadingTeachingClasses}
             {...getLinkProps(
               routes.user.teaching_classes.value,
               "ic-teacher",
@@ -154,6 +156,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
 
           <NavLink
             label={EUserPageName.OWNED}
+            isLoading={isLoadingOwnedClasses}
             {...getLinkProps(
               routes.user.owned_classes.value,
               "ic-rocket",
