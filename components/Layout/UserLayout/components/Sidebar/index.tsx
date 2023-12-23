@@ -10,6 +10,10 @@ import { observer } from "mobx-react";
 import { red300, red500 } from "theme/colors.theme";
 import { useMediaQuery } from "react-responsive";
 import { maxMobileWidth, maxTabletWidth } from "theme/globalStyles";
+import { useGetClassesAsStudent } from "API/get/get.classes.student";
+import { useGetClassesAsOwner } from "API/get/get.classes.owned";
+import { useGetClassesAsTeacher } from "API/get/get.classes.teacher";
+import { getValidArray } from "utils/common";
 
 export interface ISidebarRefProps {
   onExpand: () => void;
@@ -23,8 +27,18 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const isMobile: boolean = useMediaQuery({ maxWidth: maxMobileWidth });
   const isTabletMobile: boolean = useMediaQuery({ maxWidth: maxTabletWidth });
 
-  console.log("isMobile", isMobile);
-  console.log("isTabletMobile", isTabletMobile);
+  const query = {
+    limit: 10,
+  };
+
+  const { data: studentClasses, isLoading: isLoadingStudentClasses } =
+    useGetClassesAsStudent(authStore?.user?.id ?? "", query);
+
+  const { data: ownedClasses, isLoading: isLoadingOwnedClasses } =
+    useGetClassesAsOwner(authStore?.user?.id ?? "", query);
+
+  const { data: teachingClasses, isLoading: isLoadingTeachingClasses } =
+    useGetClassesAsTeacher(authStore?.user?.id ?? "", query);
 
   function getLinkProps(
     href: string,
@@ -106,17 +120,53 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
 
           <NavLink
             label={EUserPageName.ENROLLED}
-            {...getLinkProps(routes.user.enrolled_classes.value, "ic-enrolled")}
+            {...getLinkProps(
+              routes.user.enrolled_classes.value,
+              "ic-enrolled",
+              getValidArray(ownedClasses?.data)?.map((item) => {
+                return {
+                  label: item?.name,
+                  ...getLinkProps(
+                    routes.classes.details.value(item?.id ?? ""),
+                    "ic-class"
+                  ),
+                };
+              })
+            )}
           />
 
           <NavLink
             label={EUserPageName.TEACHING}
-            {...getLinkProps(routes.user.teaching_classes.value, "ic-teacher")}
+            {...getLinkProps(
+              routes.user.teaching_classes.value,
+              "ic-teacher",
+              getValidArray(teachingClasses?.data)?.map((item) => {
+                return {
+                  label: item?.name,
+                  ...getLinkProps(
+                    routes.classes.details.value(item?.id ?? ""),
+                    "ic-class"
+                  ),
+                };
+              })
+            )}
           />
 
           <NavLink
             label={EUserPageName.OWNED}
-            {...getLinkProps(routes.user.owned_classes.value, "ic-rocket")}
+            {...getLinkProps(
+              routes.user.owned_classes.value,
+              "ic-rocket",
+              getValidArray(ownedClasses?.data)?.map((item) => {
+                return {
+                  label: item?.name,
+                  ...getLinkProps(
+                    routes.classes.details.value(item?.id ?? ""),
+                    "ic-class"
+                  ),
+                };
+              })
+            )}
           />
         </Stack>
         <Stack w="full" alignSelf={"end"}>
