@@ -113,7 +113,9 @@ const UserHeader = ({
               size={"sm"}
               src={authStore.user?.avatar}
               name={name}
-              onClick={() => {}}
+              onClick={() => {
+                router.push(routes.user.profile.value);
+              }}
             />
           </Tooltip>
         </HStack>

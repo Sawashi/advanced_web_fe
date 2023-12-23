@@ -7,6 +7,7 @@ import routes from "routes";
 import NavLink, { INavLinkProps } from "../NavLink";
 import { EUserPageName } from "constants/pages/common";
 import { observer } from "mobx-react";
+import { getValidArray } from "utils/common";
 
 export interface ISidebarRefProps {
   onExpand: () => void;
@@ -20,14 +21,30 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
 
   function getLinkProps(
     href: string,
-    iconName: string
+    iconName: string,
+    children?: INavLinkProps[]
   ): Omit<INavLinkProps, "label"> {
     const isActive = router.asPath.includes(href);
+    const isCollapsed = children
+      ?.map((child) => child?.href)
+      ?.some((href) => router.asPath.includes(href ?? ""));
+    const icon = `${iconName?.replace(".svg", "")}.svg`;
+
     return {
       isActive,
       href,
-      icon: `${iconName}.svg`,
+      icon: icon,
       isExpanded: isSideBarExpanded,
+      isCollapsed,
+      children: children?.map((child) => {
+        return (
+          <NavLink
+            key={child.href}
+            label={child?.label}
+            {...getLinkProps(child.href ?? "", child?.icon)}
+          />
+        );
+      }),
     };
   }
 
@@ -90,16 +107,15 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
         <Stack w="full" alignSelf={"end"}>
           <NavLink
             label={EUserPageName.SETTINGS}
-            children={[
-              <NavLink
-                label={EUserPageName.CHANGE_PASSWORD}
-                {...getLinkProps(
+            {...getLinkProps(routes.user.profile.value, "ic-settings", [
+              {
+                label: EUserPageName.CHANGE_PASSWORD,
+                ...getLinkProps(
                   routes.user.profile.change_password.value,
                   "ic-password"
-                )}
-              />,
-            ]}
-            {...getLinkProps(routes.user.profile.value, "ic-settings")}
+                ),
+              },
+            ])}
           />
           <NavLink
             label={EUserPageName.LOGOUT}
