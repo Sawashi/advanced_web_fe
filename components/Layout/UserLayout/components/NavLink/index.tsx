@@ -4,6 +4,7 @@ import {
   HStack,
   Link,
   LinkProps,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -12,9 +13,8 @@ import Icon from "components/Icon";
 import SvgIcon from "components/SvgIcon";
 import { gray500 } from "theme/colors.theme";
 import { checkValidArray } from "utils/common";
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react";
-import { useStores } from "hooks/useStores";
 
 export interface INavLinkProps extends LinkProps {
   isActive?: boolean;
@@ -23,7 +23,14 @@ export interface INavLinkProps extends LinkProps {
   href?: string;
   onClick?: () => void;
   isExpanded?: boolean;
+  isCollapsed?: boolean;
   children?: React.ReactNode[];
+  isLoading?: boolean;
+  _style?: {
+    iconColor?: string;
+    hoverBgColor?: string;
+    textColor?: string;
+  };
 }
 
 const NavLink = (props: INavLinkProps) => {
@@ -34,84 +41,110 @@ const NavLink = (props: INavLinkProps) => {
     href,
     onClick,
     isExpanded = true,
+    isCollapsed = false,
+    isLoading = false,
     children,
+    _style,
   } = props;
   const isSVGIcon = icon?.endsWith(".svg");
+  const { hoverBgColor, textColor } = _style ?? {};
   const isHavingChildren = checkValidArray(children);
-  const { settingStore } = useStores();
-  const { settingSidebar, setSettingSidebar } = settingStore;
-  const isDropdownOpen = settingSidebar?.dropDownName === href;
+  const [collapsed, setCollapsed] = React.useState(isCollapsed);
 
   const setOpenChildren = () => {
-    if (isDropdownOpen) {
-      setSettingSidebar({
-        dropDownName: "",
-      });
-      return;
-    }
-    setSettingSidebar({
-      dropDownName: href,
-    });
+    setCollapsed(!collapsed);
   };
+
+  useEffect(() => {
+    setCollapsed(isCollapsed);
+  }, [isCollapsed]);
 
   return (
     <VStack w={"100%"} spacing={0} alignItems="flex-start">
-      <Link
+      <HStack
         className={undefined}
-        display="flex"
-        onClick={onClick}
         paddingY={3}
         px={1}
-        href={href}
         borderRadius="lg"
-        fontWeight={600}
-        fontSize="sm"
-        lineHeight="1.5rem"
-        as={href ? NextLink : undefined}
-        aria-current={isActive ? "page" : undefined}
-        flexDirection={isExpanded ? "row" : "column"}
-        color="white"
-        _hover={{
-          textDecoration: "none",
-          bg: "gray.200",
-        }}
-        _activeLink={{
-          bg: "gray.200",
-          color: "gray.900",
-        }}
         minW={isExpanded ? "250px" : undefined}
+        bgColor={isActive ? "gray.200" : "transparent"}
+        _hover={{
+          bg: hoverBgColor ?? "gray.200",
+        }}
+        cursor="pointer"
+        position="relative"
       >
-        <HStack spacing={3} px={3} flex={1}>
-          {isSVGIcon ? (
-            <SvgIcon
-              iconName={icon}
-              size={30}
-              color={isActive ? gray500 : "#767676"}
-            />
-          ) : (
-            <Icon iconName={icon} size={30} alt="" />
-          )}
-          {isExpanded ? (
-            <Text as="span" flexGrow={1} color="gray.500">
-              {label}
-            </Text>
-          ) : null}
-        </HStack>
+        <Link
+          className={undefined}
+          onClick={onClick}
+          href={href}
+          _hover={{
+            textDecoration: "none",
+          }}
+          as={href ? NextLink : undefined}
+          flex={1}
+        >
+          <HStack spacing={3} px={3} flex={1}>
+            {isSVGIcon ? (
+              <SvgIcon
+                iconName={icon}
+                size={30}
+                color={
+                  _style?.iconColor
+                    ? _style?.iconColor
+                    : isActive
+                    ? gray500
+                    : "#767676"
+                }
+              />
+            ) : (
+              <Icon iconName={icon} size={30} alt="" />
+            )}
+            {isExpanded ? (
+              <Text
+                as="span"
+                flexGrow={1}
+                color={textColor ?? "gray.500"}
+                fontWeight={600}
+                fontSize="sm"
+                lineHeight="1.5rem"
+              >
+                {label}
+              </Text>
+            ) : null}
+          </HStack>
+        </Link>
+
         {isHavingChildren && isExpanded ? (
           <Button
             variant="ghost"
             size="sm"
             color="gray.500"
+            _hover={{
+              bg: "transparent",
+            }}
+            bg="transparent"
             onClick={setOpenChildren}
+            position="absolute"
+            right={0}
+            top={0}
+            bottom={0}
+            margin={"auto"}
           >
-            <SvgIcon
-              iconName={isDropdownOpen ? "ic-up.svg" : "ic-down.svg"}
-              size={20}
-            />
+            {!isLoading ? (
+              <SvgIcon
+                iconName={collapsed ? "ic-up.svg" : "ic-down.svg"}
+                size={30}
+                color={"#767676"}
+              />
+            ) : (
+              <Spinner size="sm" color="gray.500" />
+            )}
           </Button>
         ) : null}
-      </Link>
-      <Collapse in={isDropdownOpen} animateOpacity>
+      </HStack>
+
+      <Collapse in={collapsed && isExpanded} animateOpacity>
         <VStack spacing={0} alignItems="flex-start" gap={2} mt={2} flex={1}>
           {children}
         </VStack>

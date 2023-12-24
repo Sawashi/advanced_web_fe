@@ -1,20 +1,29 @@
+import { EClassRole } from "enums/classes";
+
 export interface IClass {
-  id: string;
-  name: string;
-  description: string;
-  code: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: any;
-  owner: IClassOwner;
+  id?: string;
+  name?: string;
+  description?: string;
+  code?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: any;
+  owner?: IAttendeeProfile;
+  role?: EClassRole;
 }
 
-export interface IClassOwner {
+export interface IAttendeeProfile {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   avatar: any;
+}
+
+export interface IAttendee {
+  user?: IAttendeeProfile;
+  role?: EClassRole;
+  joinedAt?: string;
 }
 
 export interface IMetaResponse {

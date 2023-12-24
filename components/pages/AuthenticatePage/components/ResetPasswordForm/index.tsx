@@ -3,20 +3,18 @@ import get from "lodash/get";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { resetPassword } from "API/authenticate";
 import PasswordField from "components/PasswordField";
 import { PASSWORD_PATTERN } from "constants/common";
 import {
   invalidPasswordDescription,
   notMatchedPasswordDescription,
   setPasswordFailedDescription,
-  setPasswordInvalidTokenDescription,
   setPasswordSuccessDescription,
 } from "constants/messages/auth.messages";
 import { useStores } from "hooks/useStores";
-import { IVerifyTokenResponse } from "interfaces/user";
 import routes from "routes";
 import { SubmitButton } from "../../authenticatePage.styles";
+import { resetPassword } from "API/post/post.auth.reset-password";
 
 export interface IResetPasswordFormData {
   newPassword: string;
@@ -82,7 +80,6 @@ const ResetPasswordForm = () => {
         email !== "" &&
           (await authStore.login({ email, password: newPassword }));
         showSuccess(setPasswordSuccessDescription);
-        // router.push(routes.fleetManager.setFleet.value);
       }
     } catch (error) {
       showError(setPasswordFailedDescription);

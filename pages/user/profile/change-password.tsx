@@ -6,14 +6,12 @@ import {
   ChangePasswordSchema,
   IChangePasswordSchema,
 } from "constants/validation/auth";
-import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import { useForm, FormProvider } from "react-hook-form";
-import { changePassword, getCurrentUser } from "API/authenticate";
+import { changePassword } from "API/post/post.auth.change-password";
 import FormInput from "components/FormInput";
 
 function ChangePassword() {
-  const { authStore } = useStores();
   const toast = useToast();
   const methods = useForm({
     defaultValues: {
@@ -30,7 +28,6 @@ function ChangePassword() {
   } = methods;
 
   const handleSubmitModal = async (data: IChangePasswordSchema) => {
-    await getCurrentUser();
     try {
       const res = await changePassword(data?.oldPassword, data?.newPassword);
       if (res) {

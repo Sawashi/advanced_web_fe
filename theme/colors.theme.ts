@@ -17,28 +17,28 @@ export const gray800 = "#323232";
 export const gray900 = "#222222";
 
 // blue
-const blue50 = "#F0F7FF";
-const blue100 = "#E1EFFE";
-const blue200 = "#C3DDFD";
-const blue300 = "#A4CAFE";
-const blue400 = "#76A9FA";
-const blue500 = "#3F83F8";
-const blue600 = "#1C65F2";
-const blue700 = "#1A56DB";
-const blue800 = "#1E429F";
-const blue900 = "#233876";
+// const blue50 = "#F0F7FF";
+// const blue100 = "#E1EFFE";
+// const blue200 = "#C3DDFD";
+// const blue300 = "#A4CAFE";
+// const blue400 = "#76A9FA";
+// const blue500 = "#3F83F8";
+// const blue600 = "#1C65F2";
+// const blue700 = "#1A56DB";
+// const blue800 = "#1E429F";
+// const blue900 = "#233876";
 
 // red
-const red50 = "#FDF2F2";
-const red100 = "#FDE8E8";
-const red200 = "#FBD5D5";
-const red300 = "#F8B4B4";
-const red400 = "#F98080";
-const red500 = "#F05252";
-const red600 = "#E02424";
-const red700 = "#C81E1E";
-const red800 = "#9B1C1C";
-const red900 = "#771D1D";
+export const red50 = "#FDF2F2";
+export const red100 = "#FDE8E8";
+export const red200 = "#FBD5D5";
+export const red300 = "#F8B4B4";
+export const red400 = "#F98080";
+export const red500 = "#F05252";
+export const red600 = "#E02424";
+export const red700 = "#C81E1E";
+export const red800 = "#9B1C1C";
+export const red900 = "#771D1D";
 
 // orange
 const orange50 = "#FFF8F1";
@@ -174,18 +174,6 @@ export const colors: Colors = {
     700: gray700,
     800: gray800,
     900: gray900,
-  },
-  blue: {
-    50: blue50,
-    100: blue100,
-    200: blue200,
-    300: blue300,
-    400: blue400,
-    500: blue500,
-    600: blue600,
-    700: blue700,
-    800: blue800,
-    900: blue900,
   },
   red: {
     50: red50,

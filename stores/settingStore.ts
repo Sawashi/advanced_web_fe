@@ -1,9 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import { RootStore } from ".";
 import { makePersistable } from "mobx-persist-store";
+import { IClass } from "interfaces/classes";
 
 type TSettingSidebar = {
-  dropDownName?: string;
+  enrolledClasses?: IClass[];
+  teachingClasses?: IClass[];
+  ownedClasses?: IClass[];
 };
 
 class SettingStore {

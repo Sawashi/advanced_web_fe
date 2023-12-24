@@ -20,7 +20,10 @@ const OwnedClasses = () => {
   return (
     <UserLayout title="Home">
       <VStack w="full" flex={1} h="full" alignItems={"start"}>
-        <ClassesList classes={getValidArray(ownedClasses?.data)} />
+        <ClassesList
+          classes={getValidArray(ownedClasses?.data)}
+          isLoading={isLoadingOwnedClasses}
+        />
       </VStack>
     </UserLayout>
   );

@@ -58,6 +58,7 @@ function UserProfileEdit() {
         status: "success",
         description: "Edit profile successfully",
       });
+      await authStore.fetchCurrentUser();
     } catch (error) {
       toast({
         status: "error",
@@ -81,6 +82,7 @@ function UserProfileEdit() {
         await updateAvatar({
           avatar: file,
         });
+        await authStore?.fetchCurrentUser();
       }
     }
   };

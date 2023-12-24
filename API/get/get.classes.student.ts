@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { api } from "API";
-import { URLQueryType, UsersApiRouters } from "API/router";
+import { URLQueryType, UsersApiRouters } from "API/router.api";
 import { IClass, IMetaResponse } from "interfaces/classes";
 
 export interface IClassesAsStudentResponse {

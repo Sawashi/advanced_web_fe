@@ -1,17 +1,17 @@
 import {
   Avatar,
-  Button,
   HStack,
   Image,
   Progress,
   Tooltip,
   VStack,
   Text,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Skeleton,
 } from "@chakra-ui/react";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import SvgIcon from "components/SvgIcon";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
@@ -19,21 +19,17 @@ import { useRouter } from "next/router";
 import React from "react";
 import routes from "routes";
 import { gray500 } from "theme/colors.theme";
+import { IClass } from "interfaces/classes";
 
-export interface IUserHeaderProps {
+export interface IClassHeaderProps {
   onExpand?: () => void;
-  onJoinClass?: () => void;
-  onCreateClass?: () => void;
+  classDetails?: IClass;
 }
 
-const UserHeader = ({
-  onExpand,
-  onJoinClass,
-  onCreateClass,
-}: IUserHeaderProps) => {
+const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   const router = useRouter();
-  const { settingStore: spinnerStore, authStore } = useStores();
-  const { isHeaderLoading } = spinnerStore;
+  const { settingStore, authStore } = useStores();
+  const { isHeaderLoading } = settingStore;
   const name =
     (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
 
@@ -62,35 +58,43 @@ const UserHeader = ({
             onClick={onExpandSidebar}
             color={gray500}
           />
-          <Image
-            src="/assets/icons/logo.svg"
-            alt="logo"
-            objectFit={"contain"}
-            w={10}
-            onClick={onClickLogo}
-            _hover={{ cursor: "pointer" }}
-          />
-        </HStack>
-        <HStack alignItems={"center"} gap={3}>
-          <Menu>
-            <MenuButton aria-label="Options">
-              <Button
-                as={"div"}
-                variant={"ghost"}
-                borderRadius={"full"}
-                _hover={{
-                  bgColor: "gray.200",
-                }}
-                onClick={onJoinClass}
+          <Breadcrumb
+            spacing="8px"
+            separator={<ChevronRightIcon color="gray.500" boxSize={7} />}
+          >
+            <BreadcrumbItem>
+              <BreadcrumbLink href="#">
+                <HStack w={"full"} alignItems={"center"} gap={5} flex={1}>
+                  <Image
+                    src="/assets/icons/logo.svg"
+                    alt="logo"
+                    objectFit={"contain"}
+                    w={10}
+                    onClick={onClickLogo}
+                    _hover={{ cursor: "pointer" }}
+                  />
+                </HStack>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                href={routes.classes.details.value(classDetails?.id ?? "")}
               >
-                <SvgIcon iconName={"ic-add.svg"} size={30} />
-              </Button>
-            </MenuButton>
-            <MenuList bgColor={"white.100"}>
-              <MenuItem onClick={onJoinClass}>Join Class</MenuItem>
-              <MenuItem onClick={onCreateClass}>Create Class</MenuItem>
-            </MenuList>
-          </Menu>
+                <Skeleton isLoaded={!isHeaderLoading}>
+                  <VStack alignItems={"start"} gap={0}>
+                    <Text fontSize="sm" fontWeight="bold">
+                      {classDetails?.name}
+                    </Text>
+                    <Text fontSize="xs">{classDetails?.description}</Text>
+                  </VStack>
+                </Skeleton>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </HStack>
+
+        <HStack alignItems={"center"} gap={3}>
           <Tooltip
             label={
               <VStack
@@ -135,4 +139,4 @@ const UserHeader = ({
   );
 };
 
-export default observer(UserHeader);
+export default observer(ClassHeader);

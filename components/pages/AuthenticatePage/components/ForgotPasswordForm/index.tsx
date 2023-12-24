@@ -1,10 +1,6 @@
 import {
-  HStack,
   Stack,
   useToast,
-  Text,
-  Link,
-  chakra,
   AlertIcon,
   Alert,
   Button,
@@ -12,19 +8,15 @@ import {
 import { useRouter } from "next/router";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import PasswordField from "components/PasswordField";
 import { SubmitButton } from "../../authenticatePage.styles";
 import {
   IForgotPasswordSchema,
-  IRegisterSchema,
-  RegisterSchema,
   ForgotPasswordSchema,
 } from "constants/validation/auth";
-import { forgotPassword } from "API/authenticate";
+import { forgotPassword } from "API/post/post.auth.forgot-password";
 import routes from "routes";
 import FormInput from "components/FormInput";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { set } from "lodash";
 
 const ForgotPasswordForm = () => {
   const [showMessage, setShowMessage] = React.useState(false);

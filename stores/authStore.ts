@@ -1,17 +1,14 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { makePersistable } from "mobx-persist-store";
-
-import {
-  editProfile,
-  getCurrentUser,
-  login as loginAPI,
-  resendVerificationEmail,
-} from "API/authenticate";
-import { AuthenticateParams, ErrorMessageEnum } from "enums/auth";
+import { resendVerificationEmail } from "API/post/post.auth.resend-email";
+import { AuthenticateParams } from "enums/auth";
 import { ILoginDataReq, ILoginDataRes } from "interfaces/authentication";
 import { IUser } from "interfaces/user";
 import { RootStore } from "stores";
 import { CommonError } from "types";
+import { getCurrentUser } from "API/get/get.me";
+import { postLogin } from "API/post/post.auth.login";
+import { editProfile } from "API/patch/patch.auth.profile";
 
 class AuthStore {
   rootStore: RootStore;
@@ -44,7 +41,7 @@ class AuthStore {
   public async login(loginData: ILoginDataReq): Promise<void> {
     this.isLoading = true;
     try {
-      const response = await loginAPI(loginData);
+      const response = await postLogin(loginData);
       const {
         accessToken,
         refreshToken,

@@ -20,7 +20,10 @@ const EnrolledClasses = () => {
   return (
     <UserLayout title="Home">
       <VStack w="full" flex={1} h="full" alignItems={"start"}>
-        <ClassesList classes={getValidArray(studentClasses?.data)} />
+        <ClassesList
+          classes={getValidArray(studentClasses?.data)}
+          isLoading={isLoadingStudentClasses}
+        />
       </VStack>
     </UserLayout>
   );
