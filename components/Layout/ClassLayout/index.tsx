@@ -1,4 +1,4 @@
-import { HStack, Stack, chakra } from "@chakra-ui/react";
+import { Center, HStack, Spinner, Stack, chakra } from "@chakra-ui/react";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
@@ -11,10 +11,11 @@ interface IClassLayoutProps {
   title?: string;
   children?: ReactNode;
   details: IClass;
+  isLoading?: boolean;
 }
 
 const ClassLayout = (props: IClassLayoutProps) => {
-  const { title, children, details } = props;
+  const { title, children, details, isLoading = false } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
 
   return (
@@ -38,7 +39,13 @@ const ClassLayout = (props: IClassLayoutProps) => {
         >
           <SideBar ref={sideBarRef} />
           <Stack h={"100%"} overflow={"auto"} w={"full"} flex={1}>
-            {children}
+            {isLoading ? (
+              <Center mt={20}>
+                <Spinner boxSize={30} />
+              </Center>
+            ) : (
+              <>{children}</>
+            )}
           </Stack>
         </HStack>
       </chakra.main>

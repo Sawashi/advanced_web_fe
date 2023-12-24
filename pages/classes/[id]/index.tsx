@@ -14,6 +14,7 @@ import { useGetClassDetails } from "API/get/get.class.details";
 import ClassLayout from "components/Layout/ClassLayout";
 import { useStores } from "hooks/useStores";
 import { useEffect } from "react";
+import NotFoundClass from "components/pages/Classes/NotFoundClass";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -29,61 +30,67 @@ const ClassDetail = () => {
     settingStore.setHeaderLoading(isLoading);
   }, [isLoading]);
 
-
   return (
     <ClassLayout
       title={classDetails?.name ?? "Class"}
       details={classDetails ?? {}}
+      isLoading={isLoading}
     >
       <VStack w="full" flex={1} h="full" alignItems={"start"} py={5} gap={5}>
-        <Tabs position="relative" variant="unstyled" w="full">
-          <TabList borderBottomWidth={1} px={3}>
-            <Tab
-              py={2}
-              _selected={{
-                color: "primary.500",
-                fontWeight: "bold",
-              }}
-            >
-              Stream
-            </Tab>
-            <Tab
-              py={2}
-              _selected={{
-                color: "primary.500",
-                fontWeight: "bold",
-              }}
-            >
-              Classwork
-            </Tab>
-            <Tab
-              py={2}
-              _selected={{
-                color: "primary.500",
-                fontWeight: "bold",
-              }}
-            >
-              People
-            </Tab>
-          </TabList>
-          <TabIndicator
-            mt="-1.5px"
-            height="3px"
-            bg="primary.500"
-            borderTopRadius="3px"
-          />
-          <TabPanels>
-            <TabPanel>
-              <p>one!</p>
-            </TabPanel>
-            <TabPanel>
-              <p>two!</p>
-            </TabPanel>
-            <TabPanel>
-              <p>three!</p>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        {isError ? (
+          <VStack flex={1} w={"full"} justifyContent={"center"}>
+            <NotFoundClass />
+          </VStack>
+        ) : (
+          <Tabs position="relative" variant="unstyled" w="full">
+            <TabList borderBottomWidth={1} px={3}>
+              <Tab
+                py={2}
+                _selected={{
+                  color: "primary.500",
+                  fontWeight: "bold",
+                }}
+              >
+                Stream
+              </Tab>
+              <Tab
+                py={2}
+                _selected={{
+                  color: "primary.500",
+                  fontWeight: "bold",
+                }}
+              >
+                Classwork
+              </Tab>
+              <Tab
+                py={2}
+                _selected={{
+                  color: "primary.500",
+                  fontWeight: "bold",
+                }}
+              >
+                People
+              </Tab>
+            </TabList>
+            <TabIndicator
+              mt="-1.5px"
+              height="3px"
+              bg="primary.500"
+              borderTopRadius="3px"
+            />
+            <TabPanels>
+              <TabPanel>
+                <p>one!</p>
+              </TabPanel>
+              <TabPanel>
+                <p>two!</p>
+              </TabPanel>
+              <TabPanel>
+                <p>three!</p>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        )}
       </VStack>
     </ClassLayout>
   );

@@ -1,4 +1,12 @@
-import { Avatar, Button, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  Center,
+  HStack,
+  Spinner,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { IClass } from "interfaces/classes";
 import { useRouter } from "next/router";
@@ -8,6 +16,7 @@ import { checkValidArray, getValidArray } from "utils/common";
 
 export type ClassesListProps = {
   classes: IClass[];
+  isLoading?: boolean;
 };
 
 export interface IClassCardProps {
@@ -102,7 +111,7 @@ const ClassCard = ({ item }: IClassCardProps) => {
   );
 };
 
-const ClassesList = ({ classes }: ClassesListProps) => {
+const ClassesList = ({ classes, isLoading = false }: ClassesListProps) => {
   const renderClassItem = (item: IClass, index: number) => (
     <ClassCard item={item} />
   );
@@ -119,15 +128,23 @@ const ClassesList = ({ classes }: ClassesListProps) => {
       flexWrap={"wrap"}
       justifyContent={checkValidArray(classes) ? "start" : "center"}
     >
-      {checkValidArray(classes) ? (
-        getValidArray(classes)?.map(renderClassItem)
+      {isLoading ? (
+        <Center mt={20} w={"full"}>
+          <Spinner boxSize={30} />
+        </Center>
       ) : (
-        <VStack>
-          <SvgIcon iconName={"ic-empty.svg"} size={100} />
-          <Text fontSize={25} fontWeight={600} textAlign={"center"}>
-            No class found
-          </Text>
-        </VStack>
+        <>
+          {checkValidArray(classes) ? (
+            getValidArray(classes)?.map(renderClassItem)
+          ) : (
+            <VStack>
+              <SvgIcon iconName={"ic-empty.svg"} size={100} fill="gray.300" />
+              <Text fontSize={25} fontWeight={600} textAlign={"center"}>
+                No class found
+              </Text>
+            </VStack>
+          )}
+        </>
       )}
     </HStack>
   );
