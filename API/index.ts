@@ -1,6 +1,9 @@
 import axios from "axios";
 import { AuthenticateParams } from "enums/auth";
-import { IRequestHeader } from "interfaces/authentication";
+import {
+  IRefreshTokenResponse,
+  IRequestHeader,
+} from "interfaces/authentication";
 import { getCookie } from "cookies-next";
 
 export const api = axios.create({

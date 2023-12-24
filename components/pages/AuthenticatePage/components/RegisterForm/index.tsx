@@ -13,7 +13,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import PasswordField from "components/PasswordField";
 import { SubmitButton } from "../../authenticatePage.styles";
 import { IRegisterSchema, RegisterSchema } from "constants/validation/auth";
-import { signUp } from "API/authenticate";
+import { signUp } from "API/post/post.auth.sign-up";
 import routes from "routes";
 import FormInput from "components/FormInput";
 import { yupResolver } from "@hookform/resolvers/yup";

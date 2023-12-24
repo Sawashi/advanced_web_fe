@@ -11,7 +11,7 @@ import get from "lodash/get";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { verifyToken } from "API/authenticate";
+import { verifyToken } from "API/post/post.auth.verify-token";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
 

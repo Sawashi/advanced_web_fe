@@ -18,13 +18,17 @@ import { useEffect } from "react";
 const ClassDetail = () => {
   const router = useRouter();
   const { settingStore } = useStores();
-  const { data: classDetails, isLoading } = useGetClassDetails(
-    router?.query?.id as string
-  );
+  const {
+    data: classDetails,
+    isLoading,
+    isError,
+    error,
+  } = useGetClassDetails(router?.query?.id as string);
 
   useEffect(() => {
     settingStore.setHeaderLoading(isLoading);
   }, [isLoading]);
+
 
   return (
     <ClassLayout

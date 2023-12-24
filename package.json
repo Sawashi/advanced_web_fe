@@ -13,7 +13,8 @@
     "preversion": "yarn config set version-tag-prefix \"release-v\"",
     "postversion": "git push --tags && git push && echo \"Successfully released version $npm_package_version!\"",
     "test:dev": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:type": "tsc --noEmit"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.19",

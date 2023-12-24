@@ -9,6 +9,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Skeleton,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import SvgIcon from "components/SvgIcon";
@@ -27,8 +28,8 @@ export interface IClassHeaderProps {
 
 const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   const router = useRouter();
-  const { settingStore: spinnerStore, authStore } = useStores();
-  const { isHeaderLoading } = spinnerStore;
+  const { settingStore, authStore } = useStores();
+  const { isHeaderLoading } = settingStore;
   const name =
     (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
 
@@ -80,12 +81,14 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
               <BreadcrumbLink
                 href={routes.classes.details.value(classDetails?.id ?? "")}
               >
-                <VStack alignItems={"start"} gap={0}>
-                  <Text fontSize="sm" fontWeight="bold">
-                    {classDetails?.name}
-                  </Text>
-                  <Text fontSize="xs">{classDetails?.description}</Text>
-                </VStack>
+                <Skeleton isLoaded={!isHeaderLoading}>
+                  <VStack alignItems={"start"} gap={0}>
+                    <Text fontSize="sm" fontWeight="bold">
+                      {classDetails?.name}
+                    </Text>
+                    <Text fontSize="xs">{classDetails?.description}</Text>
+                  </VStack>
+                </Skeleton>
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>

@@ -7,6 +7,7 @@ export const getClassDetails = async (classId: string) => {
   const response = await api.get<IClass>(
     ClassesApiRouters.get.class_details.value(classId)
   );
+  if (response.status !== 200) throw new Error(response.statusText);
   return response.data;
 };
 

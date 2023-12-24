@@ -126,7 +126,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
               "ic-enrolled",
               getValidArray(studentClasses?.data)?.map((item) => {
                 return {
-                  label: item?.name,
+                  label: item?.name ?? "",
                   ...getLinkProps(
                     routes.classes.details.value(item?.id ?? ""),
                     "ic-class"
@@ -144,7 +144,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
               "ic-teacher",
               getValidArray(teachingClasses?.data)?.map((item) => {
                 return {
-                  label: item?.name,
+                  label: item?.name ?? "",
                   ...getLinkProps(
                     routes.classes.details.value(item?.id ?? ""),
                     "ic-class"
@@ -162,7 +162,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
               "ic-rocket",
               getValidArray(ownedClasses?.data)?.map((item) => {
                 return {
-                  label: item?.name,
+                  label: item?.name ?? "",
                   ...getLinkProps(
                     routes.classes.details.value(item?.id ?? ""),
                     "ic-class"
