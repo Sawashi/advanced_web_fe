@@ -15,6 +15,7 @@ import ClassLayout from "components/Layout/ClassLayout";
 import { useStores } from "hooks/useStores";
 import { useEffect } from "react";
 import NotFoundClass from "components/pages/Classes/NotFoundClass";
+import PeopleScene from "components/pages/Classes/Sections/PeopleScene";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -86,7 +87,7 @@ const ClassDetail = () => {
                 <p>two!</p>
               </TabPanel>
               <TabPanel>
-                <p>three!</p>
+                <PeopleScene details={classDetails ?? {}} />
               </TabPanel>
             </TabPanels>
           </Tabs>

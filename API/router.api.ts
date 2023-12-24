@@ -56,5 +56,8 @@ export const ClassesApiRouters = {
     class_details: {
       value: (classId: ID) => `${API_URL}/classes/${classId}`,
     },
+    class_attendees: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/attendees`,
+    },
   },
 };

@@ -17,16 +17,16 @@ export const gray800 = "#323232";
 export const gray900 = "#222222";
 
 // blue
-const blue50 = "#F0F7FF";
-const blue100 = "#E1EFFE";
-const blue200 = "#C3DDFD";
-const blue300 = "#A4CAFE";
-const blue400 = "#76A9FA";
-const blue500 = "#3F83F8";
-const blue600 = "#1C65F2";
-const blue700 = "#1A56DB";
-const blue800 = "#1E429F";
-const blue900 = "#233876";
+// const blue50 = "#F0F7FF";
+// const blue100 = "#E1EFFE";
+// const blue200 = "#C3DDFD";
+// const blue300 = "#A4CAFE";
+// const blue400 = "#76A9FA";
+// const blue500 = "#3F83F8";
+// const blue600 = "#1C65F2";
+// const blue700 = "#1A56DB";
+// const blue800 = "#1E429F";
+// const blue900 = "#233876";
 
 // red
 export const red50 = "#FDF2F2";
@@ -174,18 +174,6 @@ export const colors: Colors = {
     700: gray700,
     800: gray800,
     900: gray900,
-  },
-  blue: {
-    50: blue50,
-    100: blue100,
-    200: blue200,
-    300: blue300,
-    400: blue400,
-    500: blue500,
-    600: blue600,
-    700: blue700,
-    800: blue800,
-    900: blue900,
   },
   red: {
     50: red50,
