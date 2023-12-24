@@ -1,5 +1,5 @@
 import { api } from "API";
-import { UsersApiRouters } from "API/router";
+import { UsersApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
 import { useMutation } from "react-query";
 

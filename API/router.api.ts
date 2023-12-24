@@ -50,3 +50,11 @@ export const UsersApiRouters = {
     },
   },
 };
+
+export const ClassesApiRouters = {
+  get: {
+    class_details: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}`,
+    },
+  },
+};

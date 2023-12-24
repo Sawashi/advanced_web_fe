@@ -1,4 +1,4 @@
-import { ID } from "API/router";
+import { ID } from "API/router.api";
 
 const ClassRouter = {
   value: "/classes",

@@ -1,12 +1,12 @@
 export interface IClass {
-  id: string;
-  name: string;
-  description: string;
-  code: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: any;
-  owner: IClassOwner;
+  id?: string;
+  name?: string;
+  description?: string;
+  code?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: any;
+  owner?: IClassOwner;
 }
 
 export interface IClassOwner {
