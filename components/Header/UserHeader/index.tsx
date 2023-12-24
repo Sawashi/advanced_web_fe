@@ -7,6 +7,10 @@ import {
   Tooltip,
   VStack,
   Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { useStores } from "hooks/useStores";
@@ -19,9 +23,14 @@ import { gray500 } from "theme/colors.theme";
 export interface IUserHeaderProps {
   onExpand?: () => void;
   onJoinClass?: () => void;
+  onCreateClass?: () => void;
 }
 
-const UserHeader = ({ onExpand, onJoinClass }: IUserHeaderProps) => {
+const UserHeader = ({
+  onExpand,
+  onJoinClass,
+  onCreateClass,
+}: IUserHeaderProps) => {
   const router = useRouter();
   const { settingStore: spinnerStore, authStore } = useStores();
   const { isHeaderLoading } = spinnerStore;
@@ -63,16 +72,24 @@ const UserHeader = ({ onExpand, onJoinClass }: IUserHeaderProps) => {
           />
         </HStack>
         <HStack alignItems={"center"} gap={3}>
-          <Button
-            variant={"ghost"}
-            borderRadius={"full"}
-            _hover={{
-              bgColor: "gray.200",
-            }}
-            onClick={onJoinClass}
-          >
-            <SvgIcon iconName={"ic-add.svg"} size={30} />
-          </Button>
+          <Menu>
+            <MenuButton aria-label="Options">
+              <Button
+                variant={"ghost"}
+                borderRadius={"full"}
+                _hover={{
+                  bgColor: "gray.200",
+                }}
+                onClick={onJoinClass}
+              >
+                <SvgIcon iconName={"ic-add.svg"} size={30} />
+              </Button>
+            </MenuButton>
+            <MenuList bgColor={"white.100"}>
+              <MenuItem onClick={onJoinClass}>Join Class</MenuItem>
+              <MenuItem onClick={onCreateClass}>Create Class</MenuItem>
+            </MenuList>
+          </Menu>
           <Tooltip
             label={
               <VStack
