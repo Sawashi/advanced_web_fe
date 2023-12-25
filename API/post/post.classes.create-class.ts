@@ -1,5 +1,5 @@
 import { api } from "API";
-import { UsersApiRouters } from "API/router.api";
+import { ClassesApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
 
 export const createAClass = async (
@@ -9,7 +9,7 @@ export const createAClass = async (
   const response = await api.post<
     { name: string; description: string },
     IResponseData<{}>
-  >(UsersApiRouters.post.create_a_class.value, {
+  >(ClassesApiRouters.post.create_a_class.value, {
     name: nameOfClass,
     description: descriptionOfClass,
   });

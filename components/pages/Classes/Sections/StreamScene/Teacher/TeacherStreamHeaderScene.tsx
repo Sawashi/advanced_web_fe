@@ -51,36 +51,9 @@ const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
               alert("This is a class");
             }}
             variant={"icon"}
-            right={0}
+            right={3}
             top={5}
-          >
-            <SvgIcon iconName={"ic-edit.svg"} fill="white" color="white" />
-          </Button>
-        </Tooltip>
-
-        <HStack position={"absolute"} zIndex={1} right={0} bottom={5}>
-          <Button
-            rounded={"full"}
-            onClick={() => {
-              setShowDetails(!showDetails);
-            }}
             p={0}
-            justifyItems={"center"}
-            alignItems={"center"}
-            variant={"icon"}
-          >
-            <SvgIcon iconName={"ic-info.svg"} fill="white" color="white" />
-          </Button>
-
-          <Button
-            rounded={"full"}
-            onClick={() => {
-              setShowDetails(!showDetails);
-            }}
-            p={0}
-            justifyItems={"center"}
-            alignItems={"center"}
-            variant={"icon"}
           >
             <SvgIcon
               iconName={"ic-threedot-vertical.svg"}
@@ -89,7 +62,24 @@ const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
               color="white"
             />
           </Button>
-        </HStack>
+        </Tooltip>
+
+        <Button
+          rounded={"full"}
+          onClick={() => {
+            setShowDetails(!showDetails);
+          }}
+          p={0}
+          justifyItems={"center"}
+          alignItems={"center"}
+          variant={"icon"}
+          position={"absolute"}
+          zIndex={1}
+          right={3}
+          bottom={5}
+        >
+          <SvgIcon iconName={"ic-info.svg"} fill="white" color="white" />
+        </Button>
 
         <VStack
           w={"full"}
@@ -132,7 +122,7 @@ const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
               alignItems={"center"}
               justifyContent={"flex-end"}
               onClick={() => {
-                navigator.clipboard.writeText(currentClass?.code ?? "");
+                navigator.clipboard.writeText(currentClass?.id ?? "");
                 toast({
                   title: "Copied!",
                   status: "success",

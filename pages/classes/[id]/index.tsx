@@ -8,16 +8,21 @@ import {
   Tab,
   TabPanel,
   TabIndicator,
+  HStack,
+  Button,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useGetClassDetails } from "API/get/get.class.details";
 import ClassLayout from "components/Layout/ClassLayout";
 import { useStores } from "hooks/useStores";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NotFoundClass from "components/pages/Classes/NotFoundClass";
 import PeopleScene from "components/pages/Classes/Sections/PeopleScene";
 import StreamScene from "components/pages/Classes/Sections/StreamScene";
 import { getValidArray } from "utils/common";
+import SvgIcon from "components/SvgIcon";
+import UpdateClassModal from "components/pages/Classes/UpdateClassModal";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -29,6 +34,7 @@ const ClassDetail = () => {
     isError,
     refetch,
   } = useGetClassDetails(router?.query?.id as string);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     settingStore.setHeaderLoading(isLoading);
@@ -41,7 +47,6 @@ const ClassDetail = () => {
   }, [classDetails]);
 
   useEffect(() => {
-    console.log(router?.isReady);
     if (router?.isReady) {
       refetch();
     }
@@ -100,6 +105,7 @@ const ClassDetail = () => {
                 color: isStudentOfClass ? "green.500" : "primary.500",
                 fontWeight: "bold",
               }}
+              position={"relative"}
             >
               {getValidArray(tabListRender)?.map((tab) => (
                 <Tab
@@ -111,6 +117,25 @@ const ClassDetail = () => {
                   {tab?.name}
                 </Tab>
               ))}
+
+              <Tooltip label={"Edit class"}>
+                <Button
+                  zIndex={1}
+                  rounded={"full"}
+                  position={"absolute"}
+                  onClick={() => {
+                    setIsModalVisible(true);
+                  }}
+                  variant={"icon"}
+                  right={"20px"}
+                >
+                  <SvgIcon
+                    iconName={"ic-edit.svg"}
+                    fill="black"
+                    color="black"
+                  />
+                </Button>
+              </Tooltip>
             </TabList>
             <TabIndicator
               mt="-1.5px"
@@ -126,6 +151,10 @@ const ClassDetail = () => {
           </Tabs>
         )}
       </VStack>
+      <UpdateClassModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </ClassLayout>
   );
 };

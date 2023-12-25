@@ -60,4 +60,14 @@ export const ClassesApiRouters = {
       value: (classId: ID) => `${API_URL}/classes/${classId}/attendees`,
     },
   },
+  post: {
+    create_a_class: {
+      value: `${API_URL}/classes`,
+    },
+  },
+  patch: {
+    update_class_details: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}`,
+    },
+  },
 };

@@ -1,3 +1,4 @@
+import { getClassDetails } from "API/get/get.class.details";
 import { EClassRole } from "enums/classes";
 import { IClass } from "interfaces/classes";
 import { makeObservable, observable } from "mobx";
@@ -19,6 +20,17 @@ class ClassStore {
   setCurrentClass(classData: IClass | null) {
     this.currentClass = classData;
     this.isStudentOfClass = classData?.role === EClassRole.STUDENT;
+  }
+
+  async fetchCurrentClass() {
+    try {
+      if (this.currentClass?.id) {
+        const classData = await getClassDetails(this.currentClass.id);
+        this.setCurrentClass(classData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   resetCurrentClass() {
