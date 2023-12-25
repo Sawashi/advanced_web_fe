@@ -22,6 +22,7 @@ const EnrolledClasses = () => {
       <VStack w="full" flex={1} h="full" alignItems={"start"}>
         <ClassesList
           classes={getValidArray(studentClasses?.data)}
+          typeOfClass="Enrolled"
           isLoading={isLoadingStudentClasses}
         />
       </VStack>
