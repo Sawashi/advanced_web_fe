@@ -136,6 +136,7 @@ const Home = () => {
                 </HStack>
                 <ClassesList
                   classes={getValidArray(item?.data)}
+                  typeOfClass={item?.title}
                   isLoading={settingStore?.isHeaderLoading}
                 />
               </VStack>

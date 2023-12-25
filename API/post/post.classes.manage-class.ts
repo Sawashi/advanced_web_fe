@@ -15,3 +15,17 @@ export const createAClass = async (
   });
   return response;
 };
+export const createClassToken = async (
+  classId: string,
+  userRole: string,
+  expireDuration: string
+) => {
+  const response = await api.post<
+    { role: string; expiresIn: string },
+    IResponseData<{}>
+  >(UsersApiRouters.post.create_a_class.value + `/${classId}/invite-token`, {
+    role: userRole,
+    expiresIn: expireDuration,
+  });
+  return response;
+};

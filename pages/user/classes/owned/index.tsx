@@ -22,6 +22,7 @@ const OwnedClasses = () => {
       <VStack w="full" flex={1} h="full" alignItems={"start"}>
         <ClassesList
           classes={getValidArray(ownedClasses?.data)}
+          typeOfClass="Owned"
           isLoading={isLoadingOwnedClasses}
         />
       </VStack>
