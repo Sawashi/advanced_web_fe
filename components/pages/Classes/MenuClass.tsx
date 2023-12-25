@@ -15,11 +15,18 @@ import {
   Flex,
   ModalFooter,
   useToast,
+  Box,
+  Heading,
 } from "@chakra-ui/react";
-import { createClassToken } from "API/post/post.classes.manage-class";
+import {
+  createClassToken,
+  sendInvitationMail,
+} from "API/post/post.classes.manage-class";
 import clipboardCopy from "clipboard-copy";
+import { EmailChipInput } from "components/EmailChipInput";
 import SvgIcon from "components/SvgIcon";
 import { useRouter } from "next/router";
+import React from "react";
 import routes from "routes";
 export type tokenProps = {
   token: string;
@@ -29,6 +36,8 @@ export type MenuClassProps = {
   classId: string;
 };
 const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
+  const [teacherMails, setTeacherMails] = React.useState<string[]>([]);
+  const [studentMails, setStudentMails] = React.useState<string[]>([]);
   const toast = useToast();
   const createJoinLink = async (classId: string, roleToJoin: string) => {
     try {
@@ -62,10 +71,44 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
       });
     }
   };
+  const sendInviteMail = async (classId: string) => {
+    try {
+      console.log(classId);
+      const modifiedClassId: string = classId.substring(1, classId.length - 1);
+      console.log(modifiedClassId);
+      if (teacherMails.length !== 0) {
+        teacherMails.forEach(async (mail) => {
+          console.log("teacher - " + mail);
+          await sendInvitationMail(modifiedClassId, "teacher", mail);
+        });
+      }
+      if (studentMails.length !== 0) {
+        studentMails.forEach(async (mail) => {
+          console.log("Student - " + mail);
+          await sendInvitationMail(modifiedClassId, "student", mail);
+        });
+      }
+      toast({
+        status: "success",
+        description: "Sent all mails",
+      });
+    } catch (error) {
+      console.error("Error sending invitation:", error);
+      toast({
+        status: "error",
+        description: "Error creating join link",
+      });
+    }
+  };
   const {
     isOpen: isOpenCreateLink,
     onClose: onCloseCreateLink,
     onOpen: onOpenCreateLink,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenInviteMail,
+    onClose: onCloseInviteMail,
+    onOpen: onOpenInviteMail,
   } = useDisclosure();
   return (
     <>
@@ -88,7 +131,7 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
               <MenuItem onClick={() => onOpenCreateLink()}>
                 Create link
               </MenuItem>
-              <MenuItem>Invite</MenuItem>
+              <MenuItem onClick={() => onOpenInviteMail()}>Invite</MenuItem>
               <MenuItem>
                 <Text color={"tomato"}>Delete</Text>
               </MenuItem>
@@ -130,6 +173,48 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onCloseCreateLink}>
               Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isOpenInviteMail} onClose={onCloseInviteMail}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Invite by mail</ModalHeader>
+
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex direction="column" gap={5}>
+              Separate emails by comma ","
+              <br /> Email only recognized if it added as a chip
+              <Box>
+                <Text>Enter mails for teachers</Text>
+                <EmailChipInput
+                  emails={teacherMails}
+                  setEmails={setTeacherMails}
+                />
+              </Box>
+              <Box>
+                <Text>Enter mails for students</Text>
+                <EmailChipInput
+                  emails={studentMails}
+                  setEmails={setStudentMails}
+                />
+              </Box>
+            </Flex>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onCloseInviteMail}>
+              Close
+            </Button>
+            <Button
+              colorScheme="blue"
+              variant="solid"
+              mr={3}
+              onClick={() => sendInviteMail(classId)}
+            >
+              Send
             </Button>
           </ModalFooter>
         </ModalContent>

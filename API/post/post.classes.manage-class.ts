@@ -29,3 +29,17 @@ export const createClassToken = async (
   });
   return response;
 };
+export const sendInvitationMail = async (
+  classId: string,
+  roleToJoin: string,
+  email: string
+) => {
+  const response = await api.post<
+    { role: string; expiresIn: string },
+    IResponseData<{}>
+  >(UsersApiRouters.post.create_a_class.value + `/${classId}/invite`, {
+    role: roleToJoin,
+    email: email,
+  });
+  return response;
+};
