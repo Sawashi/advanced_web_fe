@@ -42,7 +42,7 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   };
 
   return (
-    <VStack w={"100%"} spacing={0} position={"relative"} >
+    <VStack w={"100%"} spacing={0} position={"relative"}>
       <HStack
         w={"100%"}
         alignItems={"center"}
@@ -131,7 +131,7 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
           colorScheme="primary"
           w={"full"}
           position={"absolute"}
-          top={62}
+          bottom={0}
         />
       ) : null}
     </VStack>
