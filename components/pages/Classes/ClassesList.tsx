@@ -21,6 +21,7 @@ import {
   useClipboard,
   useDisclosure,
   useToast,
+  Box,
 } from "@chakra-ui/react";
 import { createClassToken } from "API/post/post.classes.manage-class";
 import SvgIcon from "components/SvgIcon";
@@ -161,41 +162,43 @@ const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
       </VStack>
 
       {/* Footer */}
-      <HStack h={"40px"} float={"left"}>
-        <Menu>
-          <MenuButton aria-label="Options">
-            <Button
-              as={"div"}
-              variant={"ghost"}
-              borderRadius={"full"}
-              _hover={{
-                bgColor: "gray.200",
-              }}
-            >
-              <SvgIcon iconName={"ic-threedot-vertical.svg"} size={20} />
-            </Button>
-          </MenuButton>
-          <MenuList bgColor={"white.100"}>
-            {typeOfClass === "Teaching" || typeOfClass === "Owned" ? (
-              <>
-                <MenuItem onClick={() => onOpenCreateLink()}>
-                  Create link
-                </MenuItem>
-                <MenuItem>Invite</MenuItem>
-                <MenuItem>
-                  <Text color={"tomato"}>Delete</Text>
-                </MenuItem>
-              </>
-            ) : (
-              <>
-                <MenuItem>Properties</MenuItem>
-                <MenuItem>
-                  <Text color={"tomato"}>Leave</Text>
-                </MenuItem>
-              </>
-            )}
-          </MenuList>
-        </Menu>
+      <HStack w="100%" h={"40px"} justifyContent="flex-start">
+        <Box>
+          <Menu>
+            <MenuButton aria-label="Options">
+              <Button
+                as={"div"}
+                variant={"ghost"}
+                borderRadius={"full"}
+                _hover={{
+                  bgColor: "gray.200",
+                }}
+              >
+                <SvgIcon iconName={"ic-threedot-horizontal.svg"} size={20} />
+              </Button>
+            </MenuButton>
+            <MenuList bgColor={"white.100"}>
+              {typeOfClass === "Teaching" || typeOfClass === "Owned" ? (
+                <>
+                  <MenuItem onClick={() => onOpenCreateLink()}>
+                    Create link
+                  </MenuItem>
+                  <MenuItem>Invite</MenuItem>
+                  <MenuItem>
+                    <Text color={"tomato"}>Delete</Text>
+                  </MenuItem>
+                </>
+              ) : (
+                <>
+                  <MenuItem>Properties</MenuItem>
+                  <MenuItem>
+                    <Text color={"tomato"}>Leave</Text>
+                  </MenuItem>
+                </>
+              )}
+            </MenuList>
+          </Menu>
+        </Box>
       </HStack>
 
       <Avatar
