@@ -134,7 +134,10 @@ const Home = () => {
                     </HStack>
                   </Link>
                 </HStack>
-                <ClassesList classes={getValidArray(item?.data)} />
+                <ClassesList
+                  classes={getValidArray(item?.data)}
+                  typeOfClass={item?.title}
+                />
               </VStack>
             ) : null
           )}

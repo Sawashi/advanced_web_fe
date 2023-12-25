@@ -21,6 +21,10 @@ const UserRouter = {
   class: {
     value: (id: string) => `/user/class/${id}`,
   },
+  join_class_via_token: {
+    value: (token: string, classId: string) =>
+      `/user/classes/join?token=${token}&classId=${classId}`,
+  },
 };
 
 export default UserRouter;

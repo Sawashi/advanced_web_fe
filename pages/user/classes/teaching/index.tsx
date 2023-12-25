@@ -20,7 +20,10 @@ const TeachingClasses = () => {
   return (
     <UserLayout title="Home">
       <VStack w="full" flex={1} h="full" alignItems={"start"}>
-        <ClassesList classes={getValidArray(teachingClasses?.data)} />
+        <ClassesList
+          classes={getValidArray(teachingClasses?.data)}
+          typeOfClass="Teaching"
+        />
       </VStack>
     </UserLayout>
   );

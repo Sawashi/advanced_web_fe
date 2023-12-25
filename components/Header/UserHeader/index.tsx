@@ -75,6 +75,7 @@ const UserHeader = ({
           <Menu>
             <MenuButton aria-label="Options">
               <Button
+                as={"div"}
                 variant={"ghost"}
                 borderRadius={"full"}
                 _hover={{
