@@ -11,7 +11,7 @@ import React from "react";
 import SvgIcon from "components/SvgIcon";
 import { green500 } from "theme/colors.theme";
 
-//Path: /user/classes/join?token=token&classId=classId
+//Path: /user/classes/join?token=token
 
 const JoinClassScreen = () => {
   const { settingStore } = useStores();
@@ -33,7 +33,7 @@ const JoinClassScreen = () => {
     } else {
       setIsSuccess(true);
       //TODO: redirect to class detail
-      router.push(routes.user.home.value);
+      router.push(routes.classes.details.value(data?.id ?? ""));
     }
   };
 
@@ -47,7 +47,7 @@ const JoinClassScreen = () => {
           duration: 3000,
           isClosable: true,
         });
-        router.push(routes.user.home.value);
+        // router.push(routes.user.home.value);
       } else {
         onJoinClass(token as string, classId as string);
       }

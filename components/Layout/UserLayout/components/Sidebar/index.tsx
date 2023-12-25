@@ -85,7 +85,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   }));
 
   return (
-    <Flex
+    <VStack
       minWidth="24px"
       width={"fit-content"}
       display="flex"
@@ -200,7 +200,7 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
           />
         </Stack>
       </VStack>
-    </Flex>
+    </VStack>
   );
 });
 

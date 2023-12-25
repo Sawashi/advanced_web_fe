@@ -33,20 +33,26 @@ const ClassDetail = () => {
 
   return (
     <ClassLayout
-      title={classDetails?.name ?? "Class"}
+      title={`${classDetails?.name} | ${classDetails?.description}` ?? "Class"}
       details={classDetails ?? {}}
       isLoading={isLoading}
     >
-      <VStack w="full" flex={1} h="full" alignItems={"start"} py={5} gap={5}>
+      <VStack w="full" flex={1} h="full" alignItems={"start"} gap={5}>
         {isError ? (
           <VStack flex={1} w={"full"} justifyContent={"center"}>
             <NotFoundClass />
           </VStack>
         ) : (
           <Tabs position="relative" variant="unstyled" w="full">
-            <TabList borderBottomWidth={1} px={3}>
+            <TabList
+              borderBottomWidth={1}
+              p={3}
+              _active={{
+                color: "primary.500",
+                fontWeight: "bold",
+              }}
+            >
               <Tab
-                py={2}
                 _selected={{
                   color: "primary.500",
                   fontWeight: "bold",
@@ -55,7 +61,6 @@ const ClassDetail = () => {
                 Stream
               </Tab>
               <Tab
-                py={2}
                 _selected={{
                   color: "primary.500",
                   fontWeight: "bold",
@@ -64,7 +69,6 @@ const ClassDetail = () => {
                 Classwork
               </Tab>
               <Tab
-                py={2}
                 _selected={{
                   color: "primary.500",
                   fontWeight: "bold",

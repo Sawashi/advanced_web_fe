@@ -1,4 +1,11 @@
-import { Center, HStack, Spinner, Stack, chakra } from "@chakra-ui/react";
+import {
+  Center,
+  HStack,
+  Spinner,
+  Stack,
+  VStack,
+  chakra,
+} from "@chakra-ui/react";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
@@ -31,12 +38,7 @@ const ClassLayout = (props: IClassLayoutProps) => {
           }}
           classDetails={details}
         />
-        <HStack
-          background="background.primary"
-          alignItems="stretch"
-          flex={1}
-          spacing={0}
-        >
+        <HStack flex={1} alignItems="stretch" spacing={0}>
           <SideBar ref={sideBarRef} />
           <Stack h={"100%"} overflow={"auto"} w={"full"} flex={1}>
             {isLoading ? (
