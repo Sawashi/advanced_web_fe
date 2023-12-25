@@ -1,6 +1,6 @@
 import { EClassRole } from "enums/classes";
 import { IClass } from "interfaces/classes";
-import { makeObservable } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { RootStore } from "stores";
 
 class ClassStore {
@@ -10,7 +10,10 @@ class ClassStore {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-    makeObservable(this, {});
+    makeObservable(this, {
+      currentClass: observable,
+      isStudentOfClass: observable,
+    });
   }
 
   setCurrentClass(classData: IClass | null) {

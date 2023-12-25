@@ -27,6 +27,7 @@ const ClassDetail = () => {
     data: classDetails,
     isLoading,
     isError,
+    refetch,
   } = useGetClassDetails(router?.query?.id as string);
 
   useEffect(() => {
@@ -38,6 +39,13 @@ const ClassDetail = () => {
       classStore.setCurrentClass(classDetails);
     }
   }, [classDetails]);
+
+  useEffect(() => {
+    console.log(router?.isReady);
+    if (router?.isReady) {
+      refetch();
+    }
+  }, [router?.isReady]);
 
   const tabListRender = useMemo(
     () => [
@@ -76,7 +84,7 @@ const ClassDetail = () => {
         }` ?? "Class"
       }
       details={classDetails ?? {}}
-      isLoading={isLoading}
+      isLoading={isLoading || !router?.isReady}
     >
       <VStack w="full" flex={1} h="full" alignItems={"start"} gap={5}>
         {isError ? (

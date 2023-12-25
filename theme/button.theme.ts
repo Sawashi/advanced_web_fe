@@ -32,6 +32,19 @@ export const CustomButton = {
         cursor: "not-allowed",
       },
     },
+    icon: {
+      background: "transparent",
+      cursor: "pointer",
+      _hover: {
+        background: "transparent",
+      },
+      _focus: { background: "transparent" },
+      _disabled: {
+        background: "transparent",
+        color: "gray.400",
+        cursor: "not-allowed",
+      },
+    },
   },
   defaultProps: {
     size: "md",

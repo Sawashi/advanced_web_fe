@@ -1,10 +1,8 @@
 import { VStack } from "@chakra-ui/react";
-import { useStores } from "hooks/useStores";
 import { IClass } from "interfaces/classes";
-import { observable } from "mobx";
 import React from "react";
 import StudentStreamScene from "./StudentStream";
-import TeacherStreamScene from "./TeacherStream";
+import TeacherStreamScene from "./Teacher/TeacherStream";
 
 interface Props {
   details: IClass;
@@ -13,7 +11,13 @@ interface Props {
 
 const StreamScene = ({ isStudentOfClass }: Props) => {
   return (
-    <VStack alignSelf={"center"} alignItems={"center"} w={"full"} h={"full"}>
+    <VStack
+      alignSelf={"center"}
+      alignItems={"center"}
+      w={"full"}
+      h={"full"}
+      minW={"container.lg"}
+    >
       <VStack
         w={"full"}
         maxW={"container.lg"}

@@ -4,7 +4,7 @@ import {
   IRefreshTokenResponse,
   IRequestHeader,
 } from "interfaces/authentication";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 export const api = axios.create({
   baseURL: process.env.API_URL || "",
@@ -24,6 +24,23 @@ export function auth(): IRequestHeader {
 
   const headers = { Authorization: "", "Content-Type": "" };
   const accessToken = getCookie(AuthenticateParams.ACCESS_TOKEN);
+  const refreshToken = getCookie(AuthenticateParams.REFRESH_TOKEN);
+
+  if (!accessToken && refreshToken) {
+    api
+      .post<IRefreshTokenResponse>("/auth/refresh-token", {
+        refreshToken,
+      })
+      .then((response) => {
+        const { accessToken } = response.data;
+        setCookie(AuthenticateParams.ACCESS_TOKEN, accessToken);
+        setCookie(AuthenticateParams.REFRESH_TOKEN, refreshToken);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   headers.Authorization = `Bearer ${accessToken}`;
   headers["Content-Type"] = "application/json";
   return headers;

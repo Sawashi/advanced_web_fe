@@ -7,13 +7,14 @@ import {
   ModalBody,
   ModalFooter,
   HStack,
+  Box,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import React from "react";
 
 type ModalProps = {
   isVisible: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   size?: "sm" | "md" | "lg" | "xl" | "full";
   title?: React.ReactNode;
   children?: React.ReactNode;
@@ -29,12 +30,19 @@ function Modal({
   actions,
 }: ModalProps) {
   return (
-    <CKModal onClose={onClose} size={size} isOpen={isVisible} isCentered>
+    <CKModal
+      onClose={() => {
+        onClose?.();
+      }}
+      size={size}
+      isOpen={isVisible}
+      isCentered
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader borderBottomWidth={1}>
           <HStack w="full" justifyContent={"space-between"} gap={5}>
-            {title}
+            <Box flex={1}>{title}</Box>
             {onClose ? (
               <Button
                 variant="ghost"

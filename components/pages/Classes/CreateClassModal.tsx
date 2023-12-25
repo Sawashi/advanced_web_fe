@@ -18,7 +18,7 @@ import {
 } from "constants/validation/classes";
 import { useStores } from "hooks/useStores";
 import { useGetClassesAsStudent } from "API/get/get.classes.student";
-import { createAClass } from "API/post/post.classes.manage-class";
+import { createAClass } from "API/post/post.classes.create-class";
 
 type CreateClassModalProps = {
   isVisible: boolean;

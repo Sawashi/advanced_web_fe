@@ -24,7 +24,7 @@ interface Props {
 
 const Attendance = ({ profile }: { profile?: IAttendeeProfile }) => {
   return (
-    <HStack w={"full"} justifyContent={"space-between"}>
+    <HStack w={"full"} justifyContent={"space-between"} key={profile?.id}>
       <HStack gap={3}>
         <Avatar
           size={"sm"}
@@ -52,6 +52,8 @@ const Attendance = ({ profile }: { profile?: IAttendeeProfile }) => {
 };
 
 const Teachers = ({ data }: { data?: IAttendee[] }) => {
+  const { classStore } = useStores();
+  const { isStudentOfClass } = classStore;
   return (
     <VStack
       divider={<Divider h={"1px"} w={"full"} bgColor={"blue.800"} />}
@@ -61,7 +63,17 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
     >
       <HStack w={"full"} justifyContent={"space-between"} alignItems={"center"}>
         <Heading size="lg">Teachers</Heading>
-        <Text>{`${data?.length ?? 0} teachers`}</Text>
+        <HStack gap={3} justifyItems={"end"} alignItems={"center"}>
+          <Text>{`${data?.length ?? 0} teachers`}</Text>
+          {!isStudentOfClass && (
+            <Tooltip label={"Add teacher"}>
+              {/* TODO: Add teacher */}
+              <Button variant={"icon"} onClick={() => {}}>
+                <SvgIcon iconName={"ic-add.svg"} />
+              </Button>
+            </Tooltip>
+          )}
+        </HStack>
       </HStack>
       <VStack
         divider={<Divider h={"1px"} w={"full"} />}
@@ -84,6 +96,8 @@ const Students = ({
   data?: IAttendee[];
   isStudent?: boolean;
 }) => {
+  const { classStore } = useStores();
+  const { isStudentOfClass } = classStore;
   return (
     <VStack
       divider={<Divider h={"1px"} w={"full"} bgColor={"blue.800"} />}
@@ -95,7 +109,17 @@ const Students = ({
         <Heading size="lg">
           {isStudent ? "Your classmates" : "Students"}
         </Heading>
-        <Text>{`${data?.length ?? 0} students`}</Text>
+        <HStack gap={3} justifyItems={"end"} alignItems={"center"}>
+          <Text>{`${data?.length ?? 0} teachers`}</Text>
+          {!isStudentOfClass && (
+            <Tooltip label={"Add student"}>
+              {/* TODO: Add student */}
+              <Button variant={"icon"} onClick={() => {}}>
+                <SvgIcon iconName={"ic-add.svg"} />
+              </Button>
+            </Tooltip>
+          )}
+        </HStack>
       </HStack>
       <VStack
         divider={<Divider h={"1px"} w={"full"} />}
