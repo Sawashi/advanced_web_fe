@@ -49,7 +49,6 @@ const UserHeader = ({
     <VStack w={"100%"} spacing={0} position={"relative"}>
       <HStack
         w={"100%"}
-        h={62}
         alignItems={"center"}
         p={5}
         borderBottomWidth={1}
@@ -111,7 +110,7 @@ const UserHeader = ({
               _hover={{
                 cursor: "pointer",
               }}
-              size={"sm"}
+              size={"md"}
               src={authStore.user?.avatar}
               name={name}
               onClick={() => {
@@ -128,7 +127,7 @@ const UserHeader = ({
           colorScheme="primary"
           w={"full"}
           position={"absolute"}
-          top={62}
+          border={0}
         />
       ) : null}
     </VStack>

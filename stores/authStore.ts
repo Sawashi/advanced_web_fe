@@ -87,6 +87,7 @@ class AuthStore {
     this.user = {} as IUser;
     this.accessToken = "";
     this.isLoading = false;
+    this.rootStore.classStore.reset();
     this.rootStore.cookiesStore.removeItem(AuthenticateParams.ACCESS_TOKEN);
     this.rootStore.cookiesStore.removeItem(AuthenticateParams.REFRESH_TOKEN);
     this.rootStore.queryClient?.clear();

@@ -73,9 +73,7 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
   };
   const sendInviteMail = async (classId: string) => {
     try {
-      console.log(classId);
       const modifiedClassId: string = classId.substring(1, classId.length - 1);
-      console.log(modifiedClassId);
       if (teacherMails.length !== 0) {
         teacherMails.forEach(async (mail) => {
           const response = await sendInvitationMail(
