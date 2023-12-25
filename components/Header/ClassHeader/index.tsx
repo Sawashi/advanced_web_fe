@@ -42,10 +42,9 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   };
 
   return (
-    <VStack w={"100%"} spacing={0} position={"relative"}>
+    <VStack w={"100%"} spacing={0} position={"relative"} >
       <HStack
         w={"100%"}
-        h={62}
         alignItems={"center"}
         p={5}
         borderBottomWidth={1}
@@ -115,7 +114,7 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
               _hover={{
                 cursor: "pointer",
               }}
-              size={"sm"}
+              size={"md"}
               src={authStore.user?.avatar}
               name={name}
               onClick={() => {
