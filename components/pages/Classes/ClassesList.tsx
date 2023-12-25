@@ -31,6 +31,7 @@ import React from "react";
 import { checkValidArray, getValidArray } from "utils/common";
 import clipboardCopy from "clipboard-copy";
 import routes from "routes";
+import MenuClass from "./MenuClass";
 
 export type ClassesListProps = {
   classes: IClass[];
@@ -48,48 +49,6 @@ export interface IClassCardProps {
 
 const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
   const router = useRouter();
-  const toast = useToast();
-
-  const createJoinLink = async (classId: string, roleToJoin: string) => {
-    try {
-      const modifiedClassId: string = classId.substring(1, classId.length - 1);
-      console.log(modifiedClassId, roleToJoin);
-      const data = await createClassToken(modifiedClassId, roleToJoin, "1d");
-      const tokenCreated = JSON.stringify(data.data);
-      const parsedToken: tokenProps = JSON.parse(tokenCreated);
-      console.log(parsedToken?.token);
-
-      if (parsedToken?.token) {
-        clipboardCopy(
-          window.location.origin +
-            routes.user.join_class_via_token.value(
-              parsedToken.token,
-              modifiedClassId
-            )
-        );
-        toast({
-          status: "success",
-          description: "Successfully copied to clipboard",
-        });
-      } else {
-        toast({
-          status: "error",
-          description: "Something went wrong",
-        });
-      }
-    } catch (error) {
-      console.error("Error creating join link:", error);
-      toast({
-        status: "error",
-        description: "Error creating join link",
-      });
-    }
-  };
-  const {
-    isOpen: isOpenCreateLink,
-    onClose: onCloseCreateLink,
-    onOpen: onOpenCreateLink,
-  } = useDisclosure();
   return (
     <VStack
       key={`${item?.id}`}
@@ -164,43 +123,12 @@ const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
       {/* Footer */}
       <HStack w="100%" h={"40px"} justifyContent="flex-start">
         <Box>
-          <Menu>
-            <MenuButton aria-label="Options">
-              <Button
-                as={"div"}
-                variant={"ghost"}
-                borderRadius={"full"}
-                _hover={{
-                  bgColor: "gray.200",
-                }}
-              >
-                <SvgIcon iconName={"ic-threedot-horizontal.svg"} size={20} />
-              </Button>
-            </MenuButton>
-            <MenuList bgColor={"white.100"}>
-              {typeOfClass === "Teaching" || typeOfClass === "Owned" ? (
-                <>
-                  <MenuItem onClick={() => onOpenCreateLink()}>
-                    Create link
-                  </MenuItem>
-                  <MenuItem>Invite</MenuItem>
-                  <MenuItem>
-                    <Text color={"tomato"}>Delete</Text>
-                  </MenuItem>
-                </>
-              ) : (
-                <>
-                  <MenuItem>Properties</MenuItem>
-                  <MenuItem>
-                    <Text color={"tomato"}>Leave</Text>
-                  </MenuItem>
-                </>
-              )}
-            </MenuList>
-          </Menu>
+          <MenuClass
+            typeOfClass={typeOfClass}
+            classId={JSON.stringify(item?.id)}
+          />
         </Box>
       </HStack>
-
       <Avatar
         position={"absolute"}
         rounded={"full"}
@@ -211,41 +139,6 @@ const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
         src={item?.owner?.avatar}
         name={item?.owner?.firstName + " " + item?.owner?.lastName}
       />
-      <Modal isOpen={isOpenCreateLink} onClose={onCloseCreateLink}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create link for joining class</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Flex direction="column" gap={2}>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                onClick={() =>
-                  createJoinLink(JSON.stringify(item?.id), "teacher")
-                }
-              >
-                Create link to join as teacher
-              </Button>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                onClick={() =>
-                  createJoinLink(JSON.stringify(item?.id), "student")
-                }
-              >
-                Create link to join as student
-              </Button>
-            </Flex>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onCloseCreateLink}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </VStack>
   );
 };
