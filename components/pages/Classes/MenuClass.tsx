@@ -78,14 +78,32 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
       console.log(modifiedClassId);
       if (teacherMails.length !== 0) {
         teacherMails.forEach(async (mail) => {
-          console.log("teacher - " + mail);
-          await sendInvitationMail(modifiedClassId, "teacher", mail);
+          const response = await sendInvitationMail(
+            modifiedClassId,
+            "teacher",
+            mail
+          );
+          if (response.data?.error) {
+            toast({
+              status: "error",
+              description: mail + ": " + response.data?.message,
+            });
+          }
         });
       }
       if (studentMails.length !== 0) {
         studentMails.forEach(async (mail) => {
-          console.log("Student - " + mail);
-          await sendInvitationMail(modifiedClassId, "student", mail);
+          const response = await sendInvitationMail(
+            modifiedClassId,
+            "student",
+            mail
+          );
+          if (response.data?.error) {
+            toast({
+              status: "error",
+              description: mail + ": " + response.data?.message,
+            });
+          }
         });
       }
       toast({
