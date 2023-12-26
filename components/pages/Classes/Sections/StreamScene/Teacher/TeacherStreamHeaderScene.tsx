@@ -42,27 +42,6 @@ const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
           h={"full"}
           objectFit={"contain"}
         />
-        <Tooltip label={"Edit class"}>
-          <Button
-            zIndex={1}
-            rounded={"full"}
-            position={"absolute"}
-            onClick={() => {
-              alert("This is a class");
-            }}
-            variant={"icon"}
-            right={3}
-            top={5}
-            p={0}
-          >
-            <SvgIcon
-              iconName={"ic-threedot-vertical.svg"}
-              size={20}
-              fill="white"
-              color="white"
-            />
-          </Button>
-        </Tooltip>
 
         <Button
           rounded={"full"}

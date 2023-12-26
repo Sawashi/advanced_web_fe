@@ -1,27 +1,27 @@
 import { Box, Card, VStack, CardBody, HStack, Text } from "@chakra-ui/react";
-import { IClass } from "interfaces/classes";
+import { IClass, IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { DropResult } from "react-beautiful-dnd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import StructureItem from "./StructureItem";
 
 interface Props {
   details: IClass;
 }
 
-interface Item {
-  id: string;
-  content: string;
-}
-
-// fake data generator
-const getItems = (count: number) =>
+const getItems = (count: number): IGradeComposition[] =>
   Array.from({ length: count }, (v, k) => k).map((k) => ({
     id: `item-${k}`,
-    content: `item ${k}`,
+    name: `item ${k}`,
+    percentage: 5,
   }));
 
-const reorder = (list: Item[], startIndex: number, endIndex: number) => {
+const reorder = (
+  list: IGradeComposition[],
+  startIndex: number,
+  endIndex: number
+) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
@@ -29,23 +29,8 @@ const reorder = (list: Item[], startIndex: number, endIndex: number) => {
   return result;
 };
 
-const grid = 8;
-
-const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-  userSelect: "none",
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
-
-  ...draggableStyle,
-});
-
-const getListStyle = (isDraggingOver: boolean) => ({
-  padding: grid,
-  width: 250,
-});
-
 const GradeStructureScene = ({ details }: Props) => {
-  const [items, setItems] = useState<Item[]>(getItems(10));
+  const [items, setItems] = useState<IGradeComposition[]>(getItems(10));
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -69,41 +54,22 @@ const GradeStructureScene = ({ details }: Props) => {
         p={10}
         borderColor={"gray.300"}
         alignItems={"start"}
-        gap={20}
         h={"full"}
       >
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
-            {(provided, snapshot) => (
-              <div
+            {(provided) => (
+              <VStack
+                w={"full"}
+                gap={5}
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
               >
                 {items.map((item, index) => (
-                  <Draggable key={item.id} draggableId={item?.id} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
-                        )}
-                      >
-                        {item.content}
-                        <span
-                          style={{ float: "right" }}
-                          {...provided.dragHandleProps}
-                        >
-                          &#x2630;
-                        </span>
-                      </div>
-                    )}
-                  </Draggable>
+                  <StructureItem item={item} index={index} />
                 ))}
                 {provided.placeholder}
-              </div>
+              </VStack>
             )}
           </Droppable>
         </DragDropContext>
