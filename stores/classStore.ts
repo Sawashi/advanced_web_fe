@@ -8,18 +8,22 @@ class ClassStore {
   rootStore: RootStore;
   currentClass: IClass | null = null;
   isStudentOfClass = true;
+  isOwnerOfClass = false;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     makeObservable(this, {
       currentClass: observable,
       isStudentOfClass: observable,
+      isOwnerOfClass: observable,
     });
   }
 
   setCurrentClass(classData: IClass | null) {
     this.currentClass = classData;
     this.isStudentOfClass = classData?.role === EClassRole.STUDENT;
+    this.isOwnerOfClass =
+      classData?.owner?.id === this.rootStore?.authStore?.user?.id;
   }
 
   async fetchCurrentClass() {
@@ -29,7 +33,7 @@ class ClassStore {
         this.setCurrentClass(classData);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

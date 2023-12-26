@@ -1,8 +1,4 @@
-import {
-  VStack,
-  Heading,
-  Divider,
-} from "@chakra-ui/react";
+import { VStack, Heading, Divider } from "@chakra-ui/react";
 import { useGetClassAttendees } from "API/get/get.class.attendees";
 import { EClassRole } from "enums/classes";
 import { useStores } from "hooks/useStores";
@@ -33,9 +29,11 @@ const Owner = ({ owner }: { owner?: IAttendeeProfile }) => {
 };
 
 const PeopleScene = ({ details }: Props) => {
-  const { data: attendees, isLoading } = useGetClassAttendees(
-    details?.id ?? ""
-  );
+  const {
+    data: attendees,
+    isLoading,
+    refetch,
+  } = useGetClassAttendees(details?.id ?? "");
 
   const { settingStore } = useStores();
 
@@ -46,6 +44,10 @@ const PeopleScene = ({ details }: Props) => {
   const studentList = getValidArray(attendees?.data)?.filter(
     (item) => item?.role === EClassRole.STUDENT
   );
+
+  const onRefetchList = async () => {
+    await refetch();
+  };
 
   React.useEffect(() => {
     settingStore.setHeaderLoading(isLoading);
@@ -63,8 +65,8 @@ const PeopleScene = ({ details }: Props) => {
         h={"full"}
       >
         <Owner owner={details?.owner} />
-        <Teachers data={teacherList} />
-        <Students data={studentList} />
+        <Teachers data={teacherList} refetch={onRefetchList} />
+        <Students data={studentList} refetch={onRefetchList} />
       </VStack>
     </VStack>
   );

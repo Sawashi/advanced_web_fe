@@ -61,6 +61,9 @@ export const ClassesApiRouters = {
     create_a_class: {
       value: `${API_URL}/classes`,
     },
+    kick_attendee: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/kick`,
+    },
   },
   patch: {
     update_class_details: {

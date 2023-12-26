@@ -31,7 +31,13 @@ import {
 } from "constants/validation/classes";
 import FormInput from "components/FormInput";
 
-const Teachers = ({ data }: { data?: IAttendee[] }) => {
+const Teachers = ({
+  data,
+  refetch,
+}: {
+  data?: IAttendee[];
+  refetch?: () => Promise<void>;
+}) => {
   const toast = useToast();
   const { classStore } = useStores();
   const { isStudentOfClass } = classStore;
@@ -87,7 +93,7 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
         );
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -103,8 +109,26 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
           })
         )
       );
+      toast({
+        title: "Success",
+        description: "Invitation mail sent successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error",
+        description: "Something went wrong while sending invitation mail",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      console.error(error);
+    } finally {
+      classStore?.fetchCurrentClass();
+      onCloseCreateLink();
+      refetch?.();
     }
   };
 
@@ -146,7 +170,11 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
           gap={3}
         >
           {getValidArray(data)?.map((item) => (
-            <Attendance profile={item?.user} />
+            <Attendance
+              profile={item?.user}
+              refetch={refetch}
+              role={item?.role}
+            />
           ))}
         </VStack>
       </VStack>
