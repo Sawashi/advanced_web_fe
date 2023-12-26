@@ -33,3 +33,11 @@ export interface IMetaResponse {
   totalPages: number;
   sortBy: string[][];
 }
+
+export interface IGradeComposition {
+  id: string;
+  name?: string;
+  percentage?: number;
+  order?: number;
+  finalized?: boolean;
+}

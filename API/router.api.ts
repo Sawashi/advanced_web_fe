@@ -56,6 +56,9 @@ export const ClassesApiRouters = {
     class_attendees: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/attendees`,
     },
+    class_grade_compositions: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/compositions`,
+    },
   },
   post: {
     create_a_class: {
@@ -68,6 +71,28 @@ export const ClassesApiRouters = {
   patch: {
     update_class_details: {
       value: (classId: ID) => `${API_URL}/classes/${classId}`,
+    },
+  },
+};
+
+export const CompositionsApiRouters = {
+  post: {
+    create_a_composition: {
+      value: `${API_URL}/compositions`,
+    },
+  },
+  patch: {
+    update_a_composition: {
+      value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
+    },
+    update_composition_order: {
+      value: (compositionId: ID) =>
+        `${API_URL}/compositions/${compositionId}/order`,
+    },
+  },
+  delete: {
+    delete_a_composition: {
+      value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
     },
   },
 };

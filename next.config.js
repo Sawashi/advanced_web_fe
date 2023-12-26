@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const config = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   env: {
     API_URL: process.env.API_URL,
     BASE_URL: process.env.BASE_URL,
