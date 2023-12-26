@@ -18,7 +18,6 @@ import { getValidArray } from "utils/common";
 import Attendance from "./Attendance";
 import { HOST } from "constants/common";
 import {
-  sendInvitationMail,
   useCreateClassToken,
   useSendInvitationMail,
 } from "API/post/post.classes.manage-class";
