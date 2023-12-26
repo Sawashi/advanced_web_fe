@@ -55,4 +55,5 @@ export interface IRequestHeader {
 
 export interface IRefreshTokenResponse {
   accessToken: string;
+  accessTokenExpiresIn: number
 }

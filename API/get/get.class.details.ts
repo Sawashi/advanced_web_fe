@@ -16,5 +16,6 @@ export const useGetClassDetails = (classId: string) => {
     queryKey: [ClassesApiRouters.get.class_details.value(classId)],
     queryFn: () => getClassDetails(classId),
     enabled: !!classId,
+    keepPreviousData: true,
   });
 };

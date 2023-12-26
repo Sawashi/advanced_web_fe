@@ -37,9 +37,21 @@ export const UpdateClassSchema = yup.object().shape({
   description: yup.string().trim(),
 });
 
+export const InviteEmailSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Enter a valid email")
+    .required("Email is required"),
+});
+
+export const InviteEmailsSchema = yup.object().shape({
+  emails: yup.array().of(InviteEmailSchema).min(1, "Enter at least one email"),
+});
+
 // Types
 export type IClassCodeSchema = yup.InferType<typeof ClassCodeSchema>;
 export type IClassInformationSchema = yup.InferType<
   typeof ClassInformationSchema
 >;
 export type IUpdateClassSchema = yup.InferType<typeof UpdateClassSchema>;
+export type IInviteEmailsSchema = yup.InferType<typeof InviteEmailsSchema>;

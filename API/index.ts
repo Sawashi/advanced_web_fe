@@ -32,9 +32,10 @@ export function auth(): IRequestHeader {
         refreshToken,
       })
       .then((response) => {
-        const { accessToken } = response.data;
-        setCookie(AuthenticateParams.ACCESS_TOKEN, accessToken);
-        setCookie(AuthenticateParams.REFRESH_TOKEN, refreshToken);
+        const { accessToken, accessTokenExpiresIn } = response.data;
+        setCookie(AuthenticateParams.ACCESS_TOKEN, accessToken, {
+          expires: new Date(Date.now() + accessTokenExpiresIn),
+        });
       })
       .catch((error) => {
         console.log(error);

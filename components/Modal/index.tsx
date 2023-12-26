@@ -64,7 +64,7 @@ function Modal({
         </ModalHeader>
 
         <ModalBody>{children}</ModalBody>
-        <ModalFooter>
+        <ModalFooter gap={3}>
           {actions?.map((action) => (
             <React.Fragment>{action}</React.Fragment>
           ))}

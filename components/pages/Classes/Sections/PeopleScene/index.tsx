@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { useGetClassAttendees } from "API/get/get.class.attendees";
+import Modal from "components/Modal";
 import SvgIcon from "components/SvgIcon";
 import { EClassRole } from "enums/classes";
 import { useStores } from "hooks/useStores";
@@ -17,77 +18,12 @@ import { observer } from "mobx-react";
 import React from "react";
 import { gray700 } from "theme/colors.theme";
 import { getValidArray } from "utils/common";
+import Teachers from "./Teachers";
+import Attendance from "./Attendance";
 
 interface Props {
   details: IClass;
 }
-
-const Attendance = ({ profile }: { profile?: IAttendeeProfile }) => {
-  return (
-    <HStack w={"full"} justifyContent={"space-between"} key={profile?.id}>
-      <HStack gap={3}>
-        <Avatar
-          size={"sm"}
-          name={`${profile?.firstName} ${profile?.lastName}`}
-          src={profile?.avatar}
-          borderColor={"blue.800"}
-          borderWidth={1}
-        />
-        <Text>{`${profile?.firstName} ${profile?.lastName}`}</Text>
-      </HStack>
-      {profile?.email && (
-        <Tooltip label={profile?.email}>
-          <Button
-            variant={"ghost"}
-            onClick={() => {
-              window.open(`mailto:${profile?.email}`);
-            }}
-          >
-            <SvgIcon iconName="ic-mail.svg" fill={gray700} color={gray700} />
-          </Button>
-        </Tooltip>
-      )}
-    </HStack>
-  );
-};
-
-const Teachers = ({ data }: { data?: IAttendee[] }) => {
-  const { classStore } = useStores();
-  const { isStudentOfClass } = classStore;
-  return (
-    <VStack
-      divider={<Divider h={"1px"} w={"full"} bgColor={"blue.800"} />}
-      w={"full"}
-      alignItems={"start"}
-      gap={5}
-    >
-      <HStack w={"full"} justifyContent={"space-between"} alignItems={"center"}>
-        <Heading size="lg">Teachers</Heading>
-        <HStack gap={3} justifyItems={"end"} alignItems={"center"}>
-          <Text>{`${data?.length ?? 0} teachers`}</Text>
-          {!isStudentOfClass && (
-            <Tooltip label={"Add teacher"}>
-              {/* TODO: Add teacher */}
-              <Button variant={"icon"} onClick={() => {}}>
-                <SvgIcon iconName={"ic-add.svg"} />
-              </Button>
-            </Tooltip>
-          )}
-        </HStack>
-      </HStack>
-      <VStack
-        divider={<Divider h={"1px"} w={"full"} />}
-        w={"full"}
-        alignItems={"start"}
-        gap={3}
-      >
-        {getValidArray(data)?.map((item) => (
-          <Attendance profile={item?.user} />
-        ))}
-      </VStack>
-    </VStack>
-  );
-};
 
 const Students = ({
   data,

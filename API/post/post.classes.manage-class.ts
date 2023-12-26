@@ -1,20 +1,31 @@
 import { api } from "API";
-import { UsersApiRouters } from "API/router.api";
+import { ClassesApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
+import { useMutation } from "react-query";
 
-export const createClassToken = async (
-  classId: string,
-  userRole: string,
-  expireDuration: string
-) => {
+type TCreateClassToken = {
+  token: string;
+};
+
+type TCreateClassTokenBody = {
+  classId: string;
+  role: string;
+  expiresIn: string;
+};
+
+export const createClassToken = async ({
+  classId,
+  role,
+  expiresIn,
+}: TCreateClassTokenBody) => {
   const response = await api.post<
     { role: string; expiresIn: string },
-    IResponseData<{}>
-  >(UsersApiRouters.post.create_a_class.value + `/${classId}/invite-token`, {
-    role: userRole,
-    expiresIn: expireDuration,
+    IResponseData<TCreateClassToken>
+  >(ClassesApiRouters.post.create_a_class.value + `/${classId}/invite-token`, {
+    role,
+    expiresIn,
   });
-  return response;
+  return response.data;
 };
 
 export const sendInvitationMail = async (
@@ -25,9 +36,21 @@ export const sendInvitationMail = async (
   const response = await api.post<
     { role: string; expiresIn: string },
     IResponseData<{}>
-  >(UsersApiRouters.post.create_a_class.value + `/${classId}/invite`, {
+  >(ClassesApiRouters.post.create_a_class.value + `/${classId}/invite`, {
     role: roleToJoin,
     email: email,
   });
   return response;
+};
+
+export const useCreateClassToken = () => {
+  return useMutation<
+    TCreateClassToken,
+    Error,
+    TCreateClassTokenBody,
+    { previousClassId: string }
+  >({
+    mutationFn: createClassToken,
+    mutationKey: [ClassesApiRouters.post.create_a_class.value],
+  });
 };
