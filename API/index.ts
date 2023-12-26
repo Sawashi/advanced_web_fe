@@ -28,16 +28,17 @@ export function auth(): IRequestHeader {
 
   if (!accessToken && refreshToken) {
     api
-      .post<IRefreshTokenResponse>("/auth/refresh-token", {
+      .post<IRefreshTokenResponse>("/auth/refresh", {
         refreshToken,
       })
       .then((response) => {
-        const { accessToken } = response.data;
-        setCookie(AuthenticateParams.ACCESS_TOKEN, accessToken);
-        setCookie(AuthenticateParams.REFRESH_TOKEN, refreshToken);
+        const { accessToken, accessTokenExpiresIn } = response.data;
+        setCookie(AuthenticateParams.ACCESS_TOKEN, accessToken, {
+          expires: new Date(Date.now() + accessTokenExpiresIn),
+        });
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 

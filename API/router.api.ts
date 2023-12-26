@@ -45,9 +45,6 @@ export const UsersApiRouters = {
     avatar: {
       value: `${API_URL}/auth/me/avatar`,
     },
-    create_a_class: {
-      value: `${API_URL}/classes`,
-    },
   },
 };
 
@@ -63,6 +60,9 @@ export const ClassesApiRouters = {
   post: {
     create_a_class: {
       value: `${API_URL}/classes`,
+    },
+    kick_attendee: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/kick`,
     },
   },
   patch: {

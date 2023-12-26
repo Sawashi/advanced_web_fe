@@ -42,8 +42,12 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
   const createJoinLink = async (classId: string, roleToJoin: string) => {
     try {
       const modifiedClassId: string = classId.substring(1, classId.length - 1);
-      const data = await createClassToken(modifiedClassId, roleToJoin, "1d");
-      const tokenCreated = JSON.stringify(data.data);
+      const data = await createClassToken({
+        classId: modifiedClassId,
+        role: roleToJoin,
+        expiresIn: "1d",
+      });
+      const tokenCreated = JSON.stringify(data);
       const parsedToken: tokenProps = JSON.parse(tokenCreated);
       if (parsedToken?.token) {
         clipboardCopy(
@@ -76,11 +80,11 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
       const modifiedClassId: string = classId.substring(1, classId.length - 1);
       if (teacherMails.length !== 0) {
         teacherMails.forEach(async (mail) => {
-          const response = await sendInvitationMail(
-            modifiedClassId,
-            "teacher",
-            mail
-          );
+          const response = await sendInvitationMail({
+            classId: modifiedClassId,
+            role: "teacher",
+            email: mail,
+          });
           if (response.data?.error) {
             toast({
               status: "error",
@@ -91,11 +95,11 @@ const MenuClass = ({ typeOfClass, classId }: MenuClassProps) => {
       }
       if (studentMails.length !== 0) {
         studentMails.forEach(async (mail) => {
-          const response = await sendInvitationMail(
-            modifiedClassId,
-            "student",
-            mail
-          );
+          const response = await sendInvitationMail({
+            classId: modifiedClassId,
+            role: "student",
+            email: mail,
+          });
           if (response.data?.error) {
             toast({
               status: "error",
