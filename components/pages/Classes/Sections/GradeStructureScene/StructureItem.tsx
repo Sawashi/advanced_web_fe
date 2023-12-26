@@ -94,6 +94,7 @@ const StructureItem = ({
                     onClick={() => {
                       onRemove?.(item);
                     }}
+                    color="red.500"
                   >
                     Remove
                   </MenuItem>
