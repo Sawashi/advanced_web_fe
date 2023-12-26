@@ -11,6 +11,7 @@ import { useStores } from "hooks/useStores";
 import EmptyList from "components/EmptyState/EmptyList";
 import UpsertCompositionModal from "./UpsertCompositionModal";
 import { useDeleteComposition } from "API/delete/delete.class.composition";
+import { usePatchUpdateCompositionOrder } from "API/patch/patch.compositions.update-order";
 
 interface Props {
   details: IClass;
@@ -44,11 +45,15 @@ const GradeStructureScene = ({ details }: Props) => {
   const { mutateAsync: deleteComposition, isLoading: isDeletingComposition } =
     useDeleteComposition(selectedComposition?.id ?? "");
 
+  const { mutateAsync: updateCompositionOrder } =
+    usePatchUpdateCompositionOrder(selectedComposition?.id ?? "");
+
   settingStore?.setHeaderLoading(
     isCompositionsLoading || isDeletingComposition
   );
 
   const onDragEnd = (result: DropResult) => {
+    const changedSourceItem = getValidArray(items)[result.source?.index ?? 0];
     if (!result.destination) {
       return;
     }
@@ -57,6 +62,14 @@ const GradeStructureScene = ({ details }: Props) => {
       result.source.index,
       result.destination.index
     );
+    try {
+      updateCompositionOrder({
+        order: result.destination.index,
+        compositionId: changedSourceItem?.id ?? "",
+      });
+    } catch (e) {
+      console.error("updateCompositionOrder", e);
+    }
     setItems(itemsReOrder);
   };
 
@@ -148,6 +161,7 @@ const GradeStructureScene = ({ details }: Props) => {
                       }}
                     />
                   ))}
+                  {provided.placeholder}
                 </VStack>
               )}
             </Droppable>

@@ -85,6 +85,10 @@ export const CompositionsApiRouters = {
     update_a_composition: {
       value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
     },
+    update_composition_order: {
+      value: (compositionId: ID) =>
+        `${API_URL}/compositions/${compositionId}/order`,
+    },
   },
   delete: {
     delete_a_composition: {

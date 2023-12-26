@@ -30,7 +30,7 @@ const StructureItem = ({
   onRemove?: (item: IGradeComposition) => void;
 }) => {
   return (
-    <Draggable draggableId={item.id} index={index}>
+    <Draggable draggableId={item?.id} index={index}>
       {(provided) => (
         <Card
           width={"full"}
