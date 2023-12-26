@@ -1,4 +1,4 @@
-import { Box, VStack, HStack, Text, Button } from "@chakra-ui/react";
+import { Box, VStack, HStack, Text, Button, useToast } from "@chakra-ui/react";
 import { IClass, IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
@@ -10,6 +10,7 @@ import { checkValidArray, getValidArray } from "utils/common";
 import { useStores } from "hooks/useStores";
 import EmptyList from "components/EmptyState/EmptyList";
 import UpsertCompositionModal from "./UpsertCompositionModal";
+import { useDeleteComposition } from "API/delete/delete.class.composition";
 
 interface Props {
   details: IClass;
@@ -29,6 +30,7 @@ const reorder = (
 const GradeStructureScene = ({ details }: Props) => {
   const { settingStore, classStore } = useStores();
   const { totalPercentage } = classStore;
+  const toast = useToast();
   const [items, setItems] = useState<IGradeComposition[]>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedComposition, setSelectedComposition] = useState<
@@ -39,8 +41,12 @@ const GradeStructureScene = ({ details }: Props) => {
     isLoading: isCompositionsLoading,
     refetch: refetchCompositions,
   } = useGetClassGradeCompositions(details?.id ?? "");
+  const { mutateAsync: deleteComposition, isLoading: isDeletingComposition } =
+    useDeleteComposition(selectedComposition?.id ?? "");
 
-  settingStore?.setHeaderLoading(isCompositionsLoading);
+  settingStore?.setHeaderLoading(
+    isCompositionsLoading || isDeletingComposition
+  );
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -62,6 +68,28 @@ const GradeStructureScene = ({ details }: Props) => {
   const onCloseModal = () => {
     setIsModalVisible(false);
     setSelectedComposition(undefined);
+  };
+
+  const onDeleteComposition = async (composition: IGradeComposition) => {
+    const { data } = await deleteComposition({
+      compositionId: composition?.id ?? "",
+    });
+    if (data?.message && data?.error && data?.statusCode >= 400) {
+      toast({
+        description: data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        description: "Deleted composition successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      await refetchCompositions();
+    }
   };
 
   React.useEffect(() => {
@@ -114,6 +142,9 @@ const GradeStructureScene = ({ details }: Props) => {
                       onEdit={(composition) => {
                         setIsModalVisible(true);
                         setSelectedComposition(composition);
+                      }}
+                      onRemove={(composition) => {
+                        onDeleteComposition(composition);
                       }}
                     />
                   ))}

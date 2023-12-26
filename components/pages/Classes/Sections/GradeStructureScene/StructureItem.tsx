@@ -22,10 +22,12 @@ const StructureItem = ({
   item,
   index,
   onEdit,
+  onRemove,
 }: {
   item: IGradeComposition;
   index: number;
   onEdit?: (item: IGradeComposition) => void;
+  onRemove?: (item: IGradeComposition) => void;
 }) => {
   return (
     <Draggable draggableId={item.id} index={index}>
@@ -88,7 +90,13 @@ const StructureItem = ({
                   >
                     Edit
                   </MenuItem>
-                  <MenuItem onClick={() => {}}>Remove</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      onRemove?.(item);
+                    }}
+                  >
+                    Remove
+                  </MenuItem>
                 </MenuList>
               </Menu>
             </HStack>

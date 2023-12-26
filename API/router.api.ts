@@ -86,4 +86,9 @@ export const CompositionsApiRouters = {
       value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
     },
   },
+  delete: {
+    delete_a_composition: {
+      value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
+    },
+  },
 };
