@@ -20,6 +20,7 @@ import { useStores } from "hooks/useStores";
 import { IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import { usePostCreateComposition } from "API/post/post.class.create-composition";
+import { usePatchUpdateComposition } from "API/patch/patch.class.update-composition";
 
 type UpsertCompositionModalProps = {
   isVisible: boolean;
@@ -36,12 +37,12 @@ const UpsertCompositionModal = ({
 }: UpsertCompositionModalProps) => {
   const isEdit = !!composition;
   const { classStore } = useStores();
+  const { totalPercentage } = classStore;
   const toast = useToast();
-  const {
-    mutateAsync: createComposition,
-    isLoading: isCreatingComposition,
-    error: createCompositionError,
-  } = usePostCreateComposition();
+  const { mutateAsync: createComposition, isLoading: isCreatingComposition } =
+    usePostCreateComposition();
+  const { mutateAsync: updateComposition, isLoading: isUpdatingComposition } =
+    usePatchUpdateComposition(composition?.id ?? "");
   const method = useForm<IGradeCompositionSchema>({
     defaultValues: {
       name: "",
@@ -56,6 +57,7 @@ const UpsertCompositionModal = ({
     handleSubmit,
     reset,
     formState: { isValid },
+    setError,
   } = method;
 
   const onCloseModal = () => {
@@ -68,8 +70,45 @@ const UpsertCompositionModal = ({
 
   const onSubmit = async (values: IGradeCompositionSchema) => {
     if (isEdit) {
-      //TODO: Edit composition
+      const currentPercentage = composition?.percentage ?? 0;
+      const total =
+        totalPercentage - currentPercentage + (values?.percentage ?? 0);
+      if (total > 100) {
+        setError("percentage", {
+          message: "Total percentage of all not exceed 100%",
+        });
+        return;
+      }
+      const { data } = await updateComposition({
+        compositionId: composition?.id ?? "",
+        name: values?.name,
+        percentage: values?.percentage,
+      });
+
+      if (data?.message && data?.error && data?.statusCode >= 400) {
+        toast({
+          description: data?.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          description: "Update composition successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        onCloseModal();
+      }
     } else {
+      const total = totalPercentage + (values?.percentage ?? 0);
+      if (total > 100) {
+        setError("percentage", {
+          message: "Total percentage of all not exceed 100%",
+        });
+        return;
+      }
       const { data } = await createComposition({
         name: values?.name,
         percentage: values?.percentage,
@@ -109,14 +148,14 @@ const UpsertCompositionModal = ({
           isDisabled={!isValid}
           size="md"
           onClick={handleSubmit(onSubmit)}
-          isLoading={isCreatingComposition}
+          isLoading={isCreatingComposition || isUpdatingComposition}
           w={100}
         >
           {isEdit ? "Edit" : "Create"}
         </Button>
       </HStack>
     );
-  }, [isValid, isEdit, isCreatingComposition]);
+  }, [isValid, isEdit, isCreatingComposition, isUpdatingComposition]);
 
   useEffect(() => {
     if (composition) {

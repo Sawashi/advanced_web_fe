@@ -81,4 +81,9 @@ export const CompositionsApiRouters = {
       value: `${API_URL}/compositions`,
     },
   },
+  patch: {
+    update_a_composition: {
+      value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
+    },
+  },
 };
