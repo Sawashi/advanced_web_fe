@@ -56,6 +56,9 @@ export const ClassesApiRouters = {
     class_attendees: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/attendees`,
     },
+    class_grade_compositions: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/compositions`,
+    },
   },
   post: {
     create_a_class: {

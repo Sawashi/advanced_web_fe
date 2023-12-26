@@ -5,17 +5,14 @@ import React, { useState } from "react";
 import { DropResult } from "react-beautiful-dnd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import StructureItem from "./StructureItem";
+import { useGetClassGradeCompositions } from "API/get/get.class.gradeComposition";
+import { checkValidArray, getValidArray } from "utils/common";
+import { useStores } from "hooks/useStores";
+import EmptyList from "components/EmptyState/EmptyList";
 
 interface Props {
   details: IClass;
 }
-
-const getItems = (count: number): IGradeComposition[] =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k}`,
-    name: `item ${k}`,
-    percentage: 5,
-  }));
 
 const reorder = (
   list: IGradeComposition[],
@@ -30,7 +27,14 @@ const reorder = (
 };
 
 const GradeStructureScene = ({ details }: Props) => {
-  const [items, setItems] = useState<IGradeComposition[]>(getItems(10));
+  const { settingStore, classStore } = useStores();
+  const { data: classCompositions, isLoading: isCompositionsLoading } =
+    useGetClassGradeCompositions(details?.id ?? "");
+  const { totalPercentage } = classStore;
+
+  const [items, setItems] = useState<IGradeComposition[]>();
+
+  settingStore?.setHeaderLoading(isCompositionsLoading);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -38,7 +42,7 @@ const GradeStructureScene = ({ details }: Props) => {
     }
 
     const itemsReOrder = reorder(
-      items,
+      getValidArray(items),
       result.source.index,
       result.destination.index
     );
@@ -46,34 +50,67 @@ const GradeStructureScene = ({ details }: Props) => {
     setItems(itemsReOrder);
   };
 
+  React.useEffect(() => {
+    if (classCompositions) {
+      setItems(classCompositions);
+      classStore.setCompositions(classCompositions);
+    }
+  }, [classCompositions]);
+
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>
-      <VStack
-        w={"full"}
-        maxW={"container.lg"}
-        p={10}
-        borderColor={"gray.300"}
-        alignItems={"start"}
-        h={"full"}
-      >
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {(provided) => (
-              <VStack
-                w={"full"}
-                gap={5}
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                {items.map((item, index) => (
-                  <StructureItem item={item} index={index} />
-                ))}
-                {provided.placeholder}
-              </VStack>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </VStack>
+      {checkValidArray(items) ? (
+        <VStack
+          w={"full"}
+          maxW={"container.lg"}
+          p={10}
+          borderColor={"gray.300"}
+          alignItems={"start"}
+          h={"full"}
+        >
+          <HStack w={"full"} justifyContent={"space-between"}>
+            <Text fontSize={"xl"} fontWeight={"bold"}>
+              Grade structure
+            </Text>
+
+            <Text fontSize={"md"} fontWeight={"normal"}>
+              {items?.length} items
+            </Text>
+          </HStack>
+
+          <HStack w={"full"} justifyContent={"space-between"}>
+            <Text fontSize={"md"} fontWeight={"normal"}>
+              Total percentage: {totalPercentage}%
+            </Text>
+          </HStack>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <VStack
+                  w={"full"}
+                  gap={5}
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {getValidArray(items).map((item, index) => (
+                    <StructureItem item={item} index={index} />
+                  ))}
+                  {provided.placeholder}
+                </VStack>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </VStack>
+      ) : (
+        <EmptyList
+          title="Seems like there's no grade structure yet"
+          description="Try creating one"
+          _button={{
+            text: "Create grade structure",
+            onClick: () => {},
+          }}
+        />
+      )}
     </VStack>
   );
 };

@@ -1,14 +1,17 @@
 import { getClassDetails } from "API/get/get.class.details";
 import { EClassRole } from "enums/classes";
-import { IClass } from "interfaces/classes";
+import { IClass, IGradeComposition } from "interfaces/classes";
 import { makeObservable, observable } from "mobx";
 import { RootStore } from "stores";
+import { getValidArray } from "utils/common";
 
 class ClassStore {
   rootStore: RootStore;
   currentClass: IClass | null = null;
+  compositions: IGradeComposition[] = [];
   isStudentOfClass = true;
   isOwnerOfClass = false;
+  totalPercentage = 0;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -26,6 +29,14 @@ class ClassStore {
       classData?.owner?.id === this.rootStore?.authStore?.user?.id;
   }
 
+  setCompositions(compositions: IGradeComposition[]) {
+    this.compositions = compositions;
+    this.totalPercentage = getValidArray(compositions).reduce(
+      (acc, cur) => acc + (cur?.percentage ?? 0),
+      0
+    );
+  }
+
   async fetchCurrentClass() {
     try {
       if (this.currentClass?.id) {
@@ -37,13 +48,12 @@ class ClassStore {
     }
   }
 
-  resetCurrentClass() {
+  reset() {
     this.currentClass = null;
     this.isStudentOfClass = true;
-  }
-
-  reset() {
-    this.resetCurrentClass();
+    this.isOwnerOfClass = false;
+    this.compositions = [];
+    this.totalPercentage = 0;
   }
 }
 
