@@ -74,3 +74,11 @@ export const ClassesApiRouters = {
     },
   },
 };
+
+export const CompositionsApiRouters = {
+  post: {
+    create_a_composition: {
+      value: `${API_URL}/compositions`,
+    },
+  },
+};

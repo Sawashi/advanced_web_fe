@@ -19,23 +19,29 @@ import {
 import { useStores } from "hooks/useStores";
 import { IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
+import { usePostCreateComposition } from "API/post/post.class.create-composition";
 
 type UpsertCompositionModalProps = {
   isVisible: boolean;
   onClose: () => void;
   composition?: IGradeComposition;
+  refetch?: () => void;
 };
 
 const UpsertCompositionModal = ({
   isVisible,
   onClose,
   composition,
+  refetch,
 }: UpsertCompositionModalProps) => {
-  const [isLoading, setIsLoading] = React.useState(false);
   const isEdit = !!composition;
-  const { authStore } = useStores();
-
+  const { classStore } = useStores();
   const toast = useToast();
+  const {
+    mutateAsync: createComposition,
+    isLoading: isCreatingComposition,
+    error: createCompositionError,
+  } = usePostCreateComposition();
   const method = useForm<IGradeCompositionSchema>({
     defaultValues: {
       name: "",
@@ -60,7 +66,36 @@ const UpsertCompositionModal = ({
     });
   };
 
-  const onSubmit = async (values: IGradeCompositionSchema) => {};
+  const onSubmit = async (values: IGradeCompositionSchema) => {
+    if (isEdit) {
+      //TODO: Edit composition
+    } else {
+      const { data } = await createComposition({
+        name: values?.name,
+        percentage: values?.percentage,
+        classId: classStore?.currentClass?.id ?? "",
+      });
+
+      if (data?.message && data?.error && data?.statusCode >= 400) {
+        toast({
+          description: data?.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          description: "Create composition successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        onCloseModal();
+      }
+    }
+
+    refetch?.();
+  };
 
   const Title = useCallback(() => {
     return (
@@ -74,14 +109,14 @@ const UpsertCompositionModal = ({
           isDisabled={!isValid}
           size="md"
           onClick={handleSubmit(onSubmit)}
+          isLoading={isCreatingComposition}
           w={100}
-          isLoading={isLoading}
         >
           {isEdit ? "Edit" : "Create"}
         </Button>
       </HStack>
     );
-  }, [isValid, isLoading, isEdit]);
+  }, [isValid, isEdit, isCreatingComposition]);
 
   useEffect(() => {
     if (composition) {

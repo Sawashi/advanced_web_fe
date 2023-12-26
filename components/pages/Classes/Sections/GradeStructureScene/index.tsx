@@ -28,14 +28,17 @@ const reorder = (
 
 const GradeStructureScene = ({ details }: Props) => {
   const { settingStore, classStore } = useStores();
-  const { data: classCompositions, isLoading: isCompositionsLoading } =
-    useGetClassGradeCompositions(details?.id ?? "");
   const { totalPercentage } = classStore;
   const [items, setItems] = useState<IGradeComposition[]>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedComposition, setSelectedComposition] = useState<
     IGradeComposition | undefined
   >();
+  const {
+    data: classCompositions,
+    isLoading: isCompositionsLoading,
+    refetch: refetchCompositions,
+  } = useGetClassGradeCompositions(details?.id ?? "");
 
   settingStore?.setHeaderLoading(isCompositionsLoading);
 
@@ -145,6 +148,9 @@ const GradeStructureScene = ({ details }: Props) => {
         isVisible={isModalVisible}
         onClose={onCloseModal}
         composition={selectedComposition}
+        refetch={() => {
+          refetchCompositions();
+        }}
       />
     </VStack>
   );
