@@ -31,11 +31,11 @@ import {
 } from "constants/validation/classes";
 import FormInput from "components/FormInput";
 
-const Teachers = ({ data }: { data?: IAttendee[] }) => {
+const Students = ({ data }: { data?: IAttendee[] }) => {
   const toast = useToast();
   const { classStore } = useStores();
   const { isStudentOfClass } = classStore;
-  const [isShowingAddTeacher, setIsShowingAddTeacher] = React.useState(false);
+  const [isShowingAddStudent, setIsShowingAddStudent] = React.useState(false);
   const method = useForm<IInviteEmailsSchema>({
     resolver: yupResolver(InviteEmailsSchema),
     reValidateMode: "onChange",
@@ -47,7 +47,6 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
   const { handleSubmit, control, reset } = method;
   const { mutateAsync: generateClassToken, isLoading: isGeneratingClass } =
     useCreateClassToken();
-
   const {
     mutateAsync: sendInvitationMail,
     isLoading: isSendingInvitationMail,
@@ -63,7 +62,7 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
   });
 
   const onCloseCreateLink = () => {
-    setIsShowingAddTeacher(false);
+    setIsShowingAddStudent(false);
     reset();
   };
 
@@ -71,7 +70,7 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
     try {
       const data = await generateClassToken({
         classId: classStore?.currentClass?.id ?? "",
-        role: EClassRole.TEACHER,
+        role: EClassRole.STUDENT,
         expiresIn: "1d",
       });
       const token = data?.token;
@@ -98,7 +97,7 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
         getValidArray(emails).map((item) =>
           sendInvitationMail({
             classId: classStore?.currentClass?.id ?? "",
-            role: EClassRole.TEACHER,
+            role: EClassRole.STUDENT,
             email: item?.email,
           })
         )
@@ -121,16 +120,16 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
           justifyContent={"space-between"}
           alignItems={"center"}
         >
-          <Heading size="lg">Teachers</Heading>
+          <Heading size="lg">Students</Heading>
           <HStack gap={3} justifyItems={"end"} alignItems={"center"}>
-            <Text>{`${data?.length ?? 0} teachers`}</Text>
+            <Text>{`${data?.length ?? 0} students`}</Text>
             {!isStudentOfClass && (
-              <Tooltip label={"Add teacher"}>
-                {/* TODO: Add teacher */}
+              <Tooltip label={"Add student"}>
+                {/* TODO: Add student */}
                 <Button
                   variant={"icon"}
                   onClick={() => {
-                    setIsShowingAddTeacher(true);
+                    setIsShowingAddStudent(true);
                   }}
                 >
                   <SvgIcon iconName={"ic-add.svg"} />
@@ -151,9 +150,9 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
         </VStack>
       </VStack>
       <Modal
-        isVisible={isShowingAddTeacher && !isStudentOfClass}
+        isVisible={isShowingAddStudent && !isStudentOfClass}
         onClose={onCloseCreateLink}
-        title={"Add teacher"}
+        title={"Add student"}
         actions={[
           <Button colorScheme="blue" onClick={onCloseCreateLink}>
             Close
@@ -257,8 +256,7 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
             fontWeight={"normal"}
             w={"full"}
           >
-            Teacher will be added to your class and will be able to manage it
-            like you, except for deleting class.
+            Student will be added to your class and will be view your class.
           </Text>
         </VStack>
       </Modal>
@@ -266,4 +264,4 @@ const Teachers = ({ data }: { data?: IAttendee[] }) => {
   );
 };
 
-export default Teachers;
+export default Students;

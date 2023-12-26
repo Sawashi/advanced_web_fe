@@ -13,6 +13,12 @@ type TCreateClassTokenBody = {
   expiresIn: string;
 };
 
+type TSendInvitationMailBody = {
+  classId: string;
+  role: string;
+  email: string;
+};
+
 export const createClassToken = async ({
   classId,
   role,
@@ -28,16 +34,16 @@ export const createClassToken = async ({
   return response.data;
 };
 
-export const sendInvitationMail = async (
-  classId: string,
-  roleToJoin: string,
-  email: string
-) => {
+export const sendInvitationMail = async ({
+  classId,
+  role,
+  email,
+}: TSendInvitationMailBody) => {
   const response = await api.post<
     { role: string; expiresIn: string },
     IResponseData<{}>
   >(ClassesApiRouters.post.create_a_class.value + `/${classId}/invite`, {
-    role: roleToJoin,
+    role,
     email: email,
   });
   return response;
@@ -51,6 +57,18 @@ export const useCreateClassToken = () => {
     { previousClassId: string }
   >({
     mutationFn: createClassToken,
+    mutationKey: [ClassesApiRouters.post.create_a_class.value],
+  });
+};
+
+export const useSendInvitationMail = () => {
+  return useMutation<
+    {},
+    Error,
+    TSendInvitationMailBody,
+    { previousClassId: string }
+  >({
+    mutationFn: sendInvitationMail,
     mutationKey: [ClassesApiRouters.post.create_a_class.value],
   });
 };
