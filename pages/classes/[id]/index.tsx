@@ -23,6 +23,7 @@ import StreamScene from "components/pages/Classes/Sections/StreamScene";
 import { getValidArray } from "utils/common";
 import SvgIcon from "components/SvgIcon";
 import UpdateClassModal from "components/pages/Classes/UpdateClassModal";
+import GradeStructureScene from "components/pages/Classes/Sections/GradeStructureScene";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -73,8 +74,8 @@ const ClassDetail = () => {
       },
       !isStudentOfClass
         ? {
-            name: "Grades",
-            component: <VStack flex={1} w={"full"}></VStack>,
+            name: "Grades structure",
+            component: <GradeStructureScene details={classDetails ?? {}} />,
           }
         : null,
     ],
