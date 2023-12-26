@@ -11,6 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
+import { useStores } from "hooks/useStores";
 import { IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React from "react";
@@ -20,9 +21,11 @@ import { gray600 } from "theme/colors.theme";
 const StructureItem = ({
   item,
   index,
+  onEdit,
 }: {
   item: IGradeComposition;
   index: number;
+  onEdit?: (item: IGradeComposition) => void;
 }) => {
   return (
     <Draggable draggableId={item.id} index={index}>
@@ -78,7 +81,13 @@ const StructureItem = ({
                   </Button>
                 </MenuButton>
                 <MenuList bgColor={"white.100"}>
-                  <MenuItem onClick={() => {}}>Edit</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      onEdit?.(item);
+                    }}
+                  >
+                    Edit
+                  </MenuItem>
                   <MenuItem onClick={() => {}}>Remove</MenuItem>
                 </MenuList>
               </Menu>

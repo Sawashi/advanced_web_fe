@@ -1,14 +1,15 @@
-import { Box, Card, VStack, CardBody, HStack, Text } from "@chakra-ui/react";
+import { Box, VStack, HStack, Text, Button } from "@chakra-ui/react";
 import { IClass, IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { DropResult } from "react-beautiful-dnd";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import StructureItem from "./StructureItem";
 import { useGetClassGradeCompositions } from "API/get/get.class.gradeComposition";
 import { checkValidArray, getValidArray } from "utils/common";
 import { useStores } from "hooks/useStores";
 import EmptyList from "components/EmptyState/EmptyList";
+import UpsertCompositionModal from "./UpsertCompositionModal";
 
 interface Props {
   details: IClass;
@@ -22,7 +23,6 @@ const reorder = (
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
 
@@ -31,8 +31,11 @@ const GradeStructureScene = ({ details }: Props) => {
   const { data: classCompositions, isLoading: isCompositionsLoading } =
     useGetClassGradeCompositions(details?.id ?? "");
   const { totalPercentage } = classStore;
-
   const [items, setItems] = useState<IGradeComposition[]>();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedComposition, setSelectedComposition] = useState<
+    IGradeComposition | undefined
+  >();
 
   settingStore?.setHeaderLoading(isCompositionsLoading);
 
@@ -40,14 +43,22 @@ const GradeStructureScene = ({ details }: Props) => {
     if (!result.destination) {
       return;
     }
-
     const itemsReOrder = reorder(
       getValidArray(items),
       result.source.index,
       result.destination.index
     );
-
     setItems(itemsReOrder);
+  };
+
+  const onAddComposition = () => {
+    setIsModalVisible(true);
+    setSelectedComposition(undefined);
+  };
+
+  const onCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedComposition(undefined);
   };
 
   React.useEffect(() => {
@@ -67,6 +78,7 @@ const GradeStructureScene = ({ details }: Props) => {
           borderColor={"gray.300"}
           alignItems={"start"}
           h={"full"}
+          gap={5}
         >
           <HStack w={"full"} justifyContent={"space-between"}>
             <Text fontSize={"xl"} fontWeight={"bold"}>
@@ -93,13 +105,31 @@ const GradeStructureScene = ({ details }: Props) => {
                   ref={provided.innerRef}
                 >
                   {getValidArray(items).map((item, index) => (
-                    <StructureItem item={item} index={index} />
+                    <StructureItem
+                      item={item}
+                      index={index}
+                      onEdit={(composition) => {
+                        setIsModalVisible(true);
+                        setSelectedComposition(composition);
+                      }}
+                    />
                   ))}
-                  {provided.placeholder}
                 </VStack>
               )}
             </Droppable>
           </DragDropContext>
+
+          <Box w={"full"} mt={5}>
+            <Button
+              w={"full"}
+              variant={"outline"}
+              colorScheme={"blue"}
+              py={7}
+              onClick={onAddComposition}
+            >
+              Add new item
+            </Button>
+          </Box>
         </VStack>
       ) : (
         <EmptyList
@@ -107,10 +137,15 @@ const GradeStructureScene = ({ details }: Props) => {
           description="Try creating one"
           _button={{
             text: "Create grade structure",
-            onClick: () => {},
+            onClick: onAddComposition,
           }}
         />
       )}
+      <UpsertCompositionModal
+        isVisible={isModalVisible}
+        onClose={onCloseModal}
+        composition={selectedComposition}
+      />
     </VStack>
   );
 };
