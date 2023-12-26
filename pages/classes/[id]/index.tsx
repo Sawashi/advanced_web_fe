@@ -65,16 +65,12 @@ const ClassDetail = () => {
         ),
       },
       {
-        name: "Classwork",
-        component: <VStack flex={1} w={"full"}></VStack>,
-      },
-      {
         name: "People",
         component: <PeopleScene details={classDetails ?? {}} />,
       },
       !isStudentOfClass
         ? {
-            name: "Grades structure",
+            name: "Grade structure",
             component: <GradeStructureScene details={classDetails ?? {}} />,
           }
         : null,

@@ -17,29 +17,28 @@ export const api = axios.create({
   },
 });
 
-export function auth(): IRequestHeader {
+export async function auth(): Promise<IRequestHeader> {
   if (typeof window === "undefined") {
     return {};
   }
 
   const headers = { Authorization: "", "Content-Type": "" };
-  const accessToken = getCookie(AuthenticateParams.ACCESS_TOKEN);
+  let accessToken = getCookie(AuthenticateParams.ACCESS_TOKEN);
   const refreshToken = getCookie(AuthenticateParams.REFRESH_TOKEN);
 
   if (!accessToken && refreshToken) {
-    api
-      .post<IRefreshTokenResponse>("/auth/refresh", {
+    try {
+      const { data } = await api.post<IRefreshTokenResponse>("/auth/refresh", {
         refreshToken,
-      })
-      .then((response) => {
-        const { accessToken, accessTokenExpiresIn } = response.data;
-        setCookie(AuthenticateParams.ACCESS_TOKEN, accessToken, {
-          expires: new Date(Date.now() + accessTokenExpiresIn),
-        });
-      })
-      .catch((error) => {
-        console.error(error);
       });
+      setCookie(AuthenticateParams.ACCESS_TOKEN, data?.accessToken, {
+        expires: new Date(Date.now() + data?.accessTokenExpiresIn),
+      });
+
+      accessToken = data?.accessToken;
+    } catch (e) {
+      console.error("auth", e);
+    }
   }
 
   headers.Authorization = `Bearer ${accessToken}`;
@@ -48,8 +47,8 @@ export function auth(): IRequestHeader {
 }
 
 api.interceptors.request.use(
-  (config) => {
-    config.headers = auth();
+  async (config) => {
+    config.headers = await auth();
     return config;
   },
   (error) => {
