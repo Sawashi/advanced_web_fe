@@ -171,11 +171,12 @@ const Teachers = ({
           alignItems={"start"}
           gap={3}
         >
-          {getValidArray(data)?.map((item) => (
+          {getValidArray(data)?.map((item, index) => (
             <Attendance
               profile={item?.user}
               refetch={refetch}
               role={item?.role}
+              key={item?.user?.id}
             />
           ))}
         </VStack>

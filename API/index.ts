@@ -28,7 +28,7 @@ export function auth(): IRequestHeader {
 
   if (!accessToken && refreshToken) {
     api
-      .post<IRefreshTokenResponse>("/auth/refresh-token", {
+      .post<IRefreshTokenResponse>("/auth/refresh", {
         refreshToken,
       })
       .then((response) => {

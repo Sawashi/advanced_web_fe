@@ -175,6 +175,7 @@ const Students = ({
               profile={item?.user}
               refetch={refetch}
               role={item?.role}
+              key={item?.user?.id}
             />
           ))}
         </VStack>

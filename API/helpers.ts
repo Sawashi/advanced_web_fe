@@ -35,7 +35,10 @@ export async function refreshToken() {
       }
     );
     const data: IRefreshTokenResponse = response?.data ?? {};
-    setCookie(AuthenticateParams.ACCESS_TOKEN, data?.accessToken);
+    setCookie(AuthenticateParams.ACCESS_TOKEN, data?.accessToken, {
+      maxAge: 60 * 60 * 24 * 7,
+      expires: new Date(Date.now() + data?.accessTokenExpiresIn),
+    });
     return data;
   } catch (err) {
     deleteCookie(AuthenticateParams.ACCESS_TOKEN);
