@@ -100,13 +100,16 @@ const Students = ({
     try {
       const { emails } = data;
       await Promise.all(
-        getValidArray(emails).map((item) =>
-          sendInvitationMail({
+        getValidArray(emails).map(async (item) => {
+          const res = await sendInvitationMail({
             classId: classStore?.currentClass?.id ?? "",
             role: EClassRole.STUDENT,
             email: item?.email,
-          })
-        )
+          });
+          if (res?.data?.statusCode !== 200) {
+            throw new Error("Something went wrong");
+          }
+        })
       );
       toast({
         title: "Success",

@@ -63,7 +63,7 @@ export const useCreateClassToken = () => {
 
 export const useSendInvitationMail = () => {
   return useMutation<
-    {},
+    IResponseData<{}>,
     Error,
     TSendInvitationMailBody,
     { previousClassId: string }
