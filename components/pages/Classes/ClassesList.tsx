@@ -1,37 +1,24 @@
 import {
   Avatar,
-  Button,
-  Flex,
   HStack,
   Spinner,
   Center,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
   VStack,
-  useClipboard,
-  useDisclosure,
-  useToast,
   Box,
 } from "@chakra-ui/react";
-import { createClassToken } from "API/post/post.classes.manage-class";
 import SvgIcon from "components/SvgIcon";
 import { IClass } from "interfaces/classes";
 import { useRouter } from "next/router";
 import React from "react";
 import { checkValidArray, getValidArray } from "utils/common";
-import clipboardCopy from "clipboard-copy";
 import routes from "routes";
 import MenuClass from "./MenuClass";
+import { EClassRole } from "enums/classes";
+import {
+  StudentClassBackground,
+  TeacherClassBackground,
+} from "constants/pages/classes";
 
 export type ClassesListProps = {
   classes: IClass[];
@@ -49,6 +36,11 @@ export interface IClassCardProps {
 
 const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
   const router = useRouter();
+
+  const isStudent = item?.role === EClassRole.STUDENT;
+  const imageBackground = isStudent
+    ? StudentClassBackground
+    : TeacherClassBackground;
   return (
     <VStack
       key={`${item?.id}`}
@@ -61,7 +53,7 @@ const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
       _hover={{
         cursor: "pointer",
         boxShadow: "md",
-        borderColor: "green.500",
+        borderColor: isStudent ? "green.300" : "primary.300",
       }}
       position={"relative"}
     >
@@ -71,9 +63,7 @@ const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
         bgSize={"cover"}
         bgPosition="center"
         bgRepeat={"no-repeat"}
-        backgroundImage={
-          "https://www.gstatic.com/classroom/themes/img_bookclub.jpg"
-        }
+        backgroundImage={imageBackground}
         alignItems={"start"}
         p={5}
         flexShrink={1}

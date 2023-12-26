@@ -8,34 +8,88 @@ import {
   Tab,
   TabPanel,
   TabIndicator,
+  HStack,
+  Button,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useGetClassDetails } from "API/get/get.class.details";
 import ClassLayout from "components/Layout/ClassLayout";
 import { useStores } from "hooks/useStores";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NotFoundClass from "components/pages/Classes/NotFoundClass";
 import PeopleScene from "components/pages/Classes/Sections/PeopleScene";
+import StreamScene from "components/pages/Classes/Sections/StreamScene";
+import { getValidArray } from "utils/common";
+import SvgIcon from "components/SvgIcon";
+import UpdateClassModal from "components/pages/Classes/UpdateClassModal";
 
 const ClassDetail = () => {
   const router = useRouter();
-  const { settingStore } = useStores();
+  const { settingStore, classStore } = useStores();
+  const { isStudentOfClass } = classStore;
   const {
     data: classDetails,
     isLoading,
     isError,
-    error,
+    refetch,
   } = useGetClassDetails(router?.query?.id as string);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     settingStore.setHeaderLoading(isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    if (classDetails) {
+      classStore.setCurrentClass(classDetails);
+    }
+  }, [classDetails]);
+
+  useEffect(() => {
+    if (router?.isReady) {
+      refetch();
+    }
+  }, [router?.isReady]);
+
+  const tabListRender = useMemo(
+    () => [
+      {
+        name: "Stream",
+        component: (
+          <StreamScene
+            details={classDetails ?? {}}
+            isStudentOfClass={isStudentOfClass}
+          />
+        ),
+      },
+      {
+        name: "Classwork",
+        component: <VStack flex={1} w={"full"}></VStack>,
+      },
+      {
+        name: "People",
+        component: <PeopleScene details={classDetails ?? {}} />,
+      },
+      !isStudentOfClass
+        ? {
+            name: "Grades",
+            component: <VStack flex={1} w={"full"}></VStack>,
+          }
+        : null,
+    ],
+    [classDetails, isStudentOfClass]
+  );
+
   return (
     <ClassLayout
-      title={`${classDetails?.name} | ${classDetails?.description}` ?? "Class"}
+      title={
+        `${classDetails?.name ?? "Class"} | ${
+          classDetails?.description ?? ""
+        }` ?? "Class"
+      }
       details={classDetails ?? {}}
-      isLoading={isLoading}
+      isLoading={isLoading || !router?.isReady}
     >
       <VStack w="full" flex={1} h="full" alignItems={"start"} gap={5}>
         {isError ? (
@@ -48,55 +102,59 @@ const ClassDetail = () => {
               borderBottomWidth={1}
               p={3}
               _active={{
-                color: "primary.500",
+                color: isStudentOfClass ? "green.500" : "primary.500",
                 fontWeight: "bold",
               }}
+              position={"relative"}
             >
-              <Tab
-                _selected={{
-                  color: "primary.500",
-                  fontWeight: "bold",
-                }}
-              >
-                Stream
-              </Tab>
-              <Tab
-                _selected={{
-                  color: "primary.500",
-                  fontWeight: "bold",
-                }}
-              >
-                Classwork
-              </Tab>
-              <Tab
-                _selected={{
-                  color: "primary.500",
-                  fontWeight: "bold",
-                }}
-              >
-                People
-              </Tab>
+              {getValidArray(tabListRender)?.map((tab) => (
+                <Tab
+                  _selected={{
+                    color: isStudentOfClass ? "green.500" : "primary.500",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {tab?.name}
+                </Tab>
+              ))}
+
+              <Tooltip label={"Edit class"}>
+                <Button
+                  zIndex={1}
+                  rounded={"full"}
+                  position={"absolute"}
+                  onClick={() => {
+                    setIsModalVisible(true);
+                  }}
+                  variant={"icon"}
+                  right={"20px"}
+                >
+                  <SvgIcon
+                    iconName={"ic-edit.svg"}
+                    fill="black"
+                    color="black"
+                  />
+                </Button>
+              </Tooltip>
             </TabList>
             <TabIndicator
               mt="-1.5px"
               height="3px"
-              bg="primary.500"
+              bgColor={isStudentOfClass ? "green.500" : "primary.500"}
               borderTopRadius="3px"
             />
             <TabPanels>
-              <TabPanel>
-                <p>one!</p>
-              </TabPanel>
-              <TabPanel>
-                <p>two!</p>
-              </TabPanel>
-              <TabPanel>
-                <PeopleScene details={classDetails ?? {}} />
-              </TabPanel>
+              {getValidArray(tabListRender)?.map((tab) => (
+                <TabPanel>{tab?.component}</TabPanel>
+              ))}
             </TabPanels>
           </Tabs>
         )}
       </VStack>
+      <UpdateClassModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </ClassLayout>
   );
 };

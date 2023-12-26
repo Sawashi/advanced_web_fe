@@ -1,5 +1,5 @@
 import Modal from "components/Modal";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Button,
   HStack,
@@ -13,31 +13,31 @@ import FormInput from "components/FormInput";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  ClassInformationSchema,
-  IClassInformationSchema,
+  IUpdateClassSchema,
+  UpdateClassSchema,
 } from "constants/validation/classes";
 import { useStores } from "hooks/useStores";
-import { useGetClassesAsStudent } from "API/get/get.classes.student";
-import { createAClass } from "API/post/post.classes.create-class";
+import { useUpdateClassDetails } from "API/patch/path.classes.uppdate-details";
+import { observer } from "mobx-react";
 
-type CreateClassModalProps = {
+type UpdateClassModalProps = {
   isVisible: boolean;
   onClose: () => void;
 };
 
-const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { authStore } = useStores();
-  const { refetch } = useGetClassesAsStudent(authStore?.user?.id ?? "", {
-    limit: 3,
-  });
+const UpdateClassModal = ({ isVisible, onClose }: UpdateClassModalProps) => {
+  const { classStore } = useStores();
+  const { mutateAsync } = useUpdateClassDetails(
+    classStore?.currentClass?.id ?? ""
+  );
+
   const toast = useToast();
-  const method = useForm<IClassInformationSchema>({
+  const method = useForm<IUpdateClassSchema>({
     defaultValues: {
-      nameOfClass: "",
-      descriptionOfClass: "",
+      name: "",
+      description: "",
     },
-    resolver: yupResolver(ClassInformationSchema),
+    resolver: yupResolver(UpdateClassSchema),
     reValidateMode: "onChange",
     mode: "all",
   });
@@ -46,6 +46,7 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
     handleSubmit,
     reset,
     formState: { isValid },
+    setValue,
   } = method;
 
   const onCloseModal = () => {
@@ -53,15 +54,12 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
     reset();
   };
 
-  const onSubmit = async (values: IClassInformationSchema) => {
-    if (!values?.descriptionOfClass || values?.descriptionOfClass === "") {
-      values.descriptionOfClass = "No description";
-    }
-    setIsLoading(true);
-    const { data } = await createAClass(
-      values?.nameOfClass,
-      values?.descriptionOfClass
-    );
+  const onSubmit = async (values: IUpdateClassSchema) => {
+    const { data } = await mutateAsync({
+      ...values,
+      classId: classStore?.currentClass?.id ?? "",
+    });
+    await classStore?.fetchCurrentClass();
     if (data?.message && data?.error && data?.statusCode >= 400) {
       toast({
         description: data?.message,
@@ -71,22 +69,26 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
       });
     } else {
       toast({
-        description: "Created your class",
+        description: "Class updated successfully",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
-      await refetch();
       onCloseModal();
     }
   };
 
+  useEffect(() => {
+    if (classStore?.currentClass) {
+      setValue("name", classStore?.currentClass?.name ?? "");
+      setValue("description", classStore?.currentClass?.description);
+    }
+  }, [classStore?.currentClass]);
+
   const Title = useCallback(() => {
     return (
       <HStack w="full" justifyContent={"space-between"}>
-        <Text fontSize={20} fontWeight={600}>
-          Create a class
-        </Text>
+        <Text fontSize={20} fontWeight={600}></Text>
 
         <Button
           variant="primary"
@@ -94,13 +96,12 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
           size="md"
           onClick={handleSubmit(onSubmit)}
           w={100}
-          isLoading={isLoading}
         >
-          Create
+          Update
         </Button>
       </HStack>
     );
-  }, [isValid, isLoading]);
+  }, [isValid]);
 
   return (
     <Modal
@@ -133,13 +134,13 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
               </Text>
 
               <FormInput
-                name="nameOfClass"
+                name="name"
                 placeholder="Enter your class name"
                 isRequired={false}
                 label="Enter a name for your class."
               />
               <FormInput
-                name="descriptionOfClass"
+                name="description"
                 placeholder="Enter a description for your class"
                 isRequired={false}
                 label="Enter something that describes your class."
@@ -147,7 +148,7 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
             </VStack>
 
             <VStack alignItems={"start"} w={"full"}>
-              <Text fontWeight={600}>To create a class</Text>
+              <Text fontWeight={600}>To update a class</Text>
               <UnorderedList>
                 <ListItem key={1}>Enter a name for your class</ListItem>
                 <ListItem key={2}>
@@ -162,4 +163,4 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
   );
 };
 
-export default CreateClassModal;
+export default observer(UpdateClassModal);
