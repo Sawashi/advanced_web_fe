@@ -76,6 +76,12 @@ export const ClassesApiRouters = {
     update_class_details: {
       value: (classId: ID) => `${API_URL}/classes/${classId}`,
     },
+    map_student: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/map-student-id`,
+    },
+    unmap_student: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/unmap-student-id`,
+    },
   },
 };
 

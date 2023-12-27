@@ -20,6 +20,8 @@ import Table from "components/Table";
 import { getCaseHeaderList } from "./utils";
 import useViewModel from "./useViewModel";
 import MappedUserStudent from "./MappedUserStudent";
+import SvgIcon from "components/SvgIcon";
+import { red500 } from "theme/colors.theme";
 
 export interface Props {
   details: IClass;
@@ -27,11 +29,12 @@ export interface Props {
 interface IStudentTableData {
   studentId: JSX.Element;
   studentName: JSX.Element;
-  action: JSX.Element;
+  user: JSX.Element;
+  action: JSX.Element | null;
 }
 
 const StudentsScene = ({ details }: Props) => {
-  const { settingStore, classStore, authStore } = useStores();
+  const { authStore } = useStores();
   const {
     studentsList,
     isStudentOfClass,
@@ -45,11 +48,10 @@ const StudentsScene = ({ details }: Props) => {
     unMappedAttendeeStudentList,
   } = useViewModel({ details });
 
-  console.log(unMappedAttendeeStudentList);
-
   const tableData: IStudentTableData[] = useMemo(() => {
     const data = getValidArray(studentsList)?.map((student) => {
       const isCurrentStudent = student?.user?.id === authStore?.user?.id;
+      const isAbleToUnmap = !isStudentOfClass || isCurrentStudent;
 
       return {
         studentId: (
@@ -75,8 +77,9 @@ const StudentsScene = ({ details }: Props) => {
             {student?.name}
           </Text>
         ),
-        action: isStudentOfClass ? (
+        user: isStudentOfClass ? (
           !student?.user ? (
+            // student
             <Button
               size="sm"
               background="white"
@@ -90,7 +93,7 @@ const StudentsScene = ({ details }: Props) => {
               Assign
             </Button>
           ) : (
-            <MappedUserStudent item={student} onRemove={onUnmappingStudent} />
+            <MappedUserStudent item={student} />
           )
         ) : (
           // teacher
@@ -109,12 +112,12 @@ const StudentsScene = ({ details }: Props) => {
               ) : (
                 <MappedUserStudent
                   item={student}
-                  onRemove={onUnmappingStudent}
+                  isAbleToUnmap={isAbleToUnmap}
                 />
               )}
             </MenuButton>
             <MenuList>
-              {unMappedAttendeeStudentList?.map((attendee) => (
+              {getValidArray(unMappedAttendeeStudentList)?.map((attendee) => (
                 <MenuItem
                   key={attendee?.user?.id}
                   onClick={() => {
@@ -144,11 +147,31 @@ const StudentsScene = ({ details }: Props) => {
             </MenuList>
           </Menu>
         ),
+        action:
+          !!student?.user && isAbleToUnmap ? (
+            <Button
+              isDisabled={!isAbleToUnmap}
+              onClick={() => {
+                onUnmappingStudent(student?.user?.id ?? "");
+              }}
+              display={isAbleToUnmap ? "flex" : "none"}
+              variant={"icon"}
+              p={0}
+            >
+              <SvgIcon iconName="ic-delete.svg" size={20} color={red500} />
+            </Button>
+          ) : null,
       };
     });
 
     return data;
-  }, [studentsList, authStore?.user, isAssignable, isStudentOfClass]);
+  }, [
+    studentsList,
+    authStore?.user,
+    isAssignable,
+    isStudentOfClass,
+    unMappedAttendeeStudentList,
+  ]);
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>

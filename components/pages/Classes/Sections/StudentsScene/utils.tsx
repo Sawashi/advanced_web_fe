@@ -12,6 +12,10 @@ export const getCaseHeaderList = () => {
     },
     {
       Header: "Map to",
+      accessor: ETableHeader.USER,
+    },
+    {
+      Header: "",
       accessor: ETableHeader.ACTION,
     },
   ];
@@ -22,5 +26,6 @@ export const getCaseHeaderList = () => {
 export enum ETableHeader {
   NAME = "studentName",
   ID_NUMBER = "studentId",
+  USER = "user",
   ACTION = "action",
 }

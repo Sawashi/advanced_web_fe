@@ -6,9 +6,13 @@ import { useGetClassGradeStudents } from "API/get/get.class.students";
 import { useGetClassAttendees } from "API/get/get.class.attendees";
 import { EClassRole } from "enums/classes";
 import { Props } from ".";
+import { usePatchMapStudent } from "API/patch/patch.class.map-student";
+import { useToast } from "@chakra-ui/react";
+import { usePatchUnMapStudent } from "API/patch/patch.class.unmap-student";
 
 const useViewModel = ({ details }: Props) => {
   const { settingStore, classStore, authStore } = useStores();
+  const toast = useToast();
   const { isStudentOfClass } = classStore;
   const [orderBy, setOrderBy] = useState<number>(1);
   const [sort, setSort] = useState<string>("id");
@@ -28,11 +32,16 @@ const useViewModel = ({ details }: Props) => {
     refetch: refetchAttendees,
   } = useGetClassAttendees(details?.id ?? "", !isStudentOfClass);
 
+  const { mutateAsync: mapStudent, isLoading: isMappingStudentLoading } =
+    usePatchMapStudent(details?.id ?? "");
+
+  const { mutateAsync: unMapStudent, isLoading: isUnMappingStudentLoading } =
+    usePatchUnMapStudent(details?.id ?? "");
+
   const unMappedAttendeeStudentList = useMemo(() => {
     const studentAttendees = getValidArray(attendees?.data)?.filter(
       (attendee) => attendee?.role === EClassRole.STUDENT
     );
-    console.log(studentAttendees);
 
     return getValidArray(studentAttendees)?.filter((attendee) => {
       const isMapped = getValidArray(studentsList)?.some(
@@ -50,11 +59,73 @@ const useViewModel = ({ details }: Props) => {
     return !isUserMapped;
   }, [studentsList, authStore?.user, isStudentOfClass]);
 
-  const onUnmappingStudent = async (userId: string) => {};
+  const refresh = async () => {
+    await Promise.all([refetchClassStudents(), refetchAttendees()]);
+  };
 
-  const onMappingStudent = async (userId: string, studentId: string) => {};
+  const onUnmappingStudent = async (userId: string) => {
+    try {
+      const response = await unMapStudent({
+        userId,
+        classId: details?.id ?? "",
+      });
+      if (response?.data) {
+        toast({
+          title: "Success",
+          description: "Student unmapped successfully",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Student unmapped failed",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } finally {
+      refresh();
+    }
+  };
 
-  settingStore?.setHeaderLoading(isClassStudentsLoading || isAttendeesLoading);
+  const onMappingStudent = async (userId: string, studentId: string) => {
+    try {
+      const response = await mapStudent({
+        userId,
+        studentId,
+        classId: details?.id ?? "",
+      });
+      if (response?.data) {
+        toast({
+          title: "Success",
+          description: "Student mapped successfully",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Student mapped failed",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } finally {
+      refresh();
+    }
+  };
+
+  settingStore?.setHeaderLoading(
+    isClassStudentsLoading ||
+      isAttendeesLoading ||
+      isMappingStudentLoading ||
+      isUnMappingStudentLoading
+  );
 
   React.useEffect(() => {
     if (checkValidArray(dataClassStudents?.data)) {

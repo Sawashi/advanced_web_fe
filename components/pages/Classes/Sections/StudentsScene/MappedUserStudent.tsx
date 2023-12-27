@@ -1,22 +1,14 @@
-import { Text, Tag, Button, Avatar, Tooltip } from "@chakra-ui/react";
+import { Text, Tag, Avatar, Tooltip } from "@chakra-ui/react";
 import { IStudent } from "interfaces/classes";
 import React from "react";
-import { useStores } from "hooks/useStores";
-import SvgIcon from "components/SvgIcon";
-import { red500 } from "theme/colors.theme";
 
 const MappedUserStudent = ({
   item,
-  onRemove,
+  isAbleToUnmap = false,
 }: {
   item: IStudent;
-  onRemove: (userId: string) => Promise<void>;
+  isAbleToUnmap: boolean;
 }) => {
-  const { classStore, authStore } = useStores();
-  const { isStudentOfClass } = classStore;
-  const isCurrentStudent = item?.user?.id === authStore?.user?.id;
-  const isAbleToUnmap = !isStudentOfClass || isCurrentStudent;
-
   if (!item?.user) {
     return null;
   }
@@ -36,19 +28,6 @@ const MappedUserStudent = ({
           src={item?.user?.avatar}
         />
         <Text>{item?.user?.firstName + " " + item?.user?.lastName}</Text>
-        {isAbleToUnmap ? (
-          <Button
-            isDisabled={!isAbleToUnmap}
-            onClick={() => {
-              onRemove(authStore?.user?.id ?? "");
-            }}
-            display={isAbleToUnmap ? "flex" : "none"}
-            variant={"icon"}
-            p={0}
-          >
-            <SvgIcon iconName="ic-delete.svg" size={20} color={red500} />
-          </Button>
-        ) : null}
       </Tag>
     </Tooltip>
   );
