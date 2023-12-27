@@ -60,7 +60,8 @@ export const ClassesApiRouters = {
       value: (classId: ID) => `${API_URL}/classes/${classId}/compositions`,
     },
     students: {
-      value: (classId: ID) => `${API_URL}/classes/${classId}/students`,
+      value: (classId: ID, query?: URLQueryType<{}>) =>
+        `${API_URL}/classes/${classId}/students?${getQueries(query ?? {})}`,
     },
   },
   post: {

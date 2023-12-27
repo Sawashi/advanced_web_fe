@@ -8,17 +8,27 @@ interface IGetClassStudents {
   meta: IMetaResponse;
 }
 
-export const getClassStudents = async (classId: string) => {
+export const getClassStudents = async (
+  classId: string,
+  options?: {
+    sortBy: string;
+  }
+) => {
   const res = await api.get<IGetClassStudents>(
-    ClassesApiRouters.get.students.value(classId)
+    ClassesApiRouters.get.students.value(classId, options)
   );
   return res?.data;
 };
 
-export const useGetClassGradeStudents = (classId: string) => {
+export const useGetClassGradeStudents = (
+  classId: string,
+  options?: {
+    sortBy: string;
+  }
+) => {
   return useQuery<IGetClassStudents, Error>({
-    queryKey: [ClassesApiRouters.get.students.value(classId)],
-    queryFn: () => getClassStudents(classId),
+    queryKey: [ClassesApiRouters.get.students.value(classId, options)],
+    queryFn: () => getClassStudents(classId, options),
     enabled: !!classId,
   });
 };

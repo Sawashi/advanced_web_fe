@@ -1,11 +1,14 @@
-import { HStack, VStack, Text } from "@chakra-ui/react";
+import { HStack, VStack, Text, Box } from "@chakra-ui/react";
 import { IClass, IStudent } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { useStores } from "hooks/useStores";
-import { checkValidArray, getValidArray } from "utils/common";
+import { checkValidArray, getQueryValue, getValidArray } from "utils/common";
 import EmptyList from "components/EmptyState/EmptyList";
 import { useGetClassGradeStudents } from "API/get/get.class.students";
+import Table, { IPagination } from "components/Table";
+import { getCaseHeaderList } from "./utils";
+import { useRouter } from "next/router";
 
 interface Props {
   details: IClass;
@@ -14,14 +17,18 @@ interface Props {
 const StudentsScene = ({ details }: Props) => {
   const { settingStore, classStore } = useStores();
   const { isStudentOfClass } = classStore;
+  const [orderBy, setOrderBy] = useState<number>(1);
+  const [sort, setSort] = useState<string>("id");
+
   const {
     data: dataClassStudents,
     isLoading: isClassStudentsLoading,
     refetch: refetchClassStudents,
-  } = useGetClassGradeStudents(details?.id ?? "");
+  } = useGetClassGradeStudents(details?.id ?? "", {
+    sortBy: `${sort}:${orderBy === 1 ? "ASC" : "DESC"}`,
+  });
 
   const [studentsList, setStudentsList] = useState<IStudent[]>();
-
   settingStore?.setHeaderLoading(isClassStudentsLoading);
 
   React.useEffect(() => {
@@ -42,13 +49,16 @@ const StudentsScene = ({ details }: Props) => {
           h={"full"}
           gap={5}
         >
-          {studentsList?.map((item, index) => (
-            <HStack>
-              <Text>{item?.id}</Text>
-              <Text>{item?.name}</Text>
-              <Text>{JSON.stringify(item?.user)}</Text>
-            </HStack>
-          ))}
+          <Box flex={1} width="full">
+            <Table
+              tableData={studentsList}
+              headerList={getCaseHeaderList()}
+              setSort={setSort}
+              setOrderBy={setOrderBy}
+              sort={sort}
+              orderBy={orderBy}
+            />
+          </Box>
         </VStack>
       ) : (
         <EmptyList
