@@ -1,5 +1,4 @@
 import { api } from "API";
-import { errorHandler } from "API/helpers";
 import { UsersApiRouters } from "API/router.api";
 import get from "lodash/get";
 import { useMutation } from "react-query";

@@ -9,6 +9,7 @@ import { Props } from ".";
 import { usePatchMapStudent } from "API/patch/patch.class.map-student";
 import { useToast } from "@chakra-ui/react";
 import { usePatchUnMapStudent } from "API/patch/patch.class.unmap-student";
+import { useUploadClassStudentList } from "API/post/post.class.upload-student-list";
 
 const useViewModel = ({ details }: Props) => {
   const { settingStore, classStore, authStore } = useStores();
@@ -37,6 +38,9 @@ const useViewModel = ({ details }: Props) => {
 
   const { mutateAsync: unMapStudent, isLoading: isUnMappingStudentLoading } =
     usePatchUnMapStudent(details?.id ?? "");
+
+  const { mutateAsync: uploadStudentList, isLoading: isUploadingStudentList } =
+    useUploadClassStudentList();
 
   const unMappedAttendeeStudentList = useMemo(() => {
     const studentAttendees = getValidArray(attendees?.data)?.filter(
@@ -120,16 +124,60 @@ const useViewModel = ({ details }: Props) => {
     }
   };
 
+  const onUploadingStudentList = async (file: File) => {
+    if (file) {
+      // csv file
+      if (file.type === "text/csv") {
+        try {
+          const response = await uploadStudentList({
+            classId: details?.id ?? "",
+            file,
+          });
+          if (response) {
+            toast({
+              title: "Success",
+              description: "Upload student list successfully",
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "Upload student list failed",
+            status: "error",
+            duration: 2000,
+            isClosable: true,
+          });
+        } finally {
+          refresh();
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: "File type must be csv",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    }
+  };
+
   settingStore?.setHeaderLoading(
     isClassStudentsLoading ||
       isAttendeesLoading ||
       isMappingStudentLoading ||
-      isUnMappingStudentLoading
+      isUnMappingStudentLoading ||
+      isUploadingStudentList
   );
 
   React.useEffect(() => {
     if (checkValidArray(dataClassStudents?.data)) {
       setStudentsList(getValidArray(dataClassStudents?.data));
+    } else {
+      setStudentsList([]);
     }
   }, [dataClassStudents]);
 
@@ -144,6 +192,7 @@ const useViewModel = ({ details }: Props) => {
     sort,
     setSort,
     unMappedAttendeeStudentList,
+    onUploadingStudentList,
   };
 };
 

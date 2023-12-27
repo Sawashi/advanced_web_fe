@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { IClass } from "interfaces/classes";
 import { observer } from "mobx-react";
-import React, { useMemo } from "react";
+import React, { ChangeEvent, useMemo, useRef } from "react";
 import { useStores } from "hooks/useStores";
 import { checkValidArray, getValidArray } from "utils/common";
 import EmptyList from "components/EmptyState/EmptyList";
@@ -24,6 +24,7 @@ import useViewModel from "./useViewModel";
 import MappedUserStudent from "./MappedUserStudent";
 import SvgIcon from "components/SvgIcon";
 import { red500 } from "theme/colors.theme";
+import get from "lodash/get";
 
 export interface Props {
   details: IClass;
@@ -38,6 +39,7 @@ interface IStudentTableData {
 const StudentsScene = ({ details }: Props) => {
   const { authStore } = useStores();
   const [isOpenCollapse, setIsOpenCollapse] = React.useState(false);
+  const fileRef = useRef<any>(null);
   const {
     studentsList,
     isStudentOfClass,
@@ -49,7 +51,15 @@ const StudentsScene = ({ details }: Props) => {
     sort,
     setSort,
     unMappedAttendeeStudentList,
+    onUploadingStudentList,
   } = useViewModel({ details });
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = get(event, "target.files[0]");
+    if (file) {
+      onUploadingStudentList(file);
+    }
+  };
 
   const tableData: IStudentTableData[] = useMemo(() => {
     const data = getValidArray(studentsList)?.map((student) => {
@@ -264,12 +274,24 @@ const StudentsScene = ({ details }: Props) => {
             !isStudentOfClass
               ? {
                   text: "Upload students",
-                  onClick: () => {},
+                  onClick: () => {
+                    fileRef && fileRef.current && fileRef.current.click();
+                  },
                 }
               : undefined
           }
         />
       )}
+
+      <Box display={"none"}>
+        <input
+          type="file"
+          //csv file
+          accept=".csv"
+          onChange={handleImageChange}
+          ref={fileRef}
+        />
+      </Box>
     </VStack>
   );
 };

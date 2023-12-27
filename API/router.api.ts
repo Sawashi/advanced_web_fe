@@ -71,6 +71,9 @@ export const ClassesApiRouters = {
     kick_attendee: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/kick`,
     },
+    upload_student_list: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/students/upload`,
+    },
   },
   patch: {
     update_class_details: {
