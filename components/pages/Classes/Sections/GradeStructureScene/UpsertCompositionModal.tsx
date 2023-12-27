@@ -37,7 +37,7 @@ const UpsertCompositionModal = ({
 }: UpsertCompositionModalProps) => {
   const isEdit = !!composition;
   const { classStore } = useStores();
-  const { totalPercentage } = classStore;
+  const { totalPercentage, isStudentOfClass } = classStore;
   const toast = useToast();
   const { mutateAsync: createComposition, isLoading: isCreatingComposition } =
     usePostCreateComposition();
@@ -168,7 +168,7 @@ const UpsertCompositionModal = ({
 
   return (
     <Modal
-      isVisible={isVisible}
+      isVisible={isVisible && !isStudentOfClass}
       onClose={onCloseModal}
       title={<Title />}
       size="full"

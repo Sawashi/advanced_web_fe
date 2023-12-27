@@ -30,7 +30,7 @@ const reorder = (
 
 const GradeStructureScene = ({ details }: Props) => {
   const { settingStore, classStore } = useStores();
-  const { totalPercentage } = classStore;
+  const { totalPercentage, isStudentOfClass } = classStore;
   const toast = useToast();
   const [items, setItems] = useState<IGradeComposition[]>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -64,7 +64,7 @@ const GradeStructureScene = ({ details }: Props) => {
     );
     try {
       updateCompositionOrder({
-        order: result.destination.index,
+        order: result.destination?.index + 1,
         compositionId: changedSourceItem?.id ?? "",
       });
     } catch (e) {
@@ -140,17 +140,23 @@ const GradeStructureScene = ({ details }: Props) => {
             </Text>
           </HStack>
           <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
+            <Droppable
+              droppableId="droppable"
+              isDropDisabled={isStudentOfClass}
+            >
               {(provided) => (
-                <VStack
+                <Box
+                  display={"flex"}
+                  flexDir={"column"}
                   w={"full"}
                   gap={5}
-                  {...provided.droppableProps}
                   ref={provided.innerRef}
+                  {...provided.droppableProps}
                 >
                   {getValidArray(items).map((item, index) => (
                     <StructureItem
                       item={item}
+                      key={item?.id}
                       index={index}
                       onEdit={(composition) => {
                         setIsModalVisible(true);
@@ -162,12 +168,12 @@ const GradeStructureScene = ({ details }: Props) => {
                     />
                   ))}
                   {provided.placeholder}
-                </VStack>
+                </Box>
               )}
             </Droppable>
           </DragDropContext>
 
-          <Box w={"full"} mt={5}>
+          <Box w={"full"} mt={5} display={isStudentOfClass ? "none" : "block"}>
             <Button
               w={"full"}
               variant={"outline"}
@@ -182,11 +188,19 @@ const GradeStructureScene = ({ details }: Props) => {
       ) : (
         <EmptyList
           title="Seems like there's no grade structure yet"
-          description="Try creating one"
-          _button={{
-            text: "Create grade structure",
-            onClick: onAddComposition,
-          }}
+          description={
+            !isStudentOfClass
+              ? "Create a new grade structure for this class"
+              : "The teacher hasn't created a grade structure yet"
+          }
+          _button={
+            !isStudentOfClass
+              ? {
+                  text: "Create grade structure",
+                  onClick: onAddComposition,
+                }
+              : undefined
+          }
         />
       )}
       <UpsertCompositionModal

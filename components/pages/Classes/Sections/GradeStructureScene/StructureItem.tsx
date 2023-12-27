@@ -29,8 +29,14 @@ const StructureItem = ({
   onEdit?: (item: IGradeComposition) => void;
   onRemove?: (item: IGradeComposition) => void;
 }) => {
+  const { classStore } = useStores();
+  const { isStudentOfClass } = classStore;
   return (
-    <Draggable draggableId={item?.id} index={index}>
+    <Draggable
+      draggableId={item?.id}
+      index={index}
+      isDragDisabled={isStudentOfClass}
+    >
       {(provided) => (
         <Card
           width={"full"}
@@ -65,7 +71,7 @@ const StructureItem = ({
               </HStack>
 
               <Menu>
-                <MenuButton aria-label="Options">
+                <MenuButton aria-label="Options" disabled={isStudentOfClass}>
                   <Button
                     as={"div"}
                     variant={"ghost"}

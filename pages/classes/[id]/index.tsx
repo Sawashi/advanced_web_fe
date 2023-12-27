@@ -68,12 +68,10 @@ const ClassDetail = () => {
         name: "People",
         component: <PeopleScene details={classDetails ?? {}} />,
       },
-      !isStudentOfClass
-        ? {
-            name: "Grade structure",
-            component: <GradeStructureScene details={classDetails ?? {}} />,
-          }
-        : null,
+      {
+        name: "Grade structure",
+        component: <GradeStructureScene details={classDetails ?? {}} />,
+      },
     ],
     [classDetails, isStudentOfClass]
   );
@@ -104,19 +102,22 @@ const ClassDetail = () => {
               }}
               position={"relative"}
             >
-              {getValidArray(tabListRender)?.map((tab) => (
-                <Tab
-                  _selected={{
-                    color: isStudentOfClass ? "green.500" : "primary.500",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {tab?.name}
-                </Tab>
-              ))}
+              {getValidArray(tabListRender)
+                ?.filter((tab) => !!tab)
+                ?.map((tab) => (
+                  <Tab
+                    _selected={{
+                      color: isStudentOfClass ? "green.500" : "primary.500",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {tab?.name}
+                  </Tab>
+                ))}
 
               <Tooltip label={"Edit class"}>
                 <Button
+                  display={isStudentOfClass ? "none" : "flex"}
                   zIndex={1}
                   rounded={"full"}
                   position={"absolute"}
