@@ -176,7 +176,7 @@ const Table = (props: ITableProps) => {
                       borderColor="gray.200"
                       textAlign={align}
                       color="gray.500"
-                      fontSize="10px"
+                      fontSize="md"
                       fontWeight={600}
                     >
                       {column.render("Header")}
@@ -186,14 +186,12 @@ const Table = (props: ITableProps) => {
                       ) : (
                         <span>
                           {column.isSorted ? (
-                              column.isSortedDesc ? (
-                                <TriangleDownIcon />
-                              ) : (
-                                <TriangleUpIcon />
-                              )
+                            column.isSortedDesc ? (
+                              <TriangleDownIcon boxSize={3} />
                             ) : (
-                              null
-                            )}
+                              <TriangleUpIcon boxSize={3} />
+                            )
+                          ) : null}
                           {/* {column?.id === sort ? (
                             orderBy === 1 ? (
                               <TriangleUpIcon />

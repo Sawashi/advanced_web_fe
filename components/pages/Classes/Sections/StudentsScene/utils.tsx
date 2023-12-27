@@ -3,19 +3,15 @@ import { ITableHeader } from "components/Table";
 export const getCaseHeaderList = () => {
   const headers: ITableHeader[] = [
     {
-      Header: "",
-      accessor: "unread",
-    },
-    {
-      Header: "STUDENT NAME",
-      accessor: ETableHeader.NAME,
-    },
-    {
-      Header: "ID NUMBER",
+      Header: "Student ID",
       accessor: ETableHeader.ID_NUMBER,
     },
     {
-      Header: "",
+      Header: "Student Name",
+      accessor: ETableHeader.NAME,
+    },
+    {
+      Header: "Map to",
       accessor: ETableHeader.ACTION,
     },
   ];
@@ -24,7 +20,7 @@ export const getCaseHeaderList = () => {
 };
 
 export enum ETableHeader {
-  NAME = "name",
-  ID_NUMBER = "id",
+  NAME = "studentName",
+  ID_NUMBER = "studentId",
   ACTION = "action",
 }

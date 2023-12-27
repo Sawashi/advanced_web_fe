@@ -45,5 +45,11 @@ export interface IGradeComposition {
 export interface IStudent {
   id: string;
   name: string;
-  user: {};
+  user: {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: any;
+    id?: string;
+  };
 }
