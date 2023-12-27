@@ -24,6 +24,7 @@ import { getValidArray } from "utils/common";
 import SvgIcon from "components/SvgIcon";
 import UpdateClassModal from "components/pages/Classes/UpdateClassModal";
 import GradeStructureScene from "components/pages/Classes/Sections/GradeStructureScene";
+import StudentsScene from "components/pages/Classes/Sections/StudentsScene";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -71,6 +72,10 @@ const ClassDetail = () => {
       {
         name: "Grade structure",
         component: <GradeStructureScene details={classDetails ?? {}} />,
+      },
+      {
+        name: "Students",
+        component: <StudentsScene details={classDetails ?? {}} />,
       },
     ],
     [classDetails, isStudentOfClass]

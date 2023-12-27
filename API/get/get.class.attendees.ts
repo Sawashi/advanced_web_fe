@@ -15,10 +15,10 @@ export const getClassAttendees = async (classId: string) => {
   return response.data;
 };
 
-export const useGetClassAttendees = (classId: string) => {
+export const useGetClassAttendees = (classId: string, enabled = true) => {
   return useQuery<IClassAttendeesResponse, Error, IClassAttendeesResponse>({
     queryKey: [ClassesApiRouters.get.class_attendees.value(classId)],
     queryFn: () => getClassAttendees(classId),
-    enabled: !!classId,
+    enabled: !!classId && enabled,
   });
 };

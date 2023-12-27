@@ -59,6 +59,10 @@ export const ClassesApiRouters = {
     class_grade_compositions: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/compositions`,
     },
+    students: {
+      value: (classId: ID, query?: URLQueryType<{}>) =>
+        `${API_URL}/classes/${classId}/students?${getQueries(query ?? {})}`,
+    },
   },
   post: {
     create_a_class: {
@@ -67,10 +71,24 @@ export const ClassesApiRouters = {
     kick_attendee: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/kick`,
     },
+    upload_student_list: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/students/upload`,
+    },
   },
   patch: {
     update_class_details: {
       value: (classId: ID) => `${API_URL}/classes/${classId}`,
+    },
+    map_student: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/map-student-id`,
+    },
+    unmap_student: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/unmap-student-id`,
+    },
+  },
+  delete: {
+    delete_students_list: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/students`,
     },
   },
 };

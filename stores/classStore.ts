@@ -1,6 +1,6 @@
 import { getClassDetails } from "API/get/get.class.details";
 import { EClassRole } from "enums/classes";
-import { IClass, IGradeComposition } from "interfaces/classes";
+import { IAttendee, IClass, IGradeComposition } from "interfaces/classes";
 import { makeObservable, observable } from "mobx";
 import { RootStore } from "stores";
 import { getValidArray } from "utils/common";
@@ -9,6 +9,7 @@ class ClassStore {
   rootStore: RootStore;
   currentClass: IClass | null = null;
   compositions: IGradeComposition[] = [];
+  attendeeStudents: IAttendee[] = [];
   isStudentOfClass = true;
   isOwnerOfClass = false;
   totalPercentage = 0;
@@ -37,6 +38,10 @@ class ClassStore {
     );
   }
 
+  setAttendeeStudents(students: IAttendee[]) {
+    this.attendeeStudents = students;
+  }
+
   async fetchCurrentClass() {
     try {
       if (this.currentClass?.id) {
@@ -53,6 +58,7 @@ class ClassStore {
     this.isStudentOfClass = true;
     this.isOwnerOfClass = false;
     this.compositions = [];
+    this.attendeeStudents = [];
     this.totalPercentage = 0;
   }
 }
