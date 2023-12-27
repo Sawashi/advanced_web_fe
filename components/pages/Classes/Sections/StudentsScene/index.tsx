@@ -1,134 +1,154 @@
 import {
-  HStack,
   VStack,
   Text,
   Box,
   Tag,
   Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   Avatar,
-  Tooltip,
 } from "@chakra-ui/react";
-import { IClass, IStudent } from "interfaces/classes";
+import { IClass } from "interfaces/classes";
 import { observer } from "mobx-react";
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useStores } from "hooks/useStores";
-import { checkValidArray, getQueryValue, getValidArray } from "utils/common";
+import { checkValidArray, getValidArray } from "utils/common";
 import EmptyList from "components/EmptyState/EmptyList";
-import { useGetClassGradeStudents } from "API/get/get.class.students";
-import Table, { IPagination } from "components/Table";
+import Table from "components/Table";
 import { getCaseHeaderList } from "./utils";
-import { useRouter } from "next/router";
-import SvgIcon from "components/SvgIcon";
-import { red500 } from "theme/colors.theme";
+import useViewModel from "./useViewModel";
+import MappedUserStudent from "./MappedUserStudent";
 
-interface Props {
+export interface Props {
   details: IClass;
 }
-
 interface IStudentTableData {
   studentId: JSX.Element;
   studentName: JSX.Element;
   action: JSX.Element;
-  email: JSX.Element;
 }
 
 const StudentsScene = ({ details }: Props) => {
   const { settingStore, classStore, authStore } = useStores();
-  const { isStudentOfClass } = classStore;
-  const [orderBy, setOrderBy] = useState<number>(1);
-  const [sort, setSort] = useState<string>("id");
-
   const {
-    data: dataClassStudents,
-    isLoading: isClassStudentsLoading,
-    refetch: refetchClassStudents,
-  } = useGetClassGradeStudents(details?.id ?? "", {
-    sortBy: `${sort}:${orderBy === 1 ? "ASC" : "DESC"}`,
-  });
+    studentsList,
+    isStudentOfClass,
+    isAssignable,
+    onMappingStudent,
+    onUnmappingStudent,
+    orderBy,
+    setOrderBy,
+    sort,
+    setSort,
+    unMappedAttendeeStudentList,
+  } = useViewModel({ details });
 
-  const [studentsList, setStudentsList] = useState<IStudent[]>();
-
-  const isAssignable = useMemo(() => {
-    if (!isStudentOfClass) return true;
-    const isUserMapped = studentsList?.some(
-      (item) => item?.user?.id === authStore?.user?.id
-    );
-    return !isUserMapped;
-  }, [studentsList, authStore?.user, isStudentOfClass]);
-
-  const onClickMappingTag = (id: string) => {};
+  console.log(unMappedAttendeeStudentList);
 
   const tableData: IStudentTableData[] = useMemo(() => {
-    if (!studentsList) {
-      return [];
-    }
+    const data = getValidArray(studentsList)?.map((student) => {
+      const isCurrentStudent = student?.user?.id === authStore?.user?.id;
 
-    const data = studentsList.map((item) => {
-      const isCurrentStudent = item?.user?.id === authStore?.user?.id;
-      const isAbleToUnmap = !isStudentOfClass || isCurrentStudent;
       return {
         studentId: (
-          <Tag borderRadius={16} paddingX="10px" whiteSpace="nowrap">
-            {item?.id}
+          <Tag
+            borderRadius={16}
+            paddingX="10px"
+            whiteSpace="nowrap"
+            fontWeight={"bold"}
+            bgColor={isCurrentStudent ? "orange.100" : "gray.200"}
+            color={isCurrentStudent ? "orange.400" : "gray.800"}
+          >
+            {student?.id}
           </Tag>
         ),
-        studentName: <Text>{item?.name}</Text>,
-        email: <Text>{item?.user?.email}</Text>,
-        action: !!item?.user ? (
-          <Tooltip label={item?.user?.email} aria-label="A tooltip">
-            <Tag
-              borderRadius={16}
-              p={2}
-              px={3}
-              cursor={!isAbleToUnmap ? "not-allowed" : "pointer"}
-              gap={2}
-            >
-              <Avatar
-                size="xs"
-                name={item?.user?.firstName + " " + item?.user?.lastName}
-                src={item?.user?.avatar}
-              />
-              <Text>{item?.user?.firstName + " " + item?.user?.lastName}</Text>
-              {isAbleToUnmap ? (
-                <Button
-                  isDisabled={!isAbleToUnmap}
-                  onClick={() => {
-                    onClickMappingTag(item?.user?.id ?? "");
-                  }}
-                  display={isAbleToUnmap ? "flex" : "none"}
-                  variant={"icon"}
-                  p={0}
-                >
-                  <SvgIcon iconName="ic-delete.svg" size={20} color={red500} />
-                </Button>
-              ) : null}
-            </Tag>
-          </Tooltip>
-        ) : (
-          <Button
-            size="sm"
-            background="white"
-            border="1px solid #A9A9A9"
-            onClick={() => {}}
-            isDisabled={!isAssignable}
-            display={isAssignable ? "flex" : "none"}
+        studentName: (
+          <Text
+            noOfLines={1}
+            w={"full"}
+            fontSize={"md"}
+            fontWeight={"600"}
+            color={isCurrentStudent ? "orange.400" : "gray.800"}
           >
-            Assign
-          </Button>
+            {student?.name}
+          </Text>
+        ),
+        action: isStudentOfClass ? (
+          !student?.user ? (
+            <Button
+              size="sm"
+              background="white"
+              border="1px solid #A9A9A9"
+              onClick={() => {
+                onMappingStudent(authStore?.user?.id ?? "", student?.id ?? "");
+              }}
+              isDisabled={!isAssignable}
+              display={isAssignable ? "flex" : "none"}
+            >
+              Assign
+            </Button>
+          ) : (
+            <MappedUserStudent item={student} onRemove={onUnmappingStudent} />
+          )
+        ) : (
+          // teacher
+          <Menu>
+            <MenuButton>
+              {!student?.user ? (
+                <Button
+                  size="sm"
+                  background="white"
+                  border="1px solid #A9A9A9"
+                  isDisabled={!isAssignable}
+                  display={isAssignable ? "flex" : "none"}
+                >
+                  Select
+                </Button>
+              ) : (
+                <MappedUserStudent
+                  item={student}
+                  onRemove={onUnmappingStudent}
+                />
+              )}
+            </MenuButton>
+            <MenuList>
+              {unMappedAttendeeStudentList?.map((attendee) => (
+                <MenuItem
+                  key={attendee?.user?.id}
+                  onClick={() => {
+                    onMappingStudent(
+                      attendee?.user?.id ?? "",
+                      student?.id ?? ""
+                    );
+                  }}
+                  display={"flex"}
+                  alignItems={"center"}
+                  flexDir={"row"}
+                  justifyContent={"space-between"}
+                  gap={2}
+                >
+                  <Avatar
+                    size="xs"
+                    name={
+                      attendee?.user?.firstName + " " + attendee?.user?.lastName
+                    }
+                    src={attendee?.user?.avatar}
+                  />
+                  <Text noOfLines={1} w={"full"} fontSize={"md"}>
+                    {attendee?.user?.firstName + " " + attendee?.user?.lastName}
+                  </Text>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
         ),
       };
     });
 
     return data;
-  }, [studentsList, authStore?.user, isAssignable]);
-
-  settingStore?.setHeaderLoading(isClassStudentsLoading);
-
-  React.useEffect(() => {
-    if (checkValidArray(dataClassStudents?.data)) {
-      setStudentsList(getValidArray(dataClassStudents?.data));
-    }
-  }, [dataClassStudents]);
+  }, [studentsList, authStore?.user, isAssignable, isStudentOfClass]);
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>

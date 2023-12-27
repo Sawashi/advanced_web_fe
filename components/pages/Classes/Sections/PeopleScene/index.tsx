@@ -4,7 +4,7 @@ import { EClassRole } from "enums/classes";
 import { useStores } from "hooks/useStores";
 import { IClass, IAttendeeProfile } from "interfaces/classes";
 import { observer } from "mobx-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { getValidArray } from "utils/common";
 import Teachers from "./Teachers";
 import Attendance from "./Attendance";
@@ -29,20 +29,20 @@ const Owner = ({ owner }: { owner?: IAttendeeProfile }) => {
 };
 
 const PeopleScene = ({ details }: Props) => {
+  const { settingStore } = useStores();
+
   const {
     data: attendees,
     isLoading,
     refetch,
   } = useGetClassAttendees(details?.id ?? "");
 
-  const { settingStore } = useStores();
+  const studentList = getValidArray(attendees?.data)?.filter(
+    (item) => item?.role === EClassRole.STUDENT
+  );
 
   const teacherList = getValidArray(attendees?.data)?.filter(
     (item) => item?.role === EClassRole.TEACHER
-  );
-
-  const studentList = getValidArray(attendees?.data)?.filter(
-    (item) => item?.role === EClassRole.STUDENT
   );
 
   const onRefetchList = async () => {
