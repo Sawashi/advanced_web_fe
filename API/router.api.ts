@@ -86,6 +86,11 @@ export const ClassesApiRouters = {
       value: (classId: ID) => `${API_URL}/classes/${classId}/unmap-student-id`,
     },
   },
+  delete: {
+    delete_students_list: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/students`,
+    },
+  },
 };
 
 export const CompositionsApiRouters = {

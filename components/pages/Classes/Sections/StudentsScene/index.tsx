@@ -52,6 +52,7 @@ const StudentsScene = ({ details }: Props) => {
     setSort,
     unMappedAttendeeStudentList,
     onUploadingStudentList,
+    onDeleteStudentList,
   } = useViewModel({ details });
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -197,25 +198,33 @@ const StudentsScene = ({ details }: Props) => {
           h={"full"}
           gap={5}
         >
-          <VStack w={"full"} gap={5}>
-            <HStack w={"full"} justifyContent={"space-between"}>
+          <VStack w={"full"} gap={0}>
+            <HStack w={"full"} justifyContent={"space-between"} mb={5}>
               <Text fontSize={"xl"} fontWeight={"bold"}>
                 Students
               </Text>
 
-              <Text
-                fontSize={"md"}
-                fontWeight={"normal"}
-                _hover={{
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                }}
+              <HStack
+                alignItems={"center"}
+                gap={2}
                 onClick={() => {
                   setIsOpenCollapse(!isOpenCollapse);
                 }}
               >
-                {studentsList?.length} students
-              </Text>
+                <Text
+                  fontSize={"md"}
+                  fontWeight={"normal"}
+                  _hover={{
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                  }}
+                >
+                  {studentsList?.length} students
+                </Text>
+                <SvgIcon
+                  iconName={isOpenCollapse ? "ic-up.svg" : "ic-down.svg"}
+                />
+              </HStack>
             </HStack>
             <Collapse
               in={isOpenCollapse}
@@ -247,6 +256,29 @@ const StudentsScene = ({ details }: Props) => {
                     {unMappedAttendeeStudentList?.length} students
                   </Text>
                 </HStack>
+
+                {!isStudentOfClass && (
+                  <HStack w={"full"} justifyContent={"space-between"}>
+                    <Text fontSize={"md"} fontWeight={"500"} color="red.500">
+                      Delete
+                    </Text>
+
+                    <Button
+                      variant={"icon"}
+                      p={0}
+                      onClick={() => {
+                        onDeleteStudentList();
+                        setIsOpenCollapse(false);
+                      }}
+                    >
+                      <SvgIcon
+                        iconName={"ic-delete.svg"}
+                        size={30}
+                        color={red500}
+                      />
+                    </Button>
+                  </HStack>
+                )}
               </VStack>
             </Collapse>
           </VStack>

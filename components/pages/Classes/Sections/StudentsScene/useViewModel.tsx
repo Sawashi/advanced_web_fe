@@ -10,6 +10,7 @@ import { usePatchMapStudent } from "API/patch/patch.class.map-student";
 import { useToast } from "@chakra-ui/react";
 import { usePatchUnMapStudent } from "API/patch/patch.class.unmap-student";
 import { useUploadClassStudentList } from "API/post/post.class.upload-student-list";
+import { useDeleteStudentList } from "API/delete/delete.class.students-list";
 
 const useViewModel = ({ details }: Props) => {
   const { settingStore, classStore, authStore } = useStores();
@@ -41,6 +42,9 @@ const useViewModel = ({ details }: Props) => {
 
   const { mutateAsync: uploadStudentList, isLoading: isUploadingStudentList } =
     useUploadClassStudentList();
+
+  const { mutateAsync: deleteStudentList, isLoading: isDeletingStudentList } =
+    useDeleteStudentList(details?.id ?? "");
 
   const unMappedAttendeeStudentList = useMemo(() => {
     const studentAttendees = getValidArray(attendees?.data)?.filter(
@@ -165,12 +169,38 @@ const useViewModel = ({ details }: Props) => {
     }
   };
 
+  const onDeleteStudentList = async () => {
+    try {
+      const response = await deleteStudentList();
+      if (response) {
+        toast({
+          title: "Success",
+          description: "Delete student list successfully",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Delete student list failed",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } finally {
+      refresh();
+    }
+  };
+
   settingStore?.setHeaderLoading(
     isClassStudentsLoading ||
       isAttendeesLoading ||
       isMappingStudentLoading ||
       isUnMappingStudentLoading ||
-      isUploadingStudentList
+      isUploadingStudentList ||
+      isDeletingStudentList
   );
 
   React.useEffect(() => {
@@ -193,6 +223,7 @@ const useViewModel = ({ details }: Props) => {
     setSort,
     unMappedAttendeeStudentList,
     onUploadingStudentList,
+    onDeleteStudentList,
   };
 };
 
