@@ -9,6 +9,8 @@ import {
   MenuList,
   MenuItem,
   Avatar,
+  HStack,
+  Collapse,
 } from "@chakra-ui/react";
 import { IClass } from "interfaces/classes";
 import { observer } from "mobx-react";
@@ -35,6 +37,7 @@ interface IStudentTableData {
 
 const StudentsScene = ({ details }: Props) => {
   const { authStore } = useStores();
+  const [isOpenCollapse, setIsOpenCollapse] = React.useState(false);
   const {
     studentsList,
     isStudentOfClass,
@@ -184,6 +187,60 @@ const StudentsScene = ({ details }: Props) => {
           h={"full"}
           gap={5}
         >
+          <VStack w={"full"} gap={5}>
+            <HStack w={"full"} justifyContent={"space-between"}>
+              <Text fontSize={"xl"} fontWeight={"bold"}>
+                Students
+              </Text>
+
+              <Text
+                fontSize={"md"}
+                fontWeight={"normal"}
+                _hover={{
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                onClick={() => {
+                  setIsOpenCollapse(!isOpenCollapse);
+                }}
+              >
+                {studentsList?.length} students
+              </Text>
+            </HStack>
+            <Collapse
+              in={isOpenCollapse}
+              animateOpacity
+              style={{
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                width: "100%",
+              }}
+            >
+              <VStack w={"full"} alignItems={"start"} p={5} gap={3}>
+                <HStack w={"full"} justifyContent={"space-between"}>
+                  <Text fontSize={"md"} fontWeight={"500"}>
+                    Mapped students
+                  </Text>
+
+                  <Text fontSize={"md"} fontWeight={"normal"}>
+                    {studentsList?.filter((item) => !!item?.user)?.length}{" "}
+                    students
+                  </Text>
+                </HStack>
+
+                <HStack w={"full"} justifyContent={"space-between"}>
+                  <Text fontSize={"md"} fontWeight={"500"}>
+                    Unmapped attendees
+                  </Text>
+
+                  <Text fontSize={"md"} fontWeight={"normal"}>
+                    {unMappedAttendeeStudentList?.length} students
+                  </Text>
+                </HStack>
+              </VStack>
+            </Collapse>
+          </VStack>
+
           <Box flex={1} width="full">
             <Table
               tableData={tableData}

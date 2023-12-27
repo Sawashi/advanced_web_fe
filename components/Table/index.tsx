@@ -176,7 +176,7 @@ const Table = (props: ITableProps) => {
                       borderColor="gray.200"
                       textAlign={align}
                       color="gray.500"
-                      fontSize="md"
+                      fontSize="12px"
                       fontWeight={600}
                     >
                       {column.render("Header")}
