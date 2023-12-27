@@ -41,3 +41,9 @@ export interface IGradeComposition {
   order?: number;
   finalized?: boolean;
 }
+
+export interface IStudent {
+  id: string;
+  name: string;
+  user: {};
+}
