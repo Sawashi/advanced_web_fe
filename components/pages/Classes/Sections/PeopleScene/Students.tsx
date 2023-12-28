@@ -87,7 +87,7 @@ const Students = ({
           isClosable: true,
         });
         navigator.clipboard.writeText(
-          `${HOST ?? ""}/users/classes/join?token=${token}`
+          `${HOST ?? ""}/user/classes/join?token=${token}`
         );
       }
     } catch (error) {
@@ -105,7 +105,7 @@ const Students = ({
             role: EClassRole.STUDENT,
             email: item?.email,
           });
-          if (res?.data?.statusCode !== 200) {
+          if (res?.data?.statusCode >= 400) {
             throw new Error("Something went wrong");
           }
         })
@@ -227,7 +227,7 @@ const Students = ({
                 w={"full"}
                 flex={1}
                 p={1}
-              >{`${HOST}/users/classes/join?token=...`}</Code>
+              >{`${HOST}/user/classes/join?token=...`}</Code>
               <Button
                 onClick={onGenerateLink}
                 isLoading={isGeneratingClass}

@@ -107,7 +107,7 @@ const StudentsScene = ({ details }: Props) => {
               Assign
             </Button>
           ) : (
-            <MappedUserStudent item={student} />
+            <MappedUserStudent item={student} isAbleToUnmap={isAbleToUnmap} />
           )
         ) : (
           // teacher
@@ -171,8 +171,16 @@ const StudentsScene = ({ details }: Props) => {
               display={isAbleToUnmap ? "flex" : "none"}
               variant={"icon"}
               p={0}
+              _hover={{
+                bg: "red.300",
+              }}
+              rounded={"full"}
             >
-              <SvgIcon iconName="ic-delete.svg" size={20} color={red500} />
+              <SvgIcon
+                iconName="ic-person-remove.svg"
+                size={20}
+                color={red500}
+              />
             </Button>
           ) : null,
       };
@@ -258,9 +266,9 @@ const StudentsScene = ({ details }: Props) => {
                 </HStack>
 
                 {!isStudentOfClass && (
-                  <HStack w={"full"} justifyContent={"space-between"}>
-                    <Text fontSize={"md"} fontWeight={"500"} color="red.500">
-                      Delete
+                  <HStack w={"full"} justifyContent={"space-between"} mt={2}>
+                    <Text fontSize={"md"} fontWeight={"600"} color="red.500">
+                      Delete all students
                     </Text>
 
                     <Button

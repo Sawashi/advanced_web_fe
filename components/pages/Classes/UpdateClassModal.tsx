@@ -44,14 +44,12 @@ const UpdateClassModal = ({ isVisible, onClose }: UpdateClassModalProps) => {
 
   const {
     handleSubmit,
-    reset,
     formState: { isValid },
     setValue,
   } = method;
 
   const onCloseModal = () => {
     onClose();
-    reset();
   };
 
   const onSubmit = async (values: IUpdateClassSchema) => {
