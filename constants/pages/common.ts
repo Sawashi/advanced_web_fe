@@ -7,3 +7,7 @@ export enum EUserPageName {
   HOME = "Home",
   CHANGE_PASSWORD = "Change Password",
 }
+export enum EAdminPageName {
+  ACCOUNTS = "Manage Accounts",
+  CLASSES = "Manage Classes",
+}

@@ -1,17 +1,11 @@
 import { Flex, Stack, VStack, Divider, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, {
-  forwardRef,
-  use,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { EZIndexLayer } from "enums/theme";
 import { useStores } from "hooks/useStores";
 import routes from "routes";
 import NavLink, { INavLinkProps } from "../NavLink";
-import { EUserPageName } from "constants/pages/common";
+import { EAdminPageName, EUserPageName } from "constants/pages/common";
 import { observer } from "mobx-react";
 import { red300, red500 } from "theme/colors.theme";
 import { useMediaQuery } from "react-responsive";
@@ -20,7 +14,6 @@ import { useGetClassesAsStudent } from "API/get/get.classes.student";
 import { useGetClassesAsOwner } from "API/get/get.classes.owned";
 import { useGetClassesAsTeacher } from "API/get/get.classes.teacher";
 import { getValidArray } from "utils/common";
-import { getCurrentUser } from "API/get/get.me";
 
 export interface ISidebarRefProps {
   onExpand: () => void;
@@ -31,7 +24,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const router = useRouter();
   const { authStore, settingStore } = useStores();
   const { isSideBarExpanded, setSideBarExpanded } = settingStore;
-  const [enableAminButton, setEnableAdminButton] = useState(false);
   const isMobile: boolean = useMediaQuery({ maxWidth: maxMobileWidth });
   const isTabletMobile: boolean = useMediaQuery({ maxWidth: maxTabletWidth });
 
@@ -92,16 +84,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
     },
   }));
 
-  useEffect(() => {
-    async function getInfoForCurrentUser() {
-      const res = await getCurrentUser();
-      if (res?.role === "admin") {
-        setEnableAdminButton(true);
-      }
-    }
-    getInfoForCurrentUser();
-  }, []);
-
   return (
     <VStack
       minWidth="24px"
@@ -132,76 +114,22 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
           divider={<Divider h={"1px"} bgColor={"gray.400"} />}
         >
           <NavLink
-            label={EUserPageName.HOME}
+            label={EAdminPageName.ACCOUNTS}
             {...getLinkProps(routes.user.home.value, "ic-home")}
           />
-
           <NavLink
-            label={EUserPageName.ENROLLED}
-            isLoading={isLoadingStudentClasses}
-            {...getLinkProps(
-              routes.user.enrolled_classes.value,
-              "ic-enrolled",
-              getValidArray(studentClasses?.data)?.map((item) => {
-                return {
-                  label: item?.name ?? "",
-                  ...getLinkProps(
-                    routes.classes.details.value(item?.id ?? ""),
-                    "ic-class"
-                  ),
-                };
-              })
-            )}
-          />
-
-          <NavLink
-            label={EUserPageName.TEACHING}
-            isLoading={isLoadingTeachingClasses}
-            {...getLinkProps(
-              routes.user.teaching_classes.value,
-              "ic-teacher",
-              getValidArray(teachingClasses?.data)?.map((item) => {
-                return {
-                  label: item?.name ?? "",
-                  ...getLinkProps(
-                    routes.classes.details.value(item?.id ?? ""),
-                    "ic-class"
-                  ),
-                };
-              })
-            )}
-          />
-
-          <NavLink
-            label={EUserPageName.OWNED}
-            isLoading={isLoadingOwnedClasses}
-            {...getLinkProps(
-              routes.user.owned_classes.value,
-              "ic-rocket",
-              getValidArray(ownedClasses?.data)?.map((item) => {
-                return {
-                  label: item?.name ?? "",
-                  ...getLinkProps(
-                    routes.classes.details.value(item?.id ?? ""),
-                    "ic-class"
-                  ),
-                };
-              })
-            )}
+            label={EAdminPageName.CLASSES}
+            {...getLinkProps(routes.user.home.value, "ic-home")}
           />
         </Stack>
         <Stack w="full" alignSelf={"end"}>
-          {enableAminButton ? (
-            <Button
-              onClick={() => {
-                router.replace("/admin/manage-accounts");
-              }}
-            >
-              Go to admin
-            </Button>
-          ) : (
-            <></>
-          )}
+          <Button
+            onClick={() => {
+              router.replace(routes.user.home.value);
+            }}
+          >
+            Go to user
+          </Button>
           <NavLink
             label={EUserPageName.SETTINGS}
             {...getLinkProps(routes.user.profile.value, "ic-settings", [
