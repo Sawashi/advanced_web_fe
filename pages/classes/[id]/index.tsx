@@ -111,6 +111,7 @@ const ClassDetail = () => {
                 ?.filter((tab) => !!tab)
                 ?.map((tab) => (
                   <Tab
+                    key={tab?.name}
                     _selected={{
                       color: isStudentOfClass ? "green.500" : "primary.500",
                       fontWeight: "bold",

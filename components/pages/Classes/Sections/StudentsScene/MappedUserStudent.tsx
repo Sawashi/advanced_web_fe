@@ -7,7 +7,7 @@ const MappedUserStudent = ({
   isAbleToUnmap = false,
 }: {
   item: IStudent;
-  isAbleToUnmap: boolean;
+  isAbleToUnmap?: boolean;
 }) => {
   if (!item?.user) {
     return null;

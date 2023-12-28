@@ -107,7 +107,7 @@ const StudentsScene = ({ details }: Props) => {
               Assign
             </Button>
           ) : (
-            <MappedUserStudent item={student} />
+            <MappedUserStudent item={student} isAbleToUnmap={isAbleToUnmap} />
           )
         ) : (
           // teacher
