@@ -10,6 +10,7 @@ import {
   TabIndicator,
   HStack,
   Button,
+  Text,
   Tooltip,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -25,34 +26,30 @@ import SvgIcon from "components/SvgIcon";
 import UpdateClassModal from "components/pages/Classes/UpdateClassModal";
 import GradeStructureScene from "components/pages/Classes/Sections/GradeStructureScene";
 import StudentsScene from "components/pages/Classes/Sections/StudentsScene";
+import { red500 } from "theme/colors.theme";
+import Modal from "components/Modal";
+import { usePatchLeaveClass } from "API/patch/patch.class.leave-class";
+import routes from "routes";
 
 const ClassDetail = () => {
   const router = useRouter();
   const { settingStore, classStore } = useStores();
-  const { isStudentOfClass } = classStore;
+  const { isStudentOfClass, currentClass } = classStore;
   const {
     data: classDetails,
     isLoading,
-    isError,
     refetch,
   } = useGetClassDetails(router?.query?.id as string);
+  const { mutateAsync: leaveClass, isLoading: isLeaveLoading } =
+    usePatchLeaveClass(currentClass?.id ?? "");
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  useEffect(() => {
-    settingStore.setHeaderLoading(isLoading);
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (classDetails) {
-      classStore.setCurrentClass(classDetails);
-    }
-  }, [classDetails]);
-
-  useEffect(() => {
-    if (router?.isReady) {
-      refetch();
-    }
-  }, [router?.isReady]);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const titleHeader =
+    classDetails?.name && classDetails?.description
+      ? `${classDetails?.name ?? "Class"} ${
+          "|" + classDetails?.description ?? ""
+        }`
+      : "Class";
 
   const tabListRender = useMemo(
     () => [
@@ -81,66 +78,124 @@ const ClassDetail = () => {
     [classDetails, isStudentOfClass]
   );
 
+  const handleLeaveClass = async () => {
+    try {
+      await leaveClass();
+      setIsDeleteModalVisible(false);
+      router.push(routes.classes.value);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    settingStore.setHeaderLoading(isLoading || isLeaveLoading);
+  }, [isLoading, isLeaveLoading]);
+
+  useEffect(() => {
+    if (classDetails) {
+      classStore.setCurrentClass(classDetails);
+    }
+  }, [classDetails]);
+
+  useEffect(() => {
+    if (router?.isReady) {
+      refetch();
+    }
+  }, [router?.isReady]);
+
   return (
     <ClassLayout
-      title={
-        `${classDetails?.name ?? "Class"} | ${
-          classDetails?.description ?? ""
-        }` ?? "Class"
-      }
+      title={titleHeader}
       details={classDetails ?? {}}
       isLoading={isLoading || !router?.isReady}
     >
-      <VStack w="full" flex={1} h="full" alignItems={"start"} gap={5}>
-        {isError ? (
+      <VStack
+        w="full"
+        flex={1}
+        h="full"
+        alignItems={"start"}
+        gap={5}
+        minW={"fit-content"}
+      >
+        {!classDetails ? (
           <VStack flex={1} w={"full"} justifyContent={"center"}>
             <NotFoundClass />
           </VStack>
         ) : (
-          <Tabs position="relative" variant="unstyled" w="full">
-            <TabList
-              borderBottomWidth={1}
-              p={3}
-              _active={{
-                color: isStudentOfClass ? "green.500" : "primary.500",
-                fontWeight: "bold",
-              }}
+          <Tabs variant="unstyled" w="full">
+            <HStack
+              w={"full"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
               position={"relative"}
+              borderBottomWidth={1}
+              gap={5}
             >
-              {getValidArray(tabListRender)
-                ?.filter((tab) => !!tab)
-                ?.map((tab) => (
-                  <Tab
-                    key={tab?.name}
-                    _selected={{
-                      color: isStudentOfClass ? "green.500" : "primary.500",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {tab?.name}
-                  </Tab>
-                ))}
+              <TabList
+                flex={1}
+                p={3}
+                _active={{
+                  color: isStudentOfClass ? "green.500" : "primary.500",
+                  fontWeight: "bold",
+                }}
+                position={"relative"}
+              >
+                {getValidArray(tabListRender)
+                  ?.filter((tab) => !!tab)
+                  ?.map((tab) => (
+                    <Tab
+                      key={tab?.name}
+                      _selected={{
+                        color: isStudentOfClass ? "green.500" : "primary.500",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {tab?.name}
+                    </Tab>
+                  ))}
+              </TabList>
 
-              <Tooltip label={"Edit class"}>
-                <Button
-                  display={isStudentOfClass ? "none" : "flex"}
-                  zIndex={1}
-                  rounded={"full"}
-                  position={"absolute"}
-                  onClick={() => {
-                    setIsModalVisible(true);
-                  }}
-                  variant={"icon"}
-                  right={"20px"}
-                >
-                  <SvgIcon
-                    iconName={"ic-edit.svg"}
-                    fill="black"
-                    color="black"
-                  />
-                </Button>
-              </Tooltip>
-            </TabList>
+              <HStack alignItems={"center"} gap={3}>
+                <Tooltip label={"Edit class"}>
+                  <Button
+                    display={isStudentOfClass ? "none" : "flex"}
+                    rounded={"full"}
+                    onClick={() => {
+                      setIsModalVisible(true);
+                    }}
+                    variant={"icon"}
+                    right={"20px"}
+                  >
+                    <SvgIcon
+                      iconName={"ic-edit.svg"}
+                      fill="black"
+                      color="black"
+                    />
+                  </Button>
+                </Tooltip>
+
+                {isStudentOfClass ? (
+                  <Tooltip label={"Leave class"}>
+                    <Button
+                      rounded={"full"}
+                      onClick={() => {
+                        setIsDeleteModalVisible(true);
+                      }}
+                      variant={"icon"}
+                      right={"20px"}
+                    >
+                      <SvgIcon
+                        iconName={"ic-exit.svg"}
+                        fill="black"
+                        color={red500}
+                      />
+                    </Button>
+                  </Tooltip>
+                ) : null}
+              </HStack>
+            </HStack>
+
             <TabIndicator
               mt="-1.5px"
               height="3px"
@@ -149,7 +204,7 @@ const ClassDetail = () => {
             />
             <TabPanels>
               {getValidArray(tabListRender)?.map((tab) => (
-                <TabPanel>{tab?.component}</TabPanel>
+                <TabPanel key={tab.name}>{tab?.component}</TabPanel>
               ))}
             </TabPanels>
           </Tabs>
@@ -159,6 +214,28 @@ const ClassDetail = () => {
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
       />
+      <Modal
+        isVisible={isDeleteModalVisible}
+        title={"Leave class"}
+        onClose={() => {
+          setIsDeleteModalVisible(false);
+        }}
+        actions={[
+          <Button
+            key={"cancel"}
+            variant={"ghost"}
+            color={"red.500"}
+            onClick={handleLeaveClass}
+          >
+            Leave
+          </Button>,
+        ]}
+      >
+        <Text>
+          Are you sure you want to leave this class? You will lose all your
+          progress.
+        </Text>
+      </Modal>
     </ClassLayout>
   );
 };

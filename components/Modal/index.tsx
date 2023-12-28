@@ -66,7 +66,9 @@ function Modal({
         <ModalBody>{children}</ModalBody>
         <ModalFooter gap={3}>
           {actions?.map((action) => (
-            <React.Fragment>{action}</React.Fragment>
+            <React.Fragment key={Math.random().toString(36).substr(2, 9)}>
+              {action}
+            </React.Fragment>
           ))}
         </ModalFooter>
       </ModalContent>
