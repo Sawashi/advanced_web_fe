@@ -23,8 +23,10 @@ import { getCaseHeaderList } from "./utils";
 import useViewModel from "./useViewModel";
 import MappedUserStudent from "./MappedUserStudent";
 import SvgIcon from "components/SvgIcon";
-import { red500 } from "theme/colors.theme";
+import { gray400, gray500, red500 } from "theme/colors.theme";
 import get from "lodash/get";
+import { CSVLink } from "react-csv";
+import { getTemplateStudentList } from "API/get/get.templates.student-list";
 
 export interface Props {
   details: IClass;
@@ -54,11 +56,23 @@ const StudentsScene = ({ details }: Props) => {
     onUploadingStudentList,
     onDeleteStudentList,
   } = useViewModel({ details });
+  const [template, setTemplate] = React.useState<string>("");
+  const csvRef = useRef<any>(null);
 
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadList = (event: ChangeEvent<HTMLInputElement>) => {
     const file = get(event, "target.files[0]");
     if (file) {
       onUploadingStudentList(file);
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      const res = await getTemplateStudentList();
+      setTemplate(res);
+      csvRef?.current?.link?.click();
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -303,32 +317,59 @@ const StudentsScene = ({ details }: Props) => {
           </Box>
         </VStack>
       ) : (
-        <EmptyList
-          title="Seems like there's no students in this class"
-          description={
-            !isStudentOfClass
-              ? "Create a list of students to start adding grades"
-              : "The teacher hasn't added any students yet"
-          }
-          _button={
-            !isStudentOfClass
-              ? {
-                  text: "Upload students",
-                  onClick: () => {
-                    fileRef && fileRef.current && fileRef.current.click();
-                  },
-                }
-              : undefined
-          }
-        />
+        <VStack gap={10}>
+          <EmptyList
+            title="Seems like there's no students in this class"
+            description={
+              !isStudentOfClass
+                ? "Create a list of students to start adding grades"
+                : "The teacher hasn't added any students yet"
+            }
+            _button={
+              !isStudentOfClass
+                ? {
+                    text: "Upload students",
+                    onClick: () => {
+                      fileRef && fileRef.current && fileRef.current.click();
+                    },
+                    rightIcon: (
+                      <SvgIcon
+                        iconName={"ic-upload.svg"}
+                        size={25}
+                        color={gray400}
+                      />
+                    ),
+                  }
+                : undefined
+            }
+          />
+
+          <Button
+            display={!isStudentOfClass ? "flex" : "none"}
+            variant={"link"}
+            onClick={handleDownloadTemplate}
+            rightIcon={
+              <SvgIcon iconName={"ic-download.svg"} size={25} color={gray500} />
+            }
+          >
+            Download a sample CSV file
+          </Button>
+
+          <CSVLink
+            data={template}
+            filename={"sample.csv"}
+            target="_blank"
+            style={{ display: "none" }}
+            ref={csvRef}
+          ></CSVLink>
+        </VStack>
       )}
 
       <Box display={"none"}>
         <input
           type="file"
-          //csv file
           accept=".csv"
-          onChange={handleImageChange}
+          onChange={handleUploadList}
           ref={fileRef}
         />
       </Box>
