@@ -5,6 +5,7 @@ interface Props {
   _button?: {
     text: string;
     onClick: () => void;
+    rightIcon?: JSX.Element
   };
   title?: string;
   description?: string;
@@ -48,7 +49,11 @@ const EmptyList = (props: Props) => {
       </Text>
 
       {_button && (
-        <Button variant={"primary"} onClick={_button.onClick}>
+        <Button
+          variant={"primary"}
+          onClick={_button.onClick}
+          rightIcon={_button?.rightIcon}
+        >
           {_button?.text}
         </Button>
       )}

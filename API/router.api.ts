@@ -1,4 +1,5 @@
 export const API_URL = process.env.API_URL;
+export const BASE_URL = process.env.BASE_URL;
 
 export type URLQueryType<T> = {
   sortBy?: string | number;
@@ -114,6 +115,14 @@ export const CompositionsApiRouters = {
   delete: {
     delete_a_composition: {
       value: (compositionId: ID) => `${API_URL}/compositions/${compositionId}`,
+    },
+  },
+};
+
+export const GlobalApiRouters = {
+  get: {
+    templates_student_list: {
+      value: `${BASE_URL}/api/static/templates/student-list.csv`,
     },
   },
 };
