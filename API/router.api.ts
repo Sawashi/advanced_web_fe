@@ -121,6 +121,10 @@ export const CompositionsApiRouters = {
       value: (compositionId: ID, studentId: ID) =>
         `${API_URL}/compositions/${compositionId}/students/${studentId}/grade`,
     },
+    finalize: {
+      value: (compositionId: ID) =>
+        `${API_URL}/compositions/${compositionId}/finalize`,
+    },
   },
   delete: {
     delete_a_composition: {

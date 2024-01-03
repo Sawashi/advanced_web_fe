@@ -29,15 +29,19 @@ interface Props {
 const GradeBoardScene = ({ details }: Props) => {
   const router = useRouter();
   const { settingStore } = useStores();
-  const { data: gradeBoard, isLoading: isLoadingGradeBoard } = useGetGradeBoard(
-    details?.id ?? ""
-  );
+  const {
+    tableData,
+    headerList,
+    isHeaderEmpty,
+    isLoadingGradeBoard,
+    isRowsEmpty,
+  } = useGradeBoardTable(details?.id ?? "");
   const { mutateAsync: getGradeBoard, isLoading: isLoadingExportGradeBoard } =
     useGetClassGradeBoard(details?.id ?? "");
-  settingStore?.setHeaderLoading(isLoadingGradeBoard || isLoadingExportGradeBoard);
-  const isHeaderEmpty = !checkValidArray(gradeBoard?.header?.compositions);
-  const isRowsEmpty = !checkValidArray(gradeBoard?.rows);
-  const { tableData } = useGradeBoardTable(gradeBoard);
+  settingStore?.setHeaderLoading(
+    isLoadingGradeBoard || isLoadingExportGradeBoard
+  );
+
   const [template, setTemplate] = React.useState<string>("");
   const csvRef = useRef<any>(null);
 
@@ -132,9 +136,7 @@ const GradeBoardScene = ({ details }: Props) => {
           </HStack>
           <Table
             tableData={tableData}
-            headerList={getCaseHeaderList(
-              getValidArray(gradeBoard?.header?.compositions)
-            )}
+            headerList={headerList}
             hasNoSort={true}
           />
         </VStack>

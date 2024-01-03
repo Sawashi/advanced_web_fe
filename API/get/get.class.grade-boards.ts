@@ -2,6 +2,7 @@ import { api } from "API";
 import { ClassesApiRouters, ID } from "API/router.api";
 import { IResponseData } from "API/types";
 import { useQuery } from "react-query";
+import { getValidArray } from "utils/common";
 
 export interface IGetClassGradeBoard {
   header: IHeader;
@@ -41,6 +42,7 @@ export interface IStudentRow {
 export interface ICompositionRow {
   id: string;
   grade?: number;
+  finalized: boolean;
 }
 
 export interface IGetGradeBoardPayload {

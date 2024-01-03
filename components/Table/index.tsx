@@ -65,6 +65,7 @@ export declare interface ITableHeader {
   columns?: ITableHeader[];
   align?: EAlignEnum;
   disableSortBy?: boolean;
+  disabled?: boolean;
 }
 
 export enum EAlignEnum {
