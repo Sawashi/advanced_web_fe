@@ -31,14 +31,7 @@ import Modal from "components/Modal";
 import { usePatchLeaveClass } from "API/patch/patch.class.leave-class";
 import routes from "routes";
 import GradeBoardScene from "components/pages/Classes/Sections/GradeBoardScene";
-
-export enum ETabName {
-  Stream = "stream",
-  People = "people",
-  Students = "students",
-  GradeStructure = "grade-structure",
-  GradeBoard = "grade-board",
-}
+import { ETabName } from "enums/classes";
 
 const ClassDetail = () => {
   const router = useRouter();
