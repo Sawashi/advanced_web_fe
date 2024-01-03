@@ -67,6 +67,9 @@ export const ClassesApiRouters = {
     grade_board: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/grade-board`,
     },
+    export_grade_board: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/grade-board/csv`,
+    },
   },
   post: {
     create_a_class: {
