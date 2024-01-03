@@ -11,6 +11,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Box,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { useStores } from "hooks/useStores";
@@ -55,12 +56,19 @@ const UserHeader = ({
         borderBottomColor={"gray.300"}
       >
         <HStack w={"full"} alignItems={"center"} gap={5} flex={1}>
-          <SvgIcon
-            iconName={"ic-menu.svg"}
-            size={30}
-            onClick={onExpandSidebar}
-            color={gray500}
-          />
+          <Box
+            _hover={{
+              cursor: "pointer",
+            }}
+          >
+            <SvgIcon
+              iconName={"ic-menu.svg"}
+              size={30}
+              onClick={onExpandSidebar}
+              color={gray500}
+            />
+          </Box>
+
           <Image
             src="/assets/icons/logo.svg"
             alt="logo"
