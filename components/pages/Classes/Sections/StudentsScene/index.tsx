@@ -71,7 +71,9 @@ const StudentsScene = ({ details }: Props) => {
     try {
       const res = await getTemplateStudentList();
       setTemplate(res);
-      csvRef?.current?.link?.click();
+      setTimeout(() => {
+        csvRef?.current?.link?.click();
+      }, 1000);
     } catch (error) {
       console.error(error);
     }
@@ -383,11 +385,12 @@ const StudentsScene = ({ details }: Props) => {
 
           <CSVLink
             data={template}
-            filename={"sample.csv"}
+            filename={"student-list-template.csv"}
             target="_blank"
             style={{ display: "none" }}
+            asyncOnClick={true}
             ref={csvRef}
-          ></CSVLink>
+          />
         </VStack>
       )}
 

@@ -64,6 +64,9 @@ export const ClassesApiRouters = {
       value: (classId: ID, query?: URLQueryType<{}>) =>
         `${API_URL}/classes/${classId}/students?${getQueries(query ?? {})}`,
     },
+    grade_board: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/grade-board`,
+    },
   },
   post: {
     create_a_class: {
