@@ -28,11 +28,15 @@ export async function auth(): Promise<IRequestHeader> {
 
   if (!accessToken && refreshToken) {
     try {
-      const { data } = await api.post<IRefreshTokenResponse>("/auth/refresh", {
-        refreshToken,
-      });
+      const { data } = await axios.post<IRefreshTokenResponse>(
+        process.env.API_URL + "/auth/refresh",
+        {
+          refresh: refreshToken,
+        }
+      );
+
       setCookie(AuthenticateParams.ACCESS_TOKEN, data?.accessToken, {
-        expires: new Date(Date.now() + data?.accessTokenExpiresIn),
+        maxAge: data.accessTokenExpiresIn / 1000,
       });
 
       accessToken = data?.accessToken;
