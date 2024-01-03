@@ -117,6 +117,10 @@ export const CompositionsApiRouters = {
       value: (compositionId: ID) =>
         `${API_URL}/compositions/${compositionId}/order`,
     },
+    update_grade: {
+      value: (compositionId: ID, studentId: ID) =>
+        `${API_URL}/compositions/${compositionId}/students/${studentId}/grade`,
+    },
   },
   delete: {
     delete_a_composition: {

@@ -1,16 +1,20 @@
 import {
   Box,
   HStack,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import {
   ICompositionHeader,
+  ICompositionRow,
   IGetClassGradeBoard,
 } from "API/get/get.class.grade-boards";
+import { usePatchUpdateGrade } from "API/patch/patch.class.update-grade";
 import SvgIcon from "components/SvgIcon";
 import { ITableHeader } from "components/Table";
 import { useMemo } from "react";
@@ -36,7 +40,9 @@ export const getCaseHeaderList = (compositions: ICompositionHeader[]) => {
               display={"flex"}
               gap={1}
               alignItems={"center"}
+              justifyContent={"center"}
               cursor={"pointer"}
+              minW={"100px"}
             >
               <Box flexDirection={"column"} display={"flex"} gap={1}>
                 <HStack
@@ -71,7 +77,7 @@ export const getCaseHeaderList = (compositions: ICompositionHeader[]) => {
               )}
             </Box>
           </MenuButton>
-          <MenuList bgColor={"white.100"}>
+          <MenuList bgColor={"white"}>
             <MenuItem onClick={() => {}}>
               <Text color={red500} fontWeight={"bold"}>
                 Finalize
@@ -110,6 +116,105 @@ interface ITableData {
   [ETableHeader?.TOTAL]: React.ReactNode;
 }
 
+const InputGrade = ({
+  item,
+  studentId,
+}: {
+  item: ICompositionRow;
+  studentId: string;
+}) => {
+  const { mutateAsync: updateGrade } = usePatchUpdateGrade({
+    compositionId: item?.id,
+    studentId,
+  });
+  const toast = useToast();
+  const onUpdateGrade = async (value: number, compositionId: string) => {
+    try {
+      const res = await updateGrade({
+        compositionId,
+        studentId,
+        grade: value,
+      });
+
+      // @ts-ignore
+      if (res.status >= 400) {
+        toast({
+          title: "Error",
+          description: res?.data?.message?.[0] ?? "Something went wrong",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      } else {
+        toast({
+          title: "Success",
+          description: "Grade updated",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      console.error(error);
+    }
+  };
+
+  return (
+    <HStack>
+      <Input
+        variant={"flushed"}
+        defaultValue={item?.grade ?? undefined}
+        textAlign={"center"}
+        fontSize={"md"}
+        fontWeight={"bold"}
+        color={"gray.500"}
+        _focus={{
+          border: "none",
+        }}
+        maxW={"50px"}
+        maxLength={3}
+        onBlur={(e) => {
+          if (e.target.value === "") {
+            if (item?.grade !== null) {
+              e.target.value = item?.grade?.toString() ?? '';
+            }
+          }
+          else {
+            const isNumber = !isNaN(Number(e.target.value));
+            if (!isNumber) {
+              toast({
+                title: "Error",
+                description: "Invalid grade",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+              });
+              e.target.value = item?.grade?.toString() ?? '';
+            }
+            else {
+              onUpdateGrade(Number(e.target.value), item?.id);
+            }
+          }
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            // blur input
+            e.currentTarget.blur();
+          }
+        }}
+      />
+    </HStack>
+  );
+};
+
 const useGradeBoardTable = (data?: IGetClassGradeBoard) => {
   const tableData = useMemo<ITableData[]>(() => {
     const rows = getValidArray(data?.rows);
@@ -122,7 +227,13 @@ const useGradeBoardTable = (data?: IGetClassGradeBoard) => {
         ...(compositions?.reduce(
           (acc, item, index) => ({
             ...acc,
-            [`composition_${index}`]: item?.grade,
+            [`composition_${index}`]: (
+              <InputGrade
+                item={item}
+                studentId={row?.student?.id}
+                key={`composition_${item?.id}_${row?.student?.id}`}
+              />
+            ),
           }),
           {}
         ) as Record<string, React.ReactNode>),
