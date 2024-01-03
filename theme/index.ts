@@ -65,6 +65,9 @@ export function getTheme(): Dict {
         "html, body": {
           background: "white",
         },
+        ".is-clickable": {
+          cursor: "pointer",
+        },
       },
     },
     colors: {

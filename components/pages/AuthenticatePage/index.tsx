@@ -13,6 +13,7 @@ import {
 } from "./constant";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import VerifyEmailForm from "./components/VerifyEmailForm";
+import { useRouter } from "next/router";
 
 export interface ILoginProps {
   type?: EAuthenticatePageType;
@@ -23,6 +24,7 @@ const AuthenticatePage = (props: ILoginProps) => {
   const { type, setNamePage } = props;
   const [pageType] = useState<EAuthenticatePageType | undefined>(type);
   const isOverflow: boolean = useMediaQuery({ maxHeight: 810 });
+  const router = useRouter();
 
   function getTitle(): string {
     switch (pageType) {
@@ -65,10 +67,29 @@ const AuthenticatePage = (props: ILoginProps) => {
   }
 
   return (
-    <Box minHeight={isOverflow ? "810px" : "100vh"}>
-      <Box width="full" maxWidth="xl" marginX="auto" paddingY="188px">
-        <Box maxWidth="416px" marginX={{ base: 8, md: "auto" }}>
-          <Icon iconName="logo.svg" width={140} height={55} />
+    <VStack minHeight={isOverflow ? "810px" : "100vh"} maxHeight={"100vh"}>
+      <Box
+        width="full"
+        maxWidth="xl"
+        display={"flex"}
+        marginX={"auto"}
+        alignItems={"center"}
+        flex={1}
+      >
+        <Box
+          maxWidth="416px"
+          marginX={{ base: 8, md: "auto" }}
+          marginY={"64px"}
+        >
+          <Icon
+            iconName="logo.svg"
+            width={140}
+            height={55}
+            onClick={() => {
+              router.push("/");
+            }}
+          />
+
           <VStack marginBottom={12} width="full" alignItems="flex-start">
             <Heading
               fontSize="24px"
@@ -97,7 +118,7 @@ const AuthenticatePage = (props: ILoginProps) => {
           )}
         </Box>
       </Box>
-    </Box>
+    </VStack>
   );
 };
 

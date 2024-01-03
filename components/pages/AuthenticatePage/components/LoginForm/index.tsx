@@ -1,9 +1,6 @@
 import {
-  Box,
   Button,
-  Center,
   Divider,
-  Flex,
   HStack,
   Icon,
   Link,
