@@ -34,7 +34,8 @@ import routes from "routes";
 const ClassDetail = () => {
   const router = useRouter();
   const { settingStore, classStore } = useStores();
-  const { isStudentOfClass, currentClass } = classStore;
+  const { isStudentOfClass, isTeacherOfClass, isOwnerOfClass, currentClass } =
+    classStore;
   const {
     data: classDetails,
     isLoading,
@@ -175,7 +176,7 @@ const ClassDetail = () => {
                   </Button>
                 </Tooltip>
 
-                {isStudentOfClass ? (
+                {isStudentOfClass || (isTeacherOfClass && !isOwnerOfClass) ? (
                   <Tooltip label={"Leave class"}>
                     <Button
                       rounded={"full"}
