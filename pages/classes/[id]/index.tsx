@@ -30,6 +30,15 @@ import { red500 } from "theme/colors.theme";
 import Modal from "components/Modal";
 import { usePatchLeaveClass } from "API/patch/patch.class.leave-class";
 import routes from "routes";
+import GradeBoardScene from "components/pages/Classes/Sections/GradeBoardScene";
+
+export enum ETabName {
+  Stream = "stream",
+  People = "people",
+  Students = "students",
+  GradeStructure = "grade-structure",
+  GradeBoard = "grade-board",
+}
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -45,10 +54,12 @@ const ClassDetail = () => {
     usePatchLeaveClass(currentClass?.id ?? "");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [tabName, setTabName] = useState<ETabName>();
+  const [tabIndex, setTabIndex] = useState(0);
   const titleHeader =
     classDetails?.name && classDetails?.description
       ? `${classDetails?.name ?? "Class"} ${
-          "|" + classDetails?.description ?? ""
+          "| " + classDetails?.description ?? ""
         }`
       : "Class";
 
@@ -62,18 +73,27 @@ const ClassDetail = () => {
             isStudentOfClass={isStudentOfClass}
           />
         ),
+        tabName: ETabName.Stream,
       },
       {
         name: "People",
         component: <PeopleScene details={classDetails ?? {}} />,
-      },
-      {
-        name: "Grade structure",
-        component: <GradeStructureScene details={classDetails ?? {}} />,
+        tabName: ETabName.People,
       },
       {
         name: "Students",
         component: <StudentsScene details={classDetails ?? {}} />,
+        tabName: ETabName.Students,
+      },
+      {
+        name: "Grade structure",
+        component: <GradeStructureScene details={classDetails ?? {}} />,
+        tabName: ETabName.GradeStructure,
+      },
+      {
+        name: "Grade",
+        component: <GradeBoardScene details={classDetails ?? {}} />,
+        tabName: ETabName.GradeBoard,
       },
     ],
     [classDetails, isStudentOfClass]
@@ -89,6 +109,13 @@ const ClassDetail = () => {
     }
   };
 
+  const onChangeTab = (index: number) => {
+    setTabIndex(index);
+    router.push(
+      `${routes.classes.value}/${router?.query?.id}?tab=${tabListRender?.[index]?.tabName}`
+    );
+  };
+
   useEffect(() => {
     settingStore.setHeaderLoading(isLoading || isLeaveLoading);
   }, [isLoading, isLeaveLoading]);
@@ -102,8 +129,28 @@ const ClassDetail = () => {
   useEffect(() => {
     if (router?.isReady) {
       refetch();
+      const tabName = router?.query?.tab;
+      const isValidTabName = Object.values(ETabName)?.includes(
+        tabName as ETabName
+      );
+      if (isValidTabName) {
+        setTabName(tabName as ETabName);
+      } else {
+        setTabName(ETabName.Stream);
+      }
     }
   }, [router?.isReady]);
+
+  useEffect(() => {
+    const tabIndex = tabListRender?.findIndex(
+      (tab) => tab?.tabName === tabName
+    );
+    if (tabIndex >= 0) {
+      setTabIndex(tabIndex);
+      return;
+    }
+    setTabIndex(0);
+  }, [tabName]);
 
   return (
     <ClassLayout
@@ -124,7 +171,13 @@ const ClassDetail = () => {
             <NotFoundClass />
           </VStack>
         ) : (
-          <Tabs variant="unstyled" w="full">
+          <Tabs
+            variant="unstyled"
+            w="full"
+            index={tabIndex}
+            onChange={onChangeTab}
+            isLazy={true}
+          >
             <HStack
               w={"full"}
               justifyContent={"space-between"}
