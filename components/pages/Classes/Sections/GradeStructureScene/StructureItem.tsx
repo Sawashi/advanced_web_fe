@@ -42,6 +42,7 @@ const StructureItem = ({
           width={"full"}
           ref={provided.innerRef}
           boxShadow={"md"}
+          mt={4}
           {...provided.draggableProps}
         >
           <CardBody justifyContent={"flex-end"} py={10}>
