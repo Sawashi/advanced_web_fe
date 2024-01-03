@@ -202,7 +202,8 @@ const ClassDetail = () => {
               bgColor={isStudentOfClass ? "green.500" : "primary.500"}
               borderTopRadius="3px"
             />
-            <TabPanels>
+
+            <TabPanels overflowY={"auto"} maxHeight={"calc(100vh - 154px)"}>
               {getValidArray(tabListRender)?.map((tab) => (
                 <TabPanel key={tab.name}>{tab?.component}</TabPanel>
               ))}
@@ -210,6 +211,7 @@ const ClassDetail = () => {
           </Tabs>
         )}
       </VStack>
+
       <UpdateClassModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
