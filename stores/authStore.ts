@@ -48,6 +48,9 @@ class AuthStore {
         accessTokenExpiresIn,
         refreshTokenExpiresIn,
       } = response as ILoginDataRes;
+
+      console.log(accessTokenExpiresIn, refreshTokenExpiresIn);
+
       this.rootStore.cookiesStore.setItem(
         AuthenticateParams.ACCESS_TOKEN,
         accessToken,
@@ -55,6 +58,7 @@ class AuthStore {
           expiresIn: accessTokenExpiresIn,
         }
       );
+
       this.rootStore.cookiesStore.setItem(
         AuthenticateParams.REFRESH_TOKEN,
         refreshToken,

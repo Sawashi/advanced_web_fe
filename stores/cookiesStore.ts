@@ -18,10 +18,7 @@ class CookiesStore {
     }
   ) {
     setCookie(key, value, {
-      maxAge: 3 * 24 * 60 * 60,
-      expires: options?.expiresIn
-        ? new Date(Date.now() + options?.expiresIn)
-        : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      maxAge: (options?.expiresIn || 3 * 24 * 60 * 60 * 1000) / 1000,
     });
   }
 
