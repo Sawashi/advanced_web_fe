@@ -113,10 +113,10 @@ const ClassCard = ({ item, typeOfClass }: IClassCardProps) => {
       {/* Footer */}
       <HStack w="100%" h={"40px"} justifyContent="flex-start">
         <Box>
-          <MenuClass
+          {/* <MenuClass
             typeOfClass={typeOfClass}
             classId={JSON.stringify(item?.id)}
-          />
+          /> */}
         </Box>
       </HStack>
       <Avatar
@@ -139,7 +139,7 @@ const ClassesList = ({
   typeOfClass,
 }: ClassesListProps) => {
   const renderClassItem = (item: IClass, index: number) => (
-    <ClassCard item={item} typeOfClass={typeOfClass} />
+    <ClassCard key={item.id} item={item} typeOfClass={typeOfClass} />
   );
 
   return (
