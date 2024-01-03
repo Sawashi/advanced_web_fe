@@ -1,10 +1,4 @@
-import {
-  Stack,
-  useToast,
-  AlertIcon,
-  Alert,
-  Button,
-} from "@chakra-ui/react";
+import { Stack, useToast, AlertIcon, Alert, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { RootStore } from ".";
 import { makePersistable } from "mobx-persist-store";
 import { IClass } from "interfaces/classes";
@@ -38,7 +38,9 @@ class SettingStore {
   }
 
   setHeaderLoading(isLoading: boolean): void {
-    this.isHeaderLoading = isLoading;
+    runInAction(() => {
+      this.isHeaderLoading = isLoading;
+    });
   }
 
   hideHeaderLoading(): void {

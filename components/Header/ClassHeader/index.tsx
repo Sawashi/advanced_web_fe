@@ -10,6 +10,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Skeleton,
+  Box,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import SvgIcon from "components/SvgIcon";
@@ -51,12 +52,19 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
         borderBottomColor={"gray.300"}
       >
         <HStack w={"full"} alignItems={"center"} gap={5} flex={1}>
-          <SvgIcon
-            iconName={"ic-menu.svg"}
-            size={30}
-            onClick={onExpandSidebar}
-            color={gray500}
-          />
+          <Box
+            _hover={{
+              cursor: "pointer",
+            }}
+          >
+            <SvgIcon
+              iconName={"ic-menu.svg"}
+              size={30}
+              onClick={onExpandSidebar}
+              color={gray500}
+            />
+          </Box>
+
           <Breadcrumb
             spacing="8px"
             separator={<ChevronRightIcon color="gray.500" boxSize={7} />}

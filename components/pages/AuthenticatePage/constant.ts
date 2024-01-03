@@ -23,7 +23,7 @@ export enum EAuthenticatePageTitle {
 }
 
 export enum EAuthenticatePageGuide {
-  LOGIN = "Welcome back! Please enter your details.",
+  LOGIN = "Welcome back! Please enter your email address and password to login.",
   REGISTER = "Ready to join? Please enter your details and start journey with us.",
   RESET_PASSWORD = "Your password must be between 6 and 12 characters long.",
   FORGOT_PASSWORD = "Please enter your email address and we'll send you a link to reset your password.",

@@ -34,7 +34,8 @@ import routes from "routes";
 const ClassDetail = () => {
   const router = useRouter();
   const { settingStore, classStore } = useStores();
-  const { isStudentOfClass, currentClass } = classStore;
+  const { isStudentOfClass, isTeacherOfClass, isOwnerOfClass, currentClass } =
+    classStore;
   const {
     data: classDetails,
     isLoading,
@@ -175,7 +176,7 @@ const ClassDetail = () => {
                   </Button>
                 </Tooltip>
 
-                {isStudentOfClass ? (
+                {isStudentOfClass || (isTeacherOfClass && !isOwnerOfClass) ? (
                   <Tooltip label={"Leave class"}>
                     <Button
                       rounded={"full"}
@@ -202,7 +203,8 @@ const ClassDetail = () => {
               bgColor={isStudentOfClass ? "green.500" : "primary.500"}
               borderTopRadius="3px"
             />
-            <TabPanels>
+
+            <TabPanels overflowY={"auto"} maxHeight={"calc(100vh - 154px)"}>
               {getValidArray(tabListRender)?.map((tab) => (
                 <TabPanel key={tab.name}>{tab?.component}</TabPanel>
               ))}
@@ -210,6 +212,7 @@ const ClassDetail = () => {
           </Tabs>
         )}
       </VStack>
+
       <UpdateClassModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

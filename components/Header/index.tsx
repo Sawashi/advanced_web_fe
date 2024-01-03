@@ -99,7 +99,9 @@ const Header = (props: IHeaderProps) => {
             objectFit={"contain"}
             w={10}
             onClick={onClickLogo}
-            _hover={{ cursor: "pointer" }}
+            _hover={{
+              cursor: "pointer",
+            }}
           />
         </HStack>
         <HStack alignItems={"center"} gap={3}>

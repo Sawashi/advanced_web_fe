@@ -139,6 +139,7 @@ const GradeStructureScene = ({ details }: Props) => {
               Total percentage: {totalPercentage}%
             </Text>
           </HStack>
+
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable
               droppableId="droppable"
@@ -149,7 +150,7 @@ const GradeStructureScene = ({ details }: Props) => {
                   display={"flex"}
                   flexDir={"column"}
                   w={"full"}
-                  gap={5}
+                  mt={-5}
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >

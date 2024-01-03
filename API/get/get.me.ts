@@ -9,13 +9,15 @@ export async function getCurrentUser(): Promise<IUser> {
     const data: IUser = response?.data ?? {};
     return data;
   } catch (err) {
-    // @ts-ignore
-    if (err?.response?.status === 401) {
-      await refreshToken();
-      let response = await api.get(`/auth/me`);
-      const data: IUser = response?.data ?? {};
-      return data;
-    }
+    // // @ts-ignore
+    // if (err?.response?.status === 401) {
+    //   try {
+    //     await refreshToken();
+    //     let response = await api.get(`/auth/me`);
+    //     const data: IUser = response?.data ?? {};
+    //     return data;
+    //   } catch (error) {}
+    // }
     const error = (<CommonError>err)?.response?.data?.error;
     errorHandler(error);
     return {} as IUser;

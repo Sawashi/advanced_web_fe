@@ -11,6 +11,7 @@ class ClassStore {
   compositions: IGradeComposition[] = [];
   attendeeStudents: IAttendee[] = [];
   isStudentOfClass = true;
+  isTeacherOfClass = false;
   isOwnerOfClass = false;
   totalPercentage = 0;
 
@@ -26,6 +27,7 @@ class ClassStore {
   setCurrentClass(classData: IClass | null) {
     this.currentClass = classData;
     this.isStudentOfClass = classData?.role === EClassRole.STUDENT;
+    this.isTeacherOfClass = classData?.role === EClassRole.TEACHER;
     this.isOwnerOfClass =
       classData?.owner?.id === this.rootStore?.authStore?.user?.id;
   }

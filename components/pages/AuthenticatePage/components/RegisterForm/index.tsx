@@ -115,14 +115,6 @@ const RegisterForm = () => {
             placeholder="Your last name"
           />
 
-          <HStack>
-            <Text width="full" align="center" fontSize="sm">
-              Already a member?{" "}
-              <Link href={`${routes.auth.login.value}`} color="black.600">
-                <chakra.span color="blue.500">Sign in now</chakra.span>
-              </Link>
-            </Text>
-          </HStack>
           <SubmitButton type="submit" isLoading={isSubmitting}>
             Submit
           </SubmitButton>
@@ -136,6 +128,15 @@ const RegisterForm = () => {
           ) : (
             <></>
           )}
+
+          <HStack>
+            <Text width="full" align="center" fontSize="sm">
+              Already a member?{" "}
+              <Link href={`${routes.auth.login.value}`} color="black.600">
+                <chakra.span color="blue.500">Sign in now</chakra.span>
+              </Link>
+            </Text>
+          </HStack>
         </Stack>
       </form>
     </FormProvider>
