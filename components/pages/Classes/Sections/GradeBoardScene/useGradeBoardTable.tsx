@@ -44,7 +44,7 @@ const CompositionHeaderActions = ({
       if (res.status >= 400) {
         toast({
           title: "Error",
-          description: res?.data?.message?.[0] ?? "Something went wrong",
+          description: res?.data?.message ?? "Something went wrong",
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -74,7 +74,7 @@ const CompositionHeaderActions = ({
 
   return (
     <Menu>
-      <MenuButton aria-label="Options">
+      <MenuButton aria-label="Options" disabled={item?.finalized}>
         <Box
           flexDirection={"row"}
           display={"flex"}
@@ -113,7 +113,7 @@ const CompositionHeaderActions = ({
           )}
         </Box>
       </MenuButton>
-      <MenuList bgColor={"white"}>
+      <MenuList bgColor={"white"} zIndex={10000000}>
         <MenuItem onClick={onFinalizeComposition} bgColor="white">
           <Text color={red500} fontWeight={"bold"}>
             Finalize
