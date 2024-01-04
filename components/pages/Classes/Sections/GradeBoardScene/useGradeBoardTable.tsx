@@ -19,14 +19,17 @@ import {
 import { getGradesTemplate } from "API/get/get.templates.student-list";
 import { usePatchUpdateGrade } from "API/patch/patch.class.update-grade";
 import { usePatchFinalizeComposition } from "API/patch/patch.compisition.finalize";
+import { useUploadCompositionsGrade } from "API/patch/patch.grades.upload-composition";
 import { ID } from "API/router.api";
 import SvgIcon from "components/SvgIcon";
 import { ITableHeader } from "components/Table";
-import React, { useRef } from "react";
+import { useStores } from "hooks/useStores";
+import React, { ChangeEvent, useRef } from "react";
 import { useMemo } from "react";
 import { CSVLink } from "react-csv";
 import { green400, red500 } from "theme/colors.theme";
 import { checkValidArray, getValidArray } from "utils/common";
+import get from "lodash/get";
 
 const CompositionHeaderActions = ({
   item,
@@ -35,10 +38,25 @@ const CompositionHeaderActions = ({
   item: ICompositionHeader;
   refetch: () => Promise<void>;
 }) => {
-  const { mutateAsync: finalizeComposition } = usePatchFinalizeComposition({
-    compositionId: item?.id,
-  });
+  const { settingStore } = useStores();
+  const { mutateAsync: finalizeComposition, isLoading: isLoadingFinalizing } =
+    usePatchFinalizeComposition({
+      compositionId: item?.id,
+    });
+  const {
+    mutateAsync: uploadCompositionsGrade,
+    isLoading: isUploadingCompositionsGrade,
+  } = useUploadCompositionsGrade();
   const toast = useToast();
+
+  const [template, setTemplate] = React.useState<string>("");
+  const csvRef = useRef<any>(null);
+  const fileRef = useRef<any>(null);
+
+  settingStore?.setHeaderLoading(
+    isLoadingFinalizing || isUploadingCompositionsGrade
+  );
+
   const onFinalizeComposition = async () => {
     try {
       const res = await finalizeComposition({
@@ -75,8 +93,6 @@ const CompositionHeaderActions = ({
       console.error(error);
     }
   };
-  const [template, setTemplate] = React.useState<string>("");
-  const csvRef = useRef<any>(null);
 
   const onDownloadTemplate = async () => {
     try {
@@ -87,6 +103,19 @@ const CompositionHeaderActions = ({
       }, 1000);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const onUploadCompositionsGrade = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = get(event, "target.files[0]");
+    if (file) {
+      await uploadCompositionsGrade({
+        file,
+        compositionId: item?.id,
+      });
+      refetch();
     }
   };
 
@@ -138,7 +167,13 @@ const CompositionHeaderActions = ({
               Finalize
             </Text>
           </MenuItem>
-          <MenuItem onClick={() => {}}>Upload grades</MenuItem>
+          <MenuItem
+            onClick={() => {
+              fileRef?.current?.click();
+            }}
+          >
+            Upload grades
+          </MenuItem>
           <MenuItem onClick={onDownloadTemplate}>Download template</MenuItem>
         </MenuList>
       </Menu>
@@ -151,6 +186,15 @@ const CompositionHeaderActions = ({
         asyncOnClick={true}
         ref={csvRef}
       />
+
+      <Box display={"none"}>
+        <input
+          type="file"
+          accept=".csv"
+          onChange={onUploadCompositionsGrade}
+          ref={fileRef}
+        />
+      </Box>
     </>
   );
 };

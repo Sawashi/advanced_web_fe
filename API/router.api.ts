@@ -125,6 +125,10 @@ export const CompositionsApiRouters = {
       value: (compositionId: ID) =>
         `${API_URL}/compositions/${compositionId}/finalize`,
     },
+    upload_compositions_grade: {
+      value: (compositionId: ID) =>
+        `${API_URL}/compositions/${compositionId}/grades/upload`,
+    },
   },
   delete: {
     delete_a_composition: {

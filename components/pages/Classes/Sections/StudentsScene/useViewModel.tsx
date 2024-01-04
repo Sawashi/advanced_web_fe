@@ -130,7 +130,6 @@ const useViewModel = ({ details }: Props) => {
 
   const onUploadingStudentList = async (file: File) => {
     if (file) {
-      // csv file
       if (file.type === "text/csv") {
         try {
           const response = await uploadStudentList({
