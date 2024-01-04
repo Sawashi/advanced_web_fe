@@ -138,5 +138,8 @@ export const GlobalApiRouters = {
     templates_student_list: {
       value: `${BASE_URL}/api/static/templates/student-list.csv`,
     },
+    templates_grades: {
+      value: `${BASE_URL}/api/static/templates/grades.csv`,
+    },
   },
 };

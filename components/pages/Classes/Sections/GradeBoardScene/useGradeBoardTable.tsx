@@ -16,12 +16,15 @@ import {
   IGetClassGradeBoard,
   useGetGradeBoard,
 } from "API/get/get.class.grade-boards";
+import { getGradesTemplate } from "API/get/get.templates.student-list";
 import { usePatchUpdateGrade } from "API/patch/patch.class.update-grade";
 import { usePatchFinalizeComposition } from "API/patch/patch.compisition.finalize";
 import { ID } from "API/router.api";
 import SvgIcon from "components/SvgIcon";
 import { ITableHeader } from "components/Table";
+import React, { useRef } from "react";
 import { useMemo } from "react";
+import { CSVLink } from "react-csv";
 import { green400, red500 } from "theme/colors.theme";
 import { checkValidArray, getValidArray } from "utils/common";
 
@@ -72,58 +75,83 @@ const CompositionHeaderActions = ({
       console.error(error);
     }
   };
+  const [template, setTemplate] = React.useState<string>("");
+  const csvRef = useRef<any>(null);
+
+  const onDownloadTemplate = async () => {
+    try {
+      const res = await getGradesTemplate();
+      setTemplate(res);
+      setTimeout(() => {
+        csvRef?.current?.link?.click();
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <Menu>
-      <MenuButton aria-label="Options" disabled={item?.finalized}>
-        <Box
-          flexDirection={"row"}
-          display={"flex"}
-          gap={1}
-          alignItems={"center"}
-          justifyContent={"center"}
-          cursor={"pointer"}
-          minW={"100px"}
-        >
-          <Box flexDirection={"column"} display={"flex"} gap={1}>
-            <HStack
-              flexDirection={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <Text color="gray.500" fontSize="14px" fontWeight={600}>
-                {item?.name}
-              </Text>
-            </HStack>
-            <Box
-              color={"gray.500"}
-              fontSize={"xs"}
-              fontWeight={"normal"}
-              display={"flex"}
-              flexDirection={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              {`(${item?.percentage}%)`}
+    <>
+      <Menu>
+        <MenuButton aria-label="Options" disabled={item?.finalized}>
+          <Box
+            flexDirection={"row"}
+            display={"flex"}
+            gap={1}
+            alignItems={"center"}
+            justifyContent={"center"}
+            cursor={"pointer"}
+            minW={"100px"}
+          >
+            <Box flexDirection={"column"} display={"flex"} gap={1}>
+              <HStack
+                flexDirection={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <Text color="gray.500" fontSize="14px" fontWeight={600}>
+                  {item?.name}
+                </Text>
+              </HStack>
+              <Box
+                color={"gray.500"}
+                fontSize={"xs"}
+                fontWeight={"normal"}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                {`(${item?.percentage}%)`}
+              </Box>
             </Box>
+            {item?.finalized ? (
+              <SvgIcon iconName="ic-lock.svg" size={20} color={red500} />
+            ) : (
+              <SvgIcon iconName="ic-lock-open.svg" size={20} color={green400} />
+            )}
           </Box>
-          {item?.finalized ? (
-            <SvgIcon iconName="ic-lock.svg" size={20} color={red500} />
-          ) : (
-            <SvgIcon iconName="ic-lock-open.svg" size={20} color={green400} />
-          )}
-        </Box>
-      </MenuButton>
-      <MenuList bgColor={"white"} zIndex={10000000}>
-        <MenuItem onClick={onFinalizeComposition}>
-          <Text color={red500} fontWeight={"bold"}>
-            Finalize
-          </Text>
-        </MenuItem>
-        <MenuItem onClick={() => {}}>Upload grades</MenuItem>
-        <MenuItem onClick={() => {}}>Download template</MenuItem>
-      </MenuList>
-    </Menu>
+        </MenuButton>
+        <MenuList bgColor={"white"} zIndex={10000000}>
+          <MenuItem onClick={onFinalizeComposition}>
+            <Text color={red500} fontWeight={"bold"}>
+              Finalize
+            </Text>
+          </MenuItem>
+          <MenuItem onClick={() => {}}>Upload grades</MenuItem>
+          <MenuItem onClick={onDownloadTemplate}>Download template</MenuItem>
+        </MenuList>
+      </Menu>
+
+      <CSVLink
+        data={template}
+        filename={"grades-template.csv"}
+        target="_blank"
+        style={{ display: "none" }}
+        asyncOnClick={true}
+        ref={csvRef}
+      />
+    </>
   );
 };
 
@@ -139,7 +167,11 @@ const InputGrade = ({
     studentId,
   });
   const toast = useToast();
-  const onUpdateGrade = async (value: number, compositionId: string, e: any) => {
+  const onUpdateGrade = async (
+    value: number,
+    compositionId: string,
+    e: any
+  ) => {
     try {
       const res = await updateGrade({
         compositionId,

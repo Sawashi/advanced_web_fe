@@ -6,7 +6,6 @@ import {
   Text,
   Button,
 } from "@chakra-ui/react";
-import { useGetGradeBoard } from "API/get/get.class.grade-boards";
 import EmptyList from "components/EmptyState/EmptyList";
 import Table from "components/Table";
 import { ETabName } from "enums/classes";
@@ -16,8 +15,7 @@ import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import React, { useRef } from "react";
 import routes from "routes";
-import { checkValidArray, getValidArray } from "utils/common";
-import useGradeBoardTable, { getCaseHeaderList } from "./useGradeBoardTable";
+import useGradeBoardTable from "./useGradeBoardTable";
 import SvgIcon from "components/SvgIcon";
 import { CSVLink } from "react-csv";
 import { useGetClassGradeBoard } from "API/get/get.class.export-grade-board";
@@ -127,7 +125,9 @@ const GradeBoardScene = ({ details }: Props) => {
 
             <CSVLink
               data={template}
-              filename={"grade-board-template.csv"}
+              filename={`${details?.name
+                ?.toLowerCase()
+                ?.replaceAll(" ", "-")}-${details?.id}-grades.csv`}
               target="_blank"
               style={{ display: "none" }}
               asyncOnClick={true}
