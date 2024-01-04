@@ -5,7 +5,7 @@ import { EClassRole } from "enums/classes";
 import {
   IAttendee,
   IClass,
-  IGradeComposition,
+  IComposition,
   IStudent,
 } from "interfaces/classes";
 import { makeObservable, observable } from "mobx";
@@ -15,7 +15,7 @@ import { getValidArray } from "utils/common";
 class ClassStore {
   rootStore: RootStore;
   currentClass: IClass | null = null;
-  compositions: IGradeComposition[] = [];
+  compositions: IComposition[] = [];
   attendeeStudents: IAttendee[] = [];
   isStudentOfClass = true;
   isTeacherOfClass = false;
@@ -41,7 +41,7 @@ class ClassStore {
       classData?.owner?.id === this.rootStore?.authStore?.user?.id;
   }
 
-  setCompositions(compositions: IGradeComposition[]) {
+  setCompositions(compositions: IComposition[]) {
     this.compositions = compositions;
     this.totalPercentage = getValidArray(compositions).reduce(
       (acc, cur) => acc + (cur?.percentage ?? 0),

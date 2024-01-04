@@ -1,7 +1,7 @@
 import { api } from "API";
 import { CompositionsApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
-import { IGradeComposition } from "interfaces/classes";
+import { IComposition } from "interfaces/classes";
 import { useMutation } from "react-query";
 
 export type TUpdateCompositionOrderBody = {
@@ -15,7 +15,7 @@ export const patchUpdateCompositionOrder = async ({
 }: TUpdateCompositionOrderBody) => {
   const response = await api.patch<
     TUpdateCompositionOrderBody,
-    IResponseData<IGradeComposition>
+    IResponseData<IComposition>
   >(
     CompositionsApiRouters.patch.update_composition_order.value(compositionId),
     {
@@ -27,7 +27,7 @@ export const patchUpdateCompositionOrder = async ({
 
 export const usePatchUpdateCompositionOrder = (compositionId: string) => {
   return useMutation<
-    IResponseData<IGradeComposition>,
+    IResponseData<IComposition>,
     Error,
     TUpdateCompositionOrderBody,
     { previousCompositionId: string }

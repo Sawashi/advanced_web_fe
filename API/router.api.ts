@@ -1,14 +1,9 @@
 export const API_URL = process.env.API_URL;
 export const BASE_URL = process.env.BASE_URL;
 
-export type URLQueryType<T> = {
-  sortBy?: string | number;
-  limit?: string | number;
-  exclude?: string | number | null;
-  page?: string | number;
-} & T;
+import type { ID, URLQueryType } from "./types";
 
-export type ID = string | number;
+export { ID, URLQueryType };
 
 export const getQueries = <T>(query: URLQueryType<T>) => {
   const queryArray = Object.entries(query).map(([key, value]) =>
@@ -72,7 +67,11 @@ export const ClassesApiRouters = {
     },
     mapped_student_id: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/map-student-id`,
-    }
+    },
+    student_grades: {
+      value: (classId: ID, studentId: ID) =>
+        `${API_URL}/classes/${classId}/students/${studentId}/grades`,
+    },
   },
   post: {
     create_a_class: {

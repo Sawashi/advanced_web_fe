@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { useStores } from "hooks/useStores";
-import { IGradeComposition } from "interfaces/classes";
+import { IComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
@@ -24,10 +24,10 @@ const StructureItem = ({
   onEdit,
   onRemove,
 }: {
-  item: IGradeComposition;
+  item: IComposition;
   index: number;
-  onEdit?: (item: IGradeComposition) => void;
-  onRemove?: (item: IGradeComposition) => void;
+  onEdit?: (item: IComposition) => void;
+  onRemove?: (item: IComposition) => void;
 }) => {
   const { classStore } = useStores();
   const { isStudentOfClass } = classStore;
@@ -53,7 +53,10 @@ const StructureItem = ({
             >
               <HStack w={"full"}>
                 <HStack gap={6} flex={1}>
-                  <Box {...provided.dragHandleProps}>
+                  <Box
+                    {...provided.dragHandleProps}
+                    display={isStudentOfClass ? "none" : "flex"}
+                  >
                     <SvgIcon iconName="ic-menu.svg" size={25} color={gray600} />
                   </Box>
                   <Text
@@ -71,9 +74,11 @@ const StructureItem = ({
                 </Text>
               </HStack>
               <Menu>
-                <MenuButton aria-label="Options" disabled={isStudentOfClass} display={
-                  isStudentOfClass ? "none" : "flex"
-                }>
+                <MenuButton
+                  aria-label="Options"
+                  disabled={isStudentOfClass}
+                  display={isStudentOfClass ? "none" : "flex"}
+                >
                   <Button
                     as={"div"}
                     variant={"ghost"}
