@@ -120,6 +120,7 @@ const ClassDetail = () => {
   useEffect(() => {
     if (classDetails) {
       classStore.setCurrentClass(classDetails);
+      classStore?.fetchClassStudents(classDetails?.id);
     }
   }, [classDetails]);
 

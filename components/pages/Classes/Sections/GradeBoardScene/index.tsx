@@ -28,7 +28,8 @@ interface Props {
 
 const GradeBoardScene = ({ details }: Props) => {
   const router = useRouter();
-  const { settingStore } = useStores();
+  const { settingStore, classStore } = useStores();
+  const { studentList } = classStore;
   const {
     tableData,
     headerList,
@@ -62,7 +63,10 @@ const GradeBoardScene = ({ details }: Props) => {
   const onDownloadTemplate = async () => {
     try {
       const res = await getGradesTemplate();
-      setTemplateCSV(res);
+      const studentIds = studentList?.map((student) => student?.id);
+      const template =
+        res + studentIds?.map((studentId) => `${studentId},`).join("\n");
+      setTemplateCSV(template);
       setTimeout(() => {
         templateCSVRef?.current?.link?.click();
       }, 1000);
@@ -169,7 +173,9 @@ const GradeBoardScene = ({ details }: Props) => {
 
               <CSVLink
                 data={templateCSV}
-                filename={"grades-template.csv"}
+                filename={`${details?.name
+                  ?.toLowerCase()
+                  ?.replaceAll(" ", "-")}-${details?.id}-grades-template.csv`}
                 target="_blank"
                 style={{ display: "none" }}
                 asyncOnClick={true}
