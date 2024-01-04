@@ -4,6 +4,7 @@ export const TableWrapper = chakra(CkStack, {
   baseStyle: {
     width: 'full',
     overflowX: 'auto',
+    flex: 1,
     height: 'full',
     '&::-webkit-scrollbar': {
       width: 2,

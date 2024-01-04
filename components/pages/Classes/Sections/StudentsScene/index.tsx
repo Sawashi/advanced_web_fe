@@ -12,6 +12,8 @@ import {
   HStack,
   Collapse,
   Tooltip,
+  Center,
+  Spinner,
 } from "@chakra-ui/react";
 import { IClass } from "interfaces/classes";
 import { observer } from "mobx-react";
@@ -56,6 +58,7 @@ const StudentsScene = ({ details }: Props) => {
     unMappedAttendeeStudentList,
     onUploadingStudentList,
     onDeleteStudentList,
+    isClassStudentsLoading
   } = useViewModel({ details });
   const [template, setTemplate] = React.useState<string>("");
   const csvRef = useRef<any>(null);
@@ -71,7 +74,9 @@ const StudentsScene = ({ details }: Props) => {
     try {
       const res = await getTemplateStudentList();
       setTemplate(res);
-      csvRef?.current?.link?.click();
+      setTimeout(() => {
+        csvRef?.current?.link?.click();
+      }, 1000);
     } catch (error) {
       console.error(error);
     }
@@ -235,6 +240,14 @@ const StudentsScene = ({ details }: Props) => {
     unMappedAttendeeStudentList,
   ]);
 
+  if (isClassStudentsLoading) {
+    return (
+      <Center mt={20}>
+        <Spinner boxSize={30} />
+      </Center>
+    );
+  }
+
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>
       {checkValidArray(studentsList) ? (
@@ -383,11 +396,12 @@ const StudentsScene = ({ details }: Props) => {
 
           <CSVLink
             data={template}
-            filename={"sample.csv"}
+            filename={"student-list-template.csv"}
             target="_blank"
             style={{ display: "none" }}
+            asyncOnClick={true}
             ref={csvRef}
-          ></CSVLink>
+          />
         </VStack>
       )}
 

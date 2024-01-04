@@ -34,7 +34,7 @@ export interface IMetaResponse {
   sortBy: string[][];
 }
 
-export interface IGradeComposition {
+export interface IComposition {
   id: string;
   name?: string;
   percentage?: number;

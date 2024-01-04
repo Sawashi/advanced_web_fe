@@ -1,14 +1,9 @@
 export const API_URL = process.env.API_URL;
 export const BASE_URL = process.env.BASE_URL;
 
-export type URLQueryType<T> = {
-  sortBy?: string | number;
-  limit?: string | number;
-  exclude?: string | number | null;
-  page?: string | number;
-} & T;
+import type { ID, URLQueryType } from "./types";
 
-export type ID = string | number;
+export { ID, URLQueryType };
 
 export const getQueries = <T>(query: URLQueryType<T>) => {
   const queryArray = Object.entries(query).map(([key, value]) =>
@@ -64,6 +59,19 @@ export const ClassesApiRouters = {
       value: (classId: ID, query?: URLQueryType<{}>) =>
         `${API_URL}/classes/${classId}/students?${getQueries(query ?? {})}`,
     },
+    grade_board: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/grade-board`,
+    },
+    export_grade_board: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/grade-board/csv`,
+    },
+    mapped_student_id: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/map-student-id`,
+    },
+    student_grades: {
+      value: (classId: ID, studentId: ID) =>
+        `${API_URL}/classes/${classId}/students/${studentId}/grades`,
+    },
   },
   post: {
     create_a_class: {
@@ -111,6 +119,18 @@ export const CompositionsApiRouters = {
       value: (compositionId: ID) =>
         `${API_URL}/compositions/${compositionId}/order`,
     },
+    update_grade: {
+      value: (compositionId: ID, studentId: ID) =>
+        `${API_URL}/compositions/${compositionId}/students/${studentId}/grade`,
+    },
+    finalize: {
+      value: (compositionId: ID) =>
+        `${API_URL}/compositions/${compositionId}/finalize`,
+    },
+    upload_compositions_grade: {
+      value: (compositionId: ID) =>
+        `${API_URL}/compositions/${compositionId}/grades/upload`,
+    },
   },
   delete: {
     delete_a_composition: {
@@ -123,6 +143,9 @@ export const GlobalApiRouters = {
   get: {
     templates_student_list: {
       value: `${BASE_URL}/api/static/templates/student-list.csv`,
+    },
+    templates_grades: {
+      value: `${BASE_URL}/api/static/templates/grades.csv`,
     },
   },
 };

@@ -13,7 +13,6 @@ const ManageAccounts = () => {
   useEffect(() => {
     async function getInfoForCurrentUser() {
       const res = await getCurrentUser();
-      console.log(JSON.stringify(res));
       if (res.role !== "admin") {
         toast({
           status: "error",

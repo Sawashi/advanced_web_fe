@@ -1,7 +1,7 @@
 import { api } from "API";
 import { CompositionsApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
-import { IGradeComposition } from "interfaces/classes";
+import { IComposition } from "interfaces/classes";
 import { useMutation } from "react-query";
 
 export type TPostCreateCompositionBody = {
@@ -15,14 +15,14 @@ export const postCreateComposition = async (
 ) => {
   const response = await api.post<
     TPostCreateCompositionBody,
-    IResponseData<IGradeComposition>
+    IResponseData<IComposition>
   >(CompositionsApiRouters.post.create_a_composition.value, payload);
   return response;
 };
 
 export const usePostCreateComposition = () => {
   return useMutation<
-    IResponseData<IGradeComposition>,
+    IResponseData<IComposition>,
     Error,
     TPostCreateCompositionBody,
     { previousClassId: string }

@@ -13,10 +13,13 @@ import {
   StudentClassBackground,
   TeacherClassBackground,
 } from "constants/pages/classes";
+import { ETabName } from "enums/classes";
 import { useStores } from "hooks/useStores";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
+import { useRouter } from "next/router";
 import React from "react";
+import routes from "routes";
 import { gray500 } from "theme/colors.theme";
 
 interface Props {
@@ -25,7 +28,8 @@ interface Props {
 
 const StreamHeaderScene = ({ onOpenCodeModal }: Props) => {
   const { classStore } = useStores();
-  const { currentClass } = classStore;
+  const { currentClass, currentStudentId, isStudentOfClass } = classStore;
+  const router = useRouter();
   const [showDetails, setShowDetails] = React.useState(true);
   const toast = useToast();
 
@@ -159,6 +163,35 @@ const StreamHeaderScene = ({ onOpenCodeModal }: Props) => {
             <Text fontWeight={"bold"}>Role:</Text>
             <Text>{capitalize(currentClass?.role) ?? ""}</Text>
           </HStack>
+
+          {isStudentOfClass ? (
+            <HStack
+              w={"full"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <Text fontWeight={"bold"}>Student:</Text>
+              {currentStudentId ? (
+                <Text>{currentStudentId ?? ""}</Text>
+                ): (
+                  <Button
+                    variant={"link"}
+                    onClick={async () => {
+                      await router.push(routes.classes.details.value(currentClass?.id ?? "", ETabName.Students))
+                      router.reload();
+                    }}
+                    rightIcon={
+                      <SvgIcon
+                        iconName={"ic-arrow-right.svg"}
+                        size={20}
+                      />
+                    }
+                  >
+                    Assign now
+                  </Button>
+                )}
+            </HStack>
+          ) : null}
         </VStack>
       </Collapse>
     </VStack>
