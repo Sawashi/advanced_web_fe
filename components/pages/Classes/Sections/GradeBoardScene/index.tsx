@@ -19,6 +19,8 @@ import useGradeBoardTable from "./useGradeBoardTable";
 import SvgIcon from "components/SvgIcon";
 import { CSVLink } from "react-csv";
 import { useGetClassGradeBoard } from "API/get/get.class.export-grade-board";
+import { getGradesTemplate } from "API/get/get.templates.student-list";
+import { gray400 } from "theme/colors.theme";
 
 interface Props {
   details: IClass;
@@ -40,15 +42,29 @@ const GradeBoardScene = ({ details }: Props) => {
     isLoadingGradeBoard || isLoadingExportGradeBoard
   );
 
-  const [template, setTemplate] = React.useState<string>("");
+  const [gradeCSV, setGradeCSV] = React.useState<string>("");
+  const [templateCSV, setTemplateCSV] = React.useState<string>("");
   const csvRef = useRef<any>(null);
+  const templateCSVRef = useRef<any>(null);
 
   const handleExportGradeBoard = async () => {
     try {
       const res = await getGradeBoard();
-      setTemplate(res);
+      setGradeCSV(res);
       setTimeout(() => {
         csvRef?.current?.link?.click();
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onDownloadTemplate = async () => {
+    try {
+      const res = await getGradesTemplate();
+      setTemplateCSV(res);
+      setTimeout(() => {
+        templateCSVRef?.current?.link?.click();
       }, 1000);
     } catch (error) {
       console.error(error);
@@ -78,7 +94,7 @@ const GradeBoardScene = ({ details }: Props) => {
   }
 
   return (
-    <VStack alignSelf={"center"} alignItems={"center"}>
+    <VStack alignSelf={"center"} alignItems={"center"} h="full" flex={1}>
       {isHeaderEmpty ? (
         <EmptyList
           title={"Compositions are empty"}
@@ -111,28 +127,55 @@ const GradeBoardScene = ({ details }: Props) => {
               Grade board
             </Text>
 
-            <Button
-              variant={"primary"}
-              onClick={handleExportGradeBoard}
-              rightIcon={
-                <SvgIcon iconName={"ic-export.svg"} size={20} color="white" />
-              }
-            >
-              <Text fontSize={"md"} fontWeight={"bold"}>
-                Export
-              </Text>
-            </Button>
+            <HStack>
+              <Button
+                variant={"ghost"}
+                onClick={onDownloadTemplate}
+                rightIcon={
+                  <SvgIcon
+                    iconName={"ic-download.svg"}
+                    size={20}
+                    color={gray400}
+                  />
+                }
+              >
+                <Text fontSize={"md"} fontWeight={"bold"}>
+                  Download template
+                </Text>
+              </Button>
 
-            <CSVLink
-              data={template}
-              filename={`${details?.name
-                ?.toLowerCase()
-                ?.replaceAll(" ", "-")}-${details?.id}-grades.csv`}
-              target="_blank"
-              style={{ display: "none" }}
-              asyncOnClick={true}
-              ref={csvRef}
-            />
+              <Button
+                variant={"primary"}
+                onClick={handleExportGradeBoard}
+                rightIcon={
+                  <SvgIcon iconName={"ic-export.svg"} size={20} color="white" />
+                }
+              >
+                <Text fontSize={"md"} fontWeight={"bold"}>
+                  Export
+                </Text>
+              </Button>
+
+              <CSVLink
+                data={gradeCSV}
+                filename={`${details?.name
+                  ?.toLowerCase()
+                  ?.replaceAll(" ", "-")}-${details?.id}-grades.csv`}
+                target="_blank"
+                style={{ display: "none" }}
+                asyncOnClick={true}
+                ref={csvRef}
+              />
+
+              <CSVLink
+                data={templateCSV}
+                filename={"grades-template.csv"}
+                target="_blank"
+                style={{ display: "none" }}
+                asyncOnClick={true}
+                ref={templateCSVRef}
+              />
+            </HStack>
           </HStack>
           <Table
             tableData={tableData}

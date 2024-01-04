@@ -13,10 +13,8 @@ import {
 import {
   ICompositionHeader,
   ICompositionRow,
-  IGetClassGradeBoard,
   useGetGradeBoard,
 } from "API/get/get.class.grade-boards";
-import { getGradesTemplate } from "API/get/get.templates.student-list";
 import { usePatchUpdateGrade } from "API/patch/patch.class.update-grade";
 import { usePatchFinalizeComposition } from "API/patch/patch.compisition.finalize";
 import { useUploadCompositionsGrade } from "API/patch/patch.grades.upload-composition";
@@ -26,7 +24,6 @@ import { ITableHeader } from "components/Table";
 import { useStores } from "hooks/useStores";
 import React, { ChangeEvent, useRef } from "react";
 import { useMemo } from "react";
-import { CSVLink } from "react-csv";
 import { green400, red500 } from "theme/colors.theme";
 import { checkValidArray, getValidArray } from "utils/common";
 import get from "lodash/get";
@@ -46,11 +43,9 @@ const CompositionHeaderActions = ({
   const {
     mutateAsync: uploadCompositionsGrade,
     isLoading: isUploadingCompositionsGrade,
-  } = useUploadCompositionsGrade();
+    reset: resetUploadCompositionsGrade,
+  } = useUploadCompositionsGrade(item?.id ?? "");
   const toast = useToast();
-
-  const [template, setTemplate] = React.useState<string>("");
-  const csvRef = useRef<any>(null);
   const fileRef = useRef<any>(null);
 
   settingStore?.setHeaderLoading(
@@ -94,29 +89,35 @@ const CompositionHeaderActions = ({
     }
   };
 
-  const onDownloadTemplate = async () => {
-    try {
-      const res = await getGradesTemplate();
-      setTemplate(res);
-      setTimeout(() => {
-        csvRef?.current?.link?.click();
-      }, 1000);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const onUploadCompositionsGrade = async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const file = get(event, "target.files[0]");
     if (file) {
-      await uploadCompositionsGrade({
+      const res = await uploadCompositionsGrade({
         file,
         compositionId: item?.id,
       });
-      refetch();
+      if (res?.status >= 400) {
+        toast({
+          title: "Error",
+          description: res?.data?.message ?? "Something went wrong",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Grades uploaded",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
+    refetch();
+    resetUploadCompositionsGrade();
   };
 
   return (
@@ -169,23 +170,14 @@ const CompositionHeaderActions = ({
           </MenuItem>
           <MenuItem
             onClick={() => {
+              fileRef?.current?.value && (fileRef.current.value = "");
               fileRef?.current?.click();
             }}
           >
             Upload grades
           </MenuItem>
-          <MenuItem onClick={onDownloadTemplate}>Download template</MenuItem>
         </MenuList>
       </Menu>
-
-      <CSVLink
-        data={template}
-        filename={"grades-template.csv"}
-        target="_blank"
-        style={{ display: "none" }}
-        asyncOnClick={true}
-        ref={csvRef}
-      />
 
       <Box display={"none"}>
         <input
@@ -222,8 +214,6 @@ const InputGrade = ({
         studentId,
         grade: value,
       });
-
-      // @ts-ignore
       if (res.status >= 400) {
         toast({
           title: "Error",
@@ -232,7 +222,6 @@ const InputGrade = ({
           duration: 3000,
           isClosable: true,
         });
-        // change input value to previous value + focus
         e?.target && (e.target.value = item?.grade?.toString() ?? "");
         e?.target && e.target.focus();
         return;

@@ -56,8 +56,8 @@ const ClassDetail = () => {
         }`
       : "Class";
 
-  const tabListRender = useMemo(
-    () => [
+  const tabListRender = useMemo(() => {
+    const tabs = [
       {
         name: "Stream",
         component: (
@@ -83,14 +83,18 @@ const ClassDetail = () => {
         component: <GradeStructureScene details={classDetails ?? {}} />,
         tabName: ETabName.GradeStructure,
       },
-      {
-        name: "Grade",
-        component: <GradeBoardScene details={classDetails ?? {}} />,
-        tabName: ETabName.GradeBoard,
-      },
-    ],
-    [classDetails, isStudentOfClass]
-  );
+    ];
+    if (!isStudentOfClass) {
+      tabs.push(
+        {
+          name: "Manage grade",
+          component: <GradeBoardScene details={classDetails ?? {}} />,
+          tabName: ETabName.GradeBoard,
+        }
+      )
+    }
+    return tabs;
+  }, [classDetails, isStudentOfClass]);
 
   const handleLeaveClass = async () => {
     try {
@@ -250,7 +254,11 @@ const ClassDetail = () => {
               borderTopRadius="3px"
             />
 
-            <TabPanels overflowY={"auto"} maxHeight={"calc(100vh - 154px)"}>
+            <TabPanels
+              overflowY={"auto"}
+              maxHeight={"calc(100vh - 154px)"}
+              h="full"
+            >
               {getValidArray(tabListRender)?.map((tab) => (
                 <TabPanel key={tab.name}>{tab?.component}</TabPanel>
               ))}
