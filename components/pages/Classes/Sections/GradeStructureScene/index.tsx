@@ -1,4 +1,4 @@
-import { Box, VStack, HStack, Text, Button, useToast } from "@chakra-ui/react";
+import { Box, VStack, HStack, Text, Button, useToast, Center, Spinner } from "@chakra-ui/react";
 import { IClass, IGradeComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
@@ -111,6 +111,14 @@ const GradeStructureScene = ({ details }: Props) => {
       classStore.setCompositions(classCompositions);
     }
   }, [classCompositions]);
+
+  if (isCompositionsLoading || isDeletingComposition) {
+    return (
+      <Center mt={20}>
+        <Spinner boxSize={30} />
+      </Center>
+    );
+  }
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>

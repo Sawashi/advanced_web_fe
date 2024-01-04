@@ -224,6 +224,7 @@ const useViewModel = ({ details }: Props) => {
     unMappedAttendeeStudentList,
     onUploadingStudentList,
     onDeleteStudentList,
+    isClassStudentsLoading,
   };
 };
 
