@@ -143,10 +143,10 @@ const Table = (props: ITableProps) => {
         variant="simple"
         colorScheme="gray"
         outline="none"
-        position="relative"
+        h={"full"}
       >
         <Thead
-          position="sticky"
+          // position="sticky"
           top={0}
           backgroundColor={"white"}
           display={hideHeader ? "none" : "table-header-group"}

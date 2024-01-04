@@ -1,0 +1,1 @@
+export const getGradesOfStudent = async (studentId: string) => {}

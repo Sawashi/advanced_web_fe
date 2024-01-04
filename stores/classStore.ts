@@ -1,5 +1,6 @@
 import { getClassDetails } from "API/get/get.class.details";
 import { getClassStudents } from "API/get/get.class.students";
+import { getUserMappedStudent } from "API/get/get.class.user-mapped-student";
 import { EClassRole } from "enums/classes";
 import {
   IAttendee,
@@ -21,6 +22,7 @@ class ClassStore {
   isOwnerOfClass = false;
   totalPercentage = 0;
   studentList: IStudent[] = [];
+  currentStudentId: string | null = null;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -55,6 +57,10 @@ class ClassStore {
     this.studentList = students;
   }
 
+  setCurrentStudentId(studentId: string | null) {
+    this.currentStudentId = studentId;
+  }
+
   async fetchCurrentClass() {
     try {
       if (this.currentClass?.id) {
@@ -62,17 +68,17 @@ class ClassStore {
         this.setCurrentClass(classData);
       }
     } catch (error) {
-      console.error(error);
+      console.error('fetchCurrentClass',error);
     }
   }
 
-  async fetchClassStudents(id?: string) {
+  async fetchClassStudents(classId?: string) {
     try {
-      const res = await getClassStudents(id ?? this.currentClass?.id ?? "");
+      const res = await getClassStudents(classId ?? this.currentClass?.id ?? "");
       const { data: students } = res;
       this.setStudentList(students);
     } catch (error) {
-      console.error(error);
+      console.error('fetchClassStudents', error);
     }
   }
 
@@ -84,6 +90,7 @@ class ClassStore {
     this.attendeeStudents = [];
     this.totalPercentage = 0;
     this.studentList = [];
+    this.currentStudentId = null;
   }
 }
 

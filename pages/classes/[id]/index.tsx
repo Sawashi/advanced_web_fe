@@ -33,6 +33,7 @@ import routes from "routes";
 import TeacherGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/TeacherGradeBoard";
 import { ETabName } from "enums/classes";
 import StudentGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/StudentGradeBoard";
+import { useGetUserMappedStudent } from "API/get/get.class.user-mapped-student";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -44,6 +45,13 @@ const ClassDetail = () => {
     isLoading,
     refetch,
   } = useGetClassDetails(router?.query?.id as string);
+  const {
+    data: studentMapped,
+    isLoading: isLoadingStudentMapped,
+    refetch: refetchStudentMapped,
+  } = useGetUserMappedStudent({
+    classId: router?.query?.id as string,
+  });
   const { mutateAsync: leaveClass, isLoading: isLeaveLoading } =
     usePatchLeaveClass(currentClass?.id ?? "");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -86,22 +94,17 @@ const ClassDetail = () => {
       },
     ];
     if (!isStudentOfClass) {
-      tabs.push(
-        {
-          name: "Manage grade",
-          component: <TeacherGradeBoard details={classDetails ?? {}} />,
-          tabName: ETabName.GradeBoard,
-        }
-      )
-    }
-    else {
-      tabs.push(
-        {
-          name: "Your grade",
-          component: <StudentGradeBoard details={classDetails ?? {}} />,
-          tabName: ETabName.GradeBoard,
-        }
-      )
+      tabs.push({
+        name: "Manage grade",
+        component: <TeacherGradeBoard details={classDetails ?? {}} />,
+        tabName: ETabName.GradeBoard,
+      });
+    } else {
+      tabs.push({
+        name: "Your grade",
+        component: <StudentGradeBoard details={classDetails ?? {}} />,
+        tabName: ETabName.GradeBoard,
+      });
     }
     return tabs;
   }, [classDetails, isStudentOfClass]);
@@ -124,8 +127,10 @@ const ClassDetail = () => {
   };
 
   useEffect(() => {
-    settingStore.setHeaderLoading(isLoading || isLeaveLoading);
-  }, [isLoading, isLeaveLoading]);
+    settingStore.setHeaderLoading(
+      isLoading || isLeaveLoading || isLoadingStudentMapped
+    );
+  }, [isLoading, isLeaveLoading, isLoadingStudentMapped]);
 
   useEffect(() => {
     if (classDetails) {
@@ -137,6 +142,7 @@ const ClassDetail = () => {
   useEffect(() => {
     if (router?.isReady) {
       refetch();
+      refetchStudentMapped();
       const tabName = router?.query?.tab;
       const isValidTabName = Object.values(ETabName)?.includes(
         tabName as ETabName
@@ -159,6 +165,10 @@ const ClassDetail = () => {
     }
     setTabIndex(0);
   }, [tabName]);
+
+  useEffect(() => {
+    classStore.setCurrentStudentId(studentMapped?.studentId ?? null);
+  }, [studentMapped]);
 
   return (
     <ClassLayout
