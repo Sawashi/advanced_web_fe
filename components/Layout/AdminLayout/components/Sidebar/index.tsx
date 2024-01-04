@@ -123,13 +123,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
           />
         </Stack>
         <Stack w="full" alignSelf={"end"}>
-          <Button
-            onClick={() => {
-              router.replace(routes.user.home.value);
-            }}
-          >
-            Go to user
-          </Button>
           <NavLink
             label={EUserPageName.SETTINGS}
             {...getLinkProps(routes.user.profile.value, "ic-settings", [

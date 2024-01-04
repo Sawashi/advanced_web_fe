@@ -2,8 +2,8 @@ import { VStack, useToast } from "@chakra-ui/react";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import React from "react";
-import TeacherStreamHeaderScene from "./TeacherStreamHeaderScene";
-import CodeClassModal from "./CodeClassModal";
+import StreamHeaderScene from "../StreamHeaderScene";
+import CodeClassModal from "../CodeClassModal";
 
 interface Props {}
 
@@ -18,7 +18,7 @@ const TeacherStreamScene = (props: Props) => {
 
   return (
     <VStack w={"full"} h={"full"}>
-      <TeacherStreamHeaderScene
+      <StreamHeaderScene
         onOpenCodeModal={() => {
           setIsCodeModalVisible(true);
         }}

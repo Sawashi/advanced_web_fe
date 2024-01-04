@@ -9,7 +9,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
-import { TeacherClassBackground } from "constants/pages/classes";
+import {
+  StudentClassBackground,
+  TeacherClassBackground,
+} from "constants/pages/classes";
 import { useStores } from "hooks/useStores";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
@@ -20,10 +23,10 @@ interface Props {
   onOpenCodeModal?: () => void;
 }
 
-const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
+const StreamHeaderScene = ({ onOpenCodeModal }: Props) => {
   const { classStore } = useStores();
   const { currentClass } = classStore;
-  const [showDetails, setShowDetails] = React.useState(false);
+  const [showDetails, setShowDetails] = React.useState(true);
   const toast = useToast();
 
   return (
@@ -37,7 +40,11 @@ const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
     >
       <VStack w={"full"} position={"relative"}>
         <Image
-          src={TeacherClassBackground}
+          src={
+            currentClass?.role === "teacher"
+              ? TeacherClassBackground
+              : StudentClassBackground
+          }
           w={"full"}
           h={"full"}
           objectFit={"contain"}
@@ -158,4 +165,4 @@ const TeacherStreamHeaderScene = ({ onOpenCodeModal }: Props) => {
   );
 };
 
-export default observer(TeacherStreamHeaderScene);
+export default observer(StreamHeaderScene);
