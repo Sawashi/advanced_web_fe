@@ -41,7 +41,9 @@ const CodeClassModal = ({ isVisible, onClose, code }: Props) => {
             justifyContent={"space-between"}
             alignItems={"center"}
           >
-            <Text>Share this code with your students to join the class.</Text>
+            <Text>
+              Share this code with other people to join this class as a student.
+            </Text>
             <HStack
               gap={3}
               alignItems={"center"}
