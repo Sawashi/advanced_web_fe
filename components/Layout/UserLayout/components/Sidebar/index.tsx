@@ -31,7 +31,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   const router = useRouter();
   const { authStore, settingStore } = useStores();
   const { isSideBarExpanded, setSideBarExpanded } = settingStore;
-  const [enableAminButton, setEnableAdminButton] = useState(false);
   const isMobile: boolean = useMediaQuery({ maxWidth: maxMobileWidth });
   const isTabletMobile: boolean = useMediaQuery({ maxWidth: maxTabletWidth });
 
@@ -95,9 +94,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
   useEffect(() => {
     async function getInfoForCurrentUser() {
       const res = await getCurrentUser();
-      if (res?.role === "admin") {
-        setEnableAdminButton(true);
-      }
     }
     getInfoForCurrentUser();
   }, []);
@@ -191,17 +187,6 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
           />
         </Stack>
         <Stack w="full" alignSelf={"end"}>
-          {enableAminButton ? (
-            <Button
-              onClick={() => {
-                router.replace("/admin/manage-accounts");
-              }}
-            >
-              Go to admin
-            </Button>
-          ) : (
-            <></>
-          )}
           <NavLink
             label={EUserPageName.SETTINGS}
             {...getLinkProps(routes.user.profile.value, "ic-settings", [
