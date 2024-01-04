@@ -7,6 +7,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  Tooltip,
   useToast,
 } from "@chakra-ui/react";
 import {
@@ -114,7 +115,7 @@ const CompositionHeaderActions = ({
         </Box>
       </MenuButton>
       <MenuList bgColor={"white"} zIndex={10000000}>
-        <MenuItem onClick={onFinalizeComposition} bgColor="white">
+        <MenuItem onClick={onFinalizeComposition}>
           <Text color={red500} fontWeight={"bold"}>
             Finalize
           </Text>
@@ -138,7 +139,7 @@ const InputGrade = ({
     studentId,
   });
   const toast = useToast();
-  const onUpdateGrade = async (value: number, compositionId: string) => {
+  const onUpdateGrade = async (value: number, compositionId: string, e: any) => {
     try {
       const res = await updateGrade({
         compositionId,
@@ -155,6 +156,9 @@ const InputGrade = ({
           duration: 3000,
           isClosable: true,
         });
+        // change input value to previous value + focus
+        e?.target && (e.target.value = item?.grade?.toString() ?? "");
+        e?.target && e.target.focus();
         return;
       } else {
         toast({
@@ -179,51 +183,54 @@ const InputGrade = ({
 
   return (
     <HStack>
-      <Input
-        variant={"flushed"}
-        defaultValue={item?.grade ?? undefined}
-        textAlign={"center"}
-        fontSize={"md"}
-        fontWeight={"bold"}
-        color={"gray.500"}
-        _focus={{
-          border: "none",
-        }}
-        maxW={"50px"}
-        maxLength={3}
-        onBlur={(e) => {
-          if (e.target.value === "") {
-            if (item?.grade !== null) {
-              e.target.value = item?.grade?.toString() ?? "";
-            }
-          } else {
-            const isNumber = !isNaN(Number(e.target.value));
-            if (!isNumber) {
-              toast({
-                title: "Error",
-                description: "Invalid grade",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-              });
-              e.target.value = item?.grade?.toString() ?? "";
+      <Tooltip label="0-100">
+        <Input
+          variant={"flushed"}
+          position={"static"}
+          defaultValue={item?.grade ?? undefined}
+          textAlign={"center"}
+          fontSize={"md"}
+          fontWeight={"bold"}
+          color={"gray.500"}
+          _focus={{
+            border: "none",
+          }}
+          maxW={"50px"}
+          maxLength={3}
+          onBlur={(e) => {
+            if (e.target.value === "") {
+              if (item?.grade !== null) {
+                e.target.value = item?.grade?.toString() ?? "";
+              }
             } else {
-              onUpdateGrade(Number(e.target.value), item?.id);
+              const isNumber = !isNaN(Number(e.target.value));
+              if (!isNumber) {
+                toast({
+                  title: "Error",
+                  description: "Invalid grade",
+                  status: "error",
+                  duration: 3000,
+                  isClosable: true,
+                });
+                e.target.value = item?.grade?.toString() ?? "";
+              } else {
+                onUpdateGrade(Number(e.target.value), item?.id, e);
+              }
             }
-          }
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            // blur input
-            e.currentTarget.blur();
-          }
-        }}
-        disabled={item?.finalized}
-        _disabled={{
-          color: "gray.500",
-          cursor: "not-allowed",
-        }}
-      />
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              // blur input
+              e.currentTarget.blur();
+            }
+          }}
+          disabled={item?.finalized}
+          _disabled={{
+            color: "gray.500",
+            cursor: "not-allowed",
+          }}
+        />
+      </Tooltip>
     </HStack>
   );
 };
