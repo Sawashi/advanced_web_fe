@@ -70,9 +70,10 @@ const StructureItem = ({
                   {item?.percentage}%
                 </Text>
               </HStack>
-
               <Menu>
-                <MenuButton aria-label="Options" disabled={isStudentOfClass}>
+                <MenuButton aria-label="Options" disabled={isStudentOfClass} display={
+                  isStudentOfClass ? "none" : "flex"
+                }>
                   <Button
                     as={"div"}
                     variant={"ghost"}

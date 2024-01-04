@@ -30,8 +30,9 @@ import { red500 } from "theme/colors.theme";
 import Modal from "components/Modal";
 import { usePatchLeaveClass } from "API/patch/patch.class.leave-class";
 import routes from "routes";
-import GradeBoardScene from "components/pages/Classes/Sections/GradeBoardScene";
+import TeacherGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/TeacherGradeBoard";
 import { ETabName } from "enums/classes";
+import StudentGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/StudentGradeBoard";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -88,7 +89,16 @@ const ClassDetail = () => {
       tabs.push(
         {
           name: "Manage grade",
-          component: <GradeBoardScene details={classDetails ?? {}} />,
+          component: <TeacherGradeBoard details={classDetails ?? {}} />,
+          tabName: ETabName.GradeBoard,
+        }
+      )
+    }
+    else {
+      tabs.push(
+        {
+          name: "Your grade",
+          component: <StudentGradeBoard details={classDetails ?? {}} />,
           tabName: ETabName.GradeBoard,
         }
       )

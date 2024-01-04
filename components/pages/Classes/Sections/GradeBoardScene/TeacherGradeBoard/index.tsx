@@ -26,7 +26,7 @@ interface Props {
   details: IClass;
 }
 
-const GradeBoardScene = ({ details }: Props) => {
+const TeacherGradeBoard = ({ details }: Props) => {
   const router = useRouter();
   const { settingStore, classStore } = useStores();
   const { studentList } = classStore;
@@ -194,4 +194,4 @@ const GradeBoardScene = ({ details }: Props) => {
   );
 };
 
-export default observer(GradeBoardScene);
+export default observer(TeacherGradeBoard);
