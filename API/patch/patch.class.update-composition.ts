@@ -1,7 +1,7 @@
 import { api } from "API";
 import { CompositionsApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
-import { IGradeComposition } from "interfaces/classes";
+import { IComposition } from "interfaces/classes";
 import { useMutation } from "react-query";
 
 export type TUpdateCompositionBody = {
@@ -17,7 +17,7 @@ export const patchUpdateComposition = async ({
 }: TUpdateCompositionBody) => {
   const response = await api.patch<
     TUpdateCompositionBody,
-    IResponseData<IGradeComposition>
+    IResponseData<IComposition>
   >(CompositionsApiRouters.patch.update_a_composition.value(compositionId), {
     name,
     percentage,
@@ -27,7 +27,7 @@ export const patchUpdateComposition = async ({
 
 export const usePatchUpdateComposition = (compositionId: string) => {
   return useMutation<
-    IResponseData<IGradeComposition>,
+    IResponseData<IComposition>,
     Error,
     TUpdateCompositionBody,
     { previousCompositionId: string }

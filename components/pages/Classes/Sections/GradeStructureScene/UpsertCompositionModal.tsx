@@ -17,7 +17,7 @@ import {
   IGradeCompositionSchema,
 } from "constants/validation/classes";
 import { useStores } from "hooks/useStores";
-import { IGradeComposition } from "interfaces/classes";
+import { IComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import { usePostCreateComposition } from "API/post/post.class.create-composition";
 import { usePatchUpdateComposition } from "API/patch/patch.class.update-composition";
@@ -25,7 +25,7 @@ import { usePatchUpdateComposition } from "API/patch/patch.class.update-composit
 type UpsertCompositionModalProps = {
   isVisible: boolean;
   onClose: () => void;
-  composition?: IGradeComposition;
+  composition?: IComposition;
   refetch?: () => void;
 };
 

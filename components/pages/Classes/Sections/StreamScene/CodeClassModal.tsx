@@ -1,6 +1,13 @@
 import Modal from "components/Modal";
 import React from "react";
-import { Text, Code, VStack, Divider, HStack } from "@chakra-ui/react";
+import {
+  Text,
+  Code,
+  VStack,
+  Divider,
+  HStack,
+  useToast,
+} from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
@@ -15,6 +22,8 @@ interface Props {
 const CodeClassModal = ({ isVisible, onClose, code }: Props) => {
   const { classStore } = useStores();
   const { currentClass } = classStore;
+  const toast = useToast();
+
   return (
     <Modal isVisible={isVisible && !!code} onClose={onClose} title="Class code">
       <VStack
@@ -41,13 +50,22 @@ const CodeClassModal = ({ isVisible, onClose, code }: Props) => {
             justifyContent={"space-between"}
             alignItems={"center"}
           >
-            <Text>Share this code with your students to join the class.</Text>
+            <Text>
+              Share this code with other people to join this class as a student.
+            </Text>
             <HStack
               gap={3}
               alignItems={"center"}
               justifyContent={"flex-end"}
               onClick={() => {
                 navigator.clipboard.writeText(currentClass?.code ?? "");
+
+                toast({
+                  title: "Copied!",
+                  status: "success",
+                  duration: 3000,
+                  isClosable: true,
+                });
               }}
               cursor={"pointer"}
             >

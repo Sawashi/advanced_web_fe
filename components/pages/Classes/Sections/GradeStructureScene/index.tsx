@@ -1,5 +1,5 @@
-import { Box, VStack, HStack, Text, Button, useToast } from "@chakra-ui/react";
-import { IClass, IGradeComposition } from "interfaces/classes";
+import { Box, VStack, HStack, Text, Button, useToast, Center, Spinner } from "@chakra-ui/react";
+import { IClass, IComposition } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
 import { DropResult } from "react-beautiful-dnd";
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const reorder = (
-  list: IGradeComposition[],
+  list: IComposition[],
   startIndex: number,
   endIndex: number
 ) => {
@@ -32,10 +32,10 @@ const GradeStructureScene = ({ details }: Props) => {
   const { settingStore, classStore } = useStores();
   const { totalPercentage, isStudentOfClass } = classStore;
   const toast = useToast();
-  const [items, setItems] = useState<IGradeComposition[]>();
+  const [items, setItems] = useState<IComposition[]>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedComposition, setSelectedComposition] = useState<
-    IGradeComposition | undefined
+    IComposition | undefined
   >();
   const {
     data: classCompositions,
@@ -83,7 +83,7 @@ const GradeStructureScene = ({ details }: Props) => {
     setSelectedComposition(undefined);
   };
 
-  const onDeleteComposition = async (composition: IGradeComposition) => {
+  const onDeleteComposition = async (composition: IComposition) => {
     const { data } = await deleteComposition({
       compositionId: composition?.id ?? "",
     });
@@ -111,6 +111,14 @@ const GradeStructureScene = ({ details }: Props) => {
       classStore.setCompositions(classCompositions);
     }
   }, [classCompositions]);
+
+  if (isCompositionsLoading || isDeletingComposition) {
+    return (
+      <Center mt={20}>
+        <Spinner boxSize={30} />
+      </Center>
+    );
+  }
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>

@@ -47,6 +47,7 @@ export interface IServerError {
   message: string;
   code?: string;
   error?: string;
+  status: number;
 }
 
 export interface IRequestHeader {

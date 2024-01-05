@@ -1,7 +1,7 @@
 import { api } from "API";
 import { CompositionsApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
-import { IGradeComposition } from "interfaces/classes";
+import { IComposition } from "interfaces/classes";
 import { useMutation } from "react-query";
 
 export type TDeleteCompositionBody = {
@@ -11,7 +11,7 @@ export type TDeleteCompositionBody = {
 export const deleteComposition = async (payload: TDeleteCompositionBody) => {
   const response = await api.delete<
     TDeleteCompositionBody,
-    IResponseData<IGradeComposition>
+    IResponseData<IComposition>
   >(
     CompositionsApiRouters.delete.delete_a_composition.value(
       payload?.compositionId
@@ -22,7 +22,7 @@ export const deleteComposition = async (payload: TDeleteCompositionBody) => {
 
 export const useDeleteComposition = (compositionId: string) => {
   return useMutation<
-    IResponseData<IGradeComposition>,
+    IResponseData<IComposition>,
     Error,
     TDeleteCompositionBody,
     { previousClassId: string }

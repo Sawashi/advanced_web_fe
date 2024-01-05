@@ -11,6 +11,9 @@ import {
   Avatar,
   HStack,
   Collapse,
+  Tooltip,
+  Center,
+  Spinner,
 } from "@chakra-ui/react";
 import { IClass } from "interfaces/classes";
 import { observer } from "mobx-react";
@@ -55,6 +58,7 @@ const StudentsScene = ({ details }: Props) => {
     unMappedAttendeeStudentList,
     onUploadingStudentList,
     onDeleteStudentList,
+    isClassStudentsLoading
   } = useViewModel({ details });
   const [template, setTemplate] = React.useState<string>("");
   const csvRef = useRef<any>(null);
@@ -70,7 +74,9 @@ const StudentsScene = ({ details }: Props) => {
     try {
       const res = await getTemplateStudentList();
       setTemplate(res);
-      csvRef?.current?.link?.click();
+      setTimeout(() => {
+        csvRef?.current?.link?.click();
+      }, 1000);
     } catch (error) {
       console.error(error);
     }
@@ -125,54 +131,79 @@ const StudentsScene = ({ details }: Props) => {
           )
         ) : (
           // teacher
-          <Menu>
-            <MenuButton>
-              {!student?.user ? (
-                <Button
-                  size="sm"
-                  background="white"
-                  border="1px solid #A9A9A9"
-                  isDisabled={!isAssignable}
-                  display={isAssignable ? "flex" : "none"}
-                >
-                  Select
-                </Button>
-              ) : (
-                <MappedUserStudent
-                  item={student}
-                  isAbleToUnmap={isAbleToUnmap}
-                />
-              )}
-            </MenuButton>
-            <MenuList>
-              {getValidArray(unMappedAttendeeStudentList)?.map((attendee) => (
-                <MenuItem
-                  key={attendee?.user?.id}
-                  onClick={() => {
-                    onMappingStudent(
-                      attendee?.user?.id ?? "",
-                      student?.id ?? ""
-                    );
-                  }}
-                  display={"flex"}
-                  alignItems={"center"}
-                  flexDir={"row"}
-                  justifyContent={"space-between"}
-                  gap={2}
-                >
-                  <Avatar
-                    size="xs"
-                    name={
-                      attendee?.user?.firstName + " " + attendee?.user?.lastName
+          <Menu autoSelect={false}>
+            <Tooltip
+              hasArrow
+              label={student?.user?.email}
+              aria-label="email"
+              isDisabled={!student}
+            >
+              <MenuButton>
+                {!student?.user ? (
+                  <Button
+                    as="div"
+                    size="sm"
+                    background="white"
+                    border="1px solid #A9A9A9"
+                    isDisabled={
+                      !isAssignable ||
+                      !checkValidArray(unMappedAttendeeStudentList)
                     }
-                    src={attendee?.user?.avatar}
+                    display={isAssignable ? "flex" : "none"}
+                  >
+                    Select
+                  </Button>
+                ) : (
+                  <MappedUserStudent
+                    item={student}
+                    isAbleToUnmap={isAbleToUnmap}
                   />
-                  <Text noOfLines={1} w={"full"} fontSize={"md"}>
-                    {attendee?.user?.firstName + " " + attendee?.user?.lastName}
-                  </Text>
-                </MenuItem>
-              ))}
-            </MenuList>
+                )}
+              </MenuButton>
+            </Tooltip>
+
+            {checkValidArray(unMappedAttendeeStudentList) && (
+              <MenuList>
+                {getValidArray(unMappedAttendeeStudentList)?.map((attendee) => (
+                  <Tooltip
+                    hasArrow
+                    label={attendee?.user?.email}
+                    aria-label="email"
+                    isDisabled={!attendee}
+                  >
+                    <MenuItem
+                      key={attendee?.user?.id}
+                      onClick={() => {
+                        onMappingStudent(
+                          attendee?.user?.id ?? "",
+                          student?.id ?? ""
+                        );
+                      }}
+                      display={"flex"}
+                      alignItems={"center"}
+                      flexDir={"row"}
+                      justifyContent={"space-between"}
+                      gap={2}
+                    >
+                      <Avatar
+                        size="xs"
+                        name={
+                          attendee?.user?.firstName +
+                          " " +
+                          attendee?.user?.lastName
+                        }
+                        src={attendee?.user?.avatar}
+                      />
+                      <Text noOfLines={1} w={"full"} fontSize={"md"}>
+                        {attendee?.user?.firstName +
+                          " " +
+                          attendee?.user?.lastName}
+                      </Text>
+                    </MenuItem>
+                  </Tooltip>
+                ))}
+              </MenuList>
+            )}
           </Menu>
         ),
         action:
@@ -208,6 +239,14 @@ const StudentsScene = ({ details }: Props) => {
     isStudentOfClass,
     unMappedAttendeeStudentList,
   ]);
+
+  if (isClassStudentsLoading) {
+    return (
+      <Center mt={20}>
+        <Spinner boxSize={30} />
+      </Center>
+    );
+  }
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"}>
@@ -357,11 +396,12 @@ const StudentsScene = ({ details }: Props) => {
 
           <CSVLink
             data={template}
-            filename={"sample.csv"}
+            filename={"student-list-template.csv"}
             target="_blank"
             style={{ display: "none" }}
+            asyncOnClick={true}
             ref={csvRef}
-          ></CSVLink>
+          />
         </VStack>
       )}
 

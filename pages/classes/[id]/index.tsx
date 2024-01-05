@@ -30,6 +30,10 @@ import { red500 } from "theme/colors.theme";
 import Modal from "components/Modal";
 import { usePatchLeaveClass } from "API/patch/patch.class.leave-class";
 import routes from "routes";
+import TeacherGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/TeacherGradeBoard";
+import { ETabName } from "enums/classes";
+import StudentGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/StudentGradeBoard";
+import { useGetUserMappedStudent } from "API/get/get.class.user-mapped-student";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -41,19 +45,28 @@ const ClassDetail = () => {
     isLoading,
     refetch,
   } = useGetClassDetails(router?.query?.id as string);
+  const {
+    data: studentMapped,
+    isLoading: isLoadingStudentMapped,
+    refetch: refetchStudentMapped,
+  } = useGetUserMappedStudent({
+    classId: router?.query?.id as string,
+  });
   const { mutateAsync: leaveClass, isLoading: isLeaveLoading } =
     usePatchLeaveClass(currentClass?.id ?? "");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [tabName, setTabName] = useState<ETabName>();
+  const [tabIndex, setTabIndex] = useState(0);
   const titleHeader =
     classDetails?.name && classDetails?.description
       ? `${classDetails?.name ?? "Class"} ${
-          "|" + classDetails?.description ?? ""
+          "| " + classDetails?.description ?? ""
         }`
       : "Class";
 
-  const tabListRender = useMemo(
-    () => [
+  const tabListRender = useMemo(() => {
+    const tabs = [
       {
         name: "Stream",
         component: (
@@ -62,22 +75,39 @@ const ClassDetail = () => {
             isStudentOfClass={isStudentOfClass}
           />
         ),
+        tabName: ETabName.Stream,
       },
       {
         name: "People",
         component: <PeopleScene details={classDetails ?? {}} />,
-      },
-      {
-        name: "Grade structure",
-        component: <GradeStructureScene details={classDetails ?? {}} />,
+        tabName: ETabName.People,
       },
       {
         name: "Students",
         component: <StudentsScene details={classDetails ?? {}} />,
+        tabName: ETabName.Students,
       },
-    ],
-    [classDetails, isStudentOfClass]
-  );
+      {
+        name: "Grade structure",
+        component: <GradeStructureScene details={classDetails ?? {}} />,
+        tabName: ETabName.GradeStructure,
+      },
+    ];
+    if (!isStudentOfClass) {
+      tabs.push({
+        name: "Manage grade",
+        component: <TeacherGradeBoard details={classDetails ?? {}} />,
+        tabName: ETabName.GradeBoard,
+      });
+    } else {
+      tabs.push({
+        name: "Your grade",
+        component: <StudentGradeBoard details={classDetails ?? {}} />,
+        tabName: ETabName.GradeBoard,
+      });
+    }
+    return tabs;
+  }, [classDetails, isStudentOfClass]);
 
   const handleLeaveClass = async () => {
     try {
@@ -89,21 +119,56 @@ const ClassDetail = () => {
     }
   };
 
+  const onChangeTab = (index: number) => {
+    setTabIndex(index);
+    router.push(
+      `${routes.classes.value}/${router?.query?.id}?tab=${tabListRender?.[index]?.tabName}`
+    );
+  };
+
   useEffect(() => {
-    settingStore.setHeaderLoading(isLoading || isLeaveLoading);
-  }, [isLoading, isLeaveLoading]);
+    settingStore.setHeaderLoading(
+      isLoading || isLeaveLoading || isLoadingStudentMapped
+    );
+  }, [isLoading, isLeaveLoading, isLoadingStudentMapped]);
 
   useEffect(() => {
     if (classDetails) {
       classStore.setCurrentClass(classDetails);
+      classStore?.fetchClassStudents(classDetails?.id);
     }
   }, [classDetails]);
 
   useEffect(() => {
     if (router?.isReady) {
       refetch();
+      refetchStudentMapped();
+      const tabName = router?.query?.tab;
+      const isValidTabName = Object.values(ETabName)?.includes(
+        tabName as ETabName
+      );
+      if (isValidTabName) {
+        setTabName(tabName as ETabName);
+      } else {
+        setTabName(ETabName.Stream);
+      }
     }
   }, [router?.isReady]);
+
+  useEffect(() => {
+    const tabIndex = tabListRender?.findIndex(
+      (tab) => tab?.tabName === tabName
+    );
+    if (tabIndex >= 0) {
+      setTabIndex(tabIndex);
+      return;
+    }
+    setTabIndex(0);
+  }, [tabName]);
+
+  useEffect(() => {
+    classStore.setCurrentStudentId(studentMapped?.studentId ?? null);
+  }, [studentMapped]);
 
   return (
     <ClassLayout
@@ -124,7 +189,13 @@ const ClassDetail = () => {
             <NotFoundClass />
           </VStack>
         ) : (
-          <Tabs variant="unstyled" w="full">
+          <Tabs
+            variant="unstyled"
+            w="full"
+            index={tabIndex}
+            onChange={onChangeTab}
+            isLazy={true}
+          >
             <HStack
               w={"full"}
               justifyContent={"space-between"}
@@ -204,7 +275,11 @@ const ClassDetail = () => {
               borderTopRadius="3px"
             />
 
-            <TabPanels overflowY={"auto"} maxHeight={"calc(100vh - 154px)"}>
+            <TabPanels
+              overflowY={"auto"}
+              maxHeight={"calc(100vh - 154px)"}
+              h="full"
+            >
               {getValidArray(tabListRender)?.map((tab) => (
                 <TabPanel key={tab.name}>{tab?.component}</TabPanel>
               ))}
