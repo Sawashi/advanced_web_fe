@@ -170,3 +170,11 @@ export const GlobalApiRouters = {
     },
   },
 };
+
+export const ReviewApiRouters = {
+  post: {
+    create_review: {
+      value: `${API_URL}/reviews`,
+    },
+  },
+};

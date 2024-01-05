@@ -20,6 +20,7 @@ import { usePostJoinClassViaClassCode } from "API/post/post.classes.join-class";
 import { useStores } from "hooks/useStores";
 import { useGetClassesAsStudent } from "API/get/get.classes.student";
 import { ICompositionGrade } from "API/get/get.class.student-grades";
+import { usePostRequestReview } from "API/post/post.class.request-review";
 
 type RequestReviewModalProps = {
   isVisible: boolean;
@@ -32,11 +33,7 @@ const RequestReviewModal = ({
   onClose,
   initGrade,
 }: RequestReviewModalProps) => {
-  const { mutateAsync, isLoading } = usePostJoinClassViaClassCode();
-  const { authStore } = useStores();
-  const { refetch } = useGetClassesAsStudent(authStore?.user?.id ?? "", {
-    limit: 3,
-  });
+  const { mutateAsync: createReview, isLoading } = usePostRequestReview();
   const toast = useToast();
   const method = useForm<IReviewGradeSchema>({
     defaultValues: {
@@ -59,7 +56,31 @@ const RequestReviewModal = ({
     reset();
   };
 
-  const onSubmit = async (values: IReviewGradeSchema) => {};
+  const onSubmit = async (values: IReviewGradeSchema) => {
+    const res = await createReview({
+      expectedGrade: values?.expectedGrade,
+      explanation: values?.explanation,
+      gradeId: initGrade?.id ?? "",
+    });
+
+    if (res.status >= 400) {
+      toast({
+        description: res?.data?.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    else {
+      toast({
+        description: "Request review successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      onCloseModal();
+    }
+  };
 
   useEffect(() => {
     if (initGrade?.grade) {
