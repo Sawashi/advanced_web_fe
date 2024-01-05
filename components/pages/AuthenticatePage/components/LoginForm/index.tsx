@@ -25,6 +25,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import FormInput from "components/FormInput";
 import PasswordField from "components/PasswordField";
 import {
+  loginFailedAccountBlockedDescription,
   loginFailedDescription,
   loginSuccessDescription,
 } from "constants/messages/auth.messages";
@@ -75,6 +76,11 @@ const LoginForm = () => {
       if (error instanceof Error) {
         if (error?.message === "AccountPendingActivation") {
           onOpen();
+        } else if (error?.message === "AccountBlocked") {
+          toast({
+            status: "error",
+            description: loginFailedAccountBlockedDescription,
+          });
         } else {
           toast({
             status: "error",

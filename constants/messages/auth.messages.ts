@@ -6,3 +6,5 @@ export const setPasswordInvalidTokenDescription = "Invalid token";
 export const notMatchedPasswordDescription = "Passwords do not match";
 export const invalidPasswordDescription =
   "The password must have at least 6 characters and a maximum of 12 characters, and it must contain 1 number, 1 uppercase letter, 1 lowercase letter and 1 symbol";
+export const loginFailedAccountBlockedDescription =
+  "Login failed! Your account has been blocked by admin";
