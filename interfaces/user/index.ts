@@ -8,6 +8,7 @@ export interface IUser {
   updatedAt?: Date;
   avatar?: string;
   role?: string;
+  status?: string;
 }
 
 export interface IVerifyTokenResponse {

@@ -115,11 +115,11 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
         >
           <NavLink
             label={EAdminPageName.ACCOUNTS}
-            {...getLinkProps(routes.user.home.value, "ic-home")}
+            {...getLinkProps(routes.admin.manageAccount.value, "ic-home")}
           />
           <NavLink
             label={EAdminPageName.CLASSES}
-            {...getLinkProps(routes.user.home.value, "ic-home")}
+            {...getLinkProps(routes.admin.manageClass.value, "ic-home")}
           />
         </Stack>
         <Stack w="full" alignSelf={"end"}>
