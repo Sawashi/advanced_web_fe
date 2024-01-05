@@ -2391,6 +2391,13 @@
   resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-2.19.2.tgz#24d9fb9aa555bb063ba5fe82f80fcd7d48662184"
   integrity sha512-x9ibmsP0ZVqzyCo1Pitbw+4b6iEXRw/r1TCy3vOUR3eKrzWLnHYZMR325BkZW2r8fnuWE/V3Fp4QZOP9qYORCw==
 
+"@refinedev/react-table@^5.6.5":
+  version "5.6.5"
+  resolved "https://registry.yarnpkg.com/@refinedev/react-table/-/react-table-5.6.5.tgz#aed00345b51f0f67031ec9855a069e64177c05f9"
+  integrity sha512-6badJthYmS/GLs1DdwKnqvgY8nr6a5rSnbI32H7L7lOFVF8csWks1DHcAy91DDrtsiu1CVkbIPRI21JqEe+PxQ==
+  dependencies:
+    "@tanstack/react-table" "^8.2.6"
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz#04bc0608f4aa4b2e4b1aebf284344d0f68fda283"
@@ -2480,6 +2487,18 @@
   integrity sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==
   dependencies:
     defer-to-connect "^1.0.1"
+
+"@tanstack/react-table@^8.11.3", "@tanstack/react-table@^8.2.6":
+  version "8.11.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.11.3.tgz#0af6f7d074a319920f5149eba0a64a5b71125368"
+  integrity sha512-Gwwm7po1MaObBguw69L+UiACkaj+eOtThQEArj/3fmUwMPiWaJcXvNG2X5Te5z2hg0HMx8h0T0Q7p5YmQlTUfw==
+  dependencies:
+    "@tanstack/table-core" "8.11.3"
+
+"@tanstack/table-core@8.11.3":
+  version "8.11.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.11.3.tgz#89b2914b2bc6f1aaffd31582e268a52273c49179"
+  integrity sha512-nkcFIL696wTf1QMvhGR7dEg60OIRwEZm1OqFTYYDTRc4JOWspgrsJO3IennsOJ7ptumHWLDjV8e5BjPkZcSZAQ==
 
 "@testing-library/dom@^8.0.0":
   version "8.20.1"

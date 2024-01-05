@@ -1,4 +1,5 @@
 export interface IUser {
+  [key: string]: any;
   createdAt?: Date;
   dob?: string;
   email?: string;
