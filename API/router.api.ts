@@ -35,6 +35,9 @@ export const UsersApiRouters = {
       value: (userId: ID, query: URLQueryType<{}>) =>
         `${API_URL}/users/${userId}/owned-classes?${getQueries(query)}`,
     },
+    all_accounts: {
+      value: `${API_URL}/users?limit=99&page=1&filter.role=user&sortBy=email:ASC`,
+    },
   },
   post: {
     join_class_with_class_code: {
