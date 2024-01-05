@@ -58,7 +58,7 @@ const LoginForm = () => {
       if (authStore.user.role === "user") {
         router.push(routes.user.home.value);
       } else {
-        router.push(routes.admin.manageAccounts.value);
+        router.push(routes.admin.manageAccount.value);
       }
     }
   }, [authStore.user]);
