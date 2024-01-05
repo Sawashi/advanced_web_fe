@@ -66,6 +66,20 @@ export const GradeCompositionSchema = yup.object().shape({
     .max(100, "Percentage must be less than or equal to 100"),
 });
 
+export const ReviewGradeSchema = yup.object().shape({
+  explanation: yup
+    .string()
+    .trim()
+    .required("Explanation is required")
+    .min(1, "Explanation must not be empty"),
+  expectedGrade: yup
+    .number()
+    .required("Expected grade is required")
+    .typeError("Expected grade must be a number")
+    .min(0, "Expected grade must be greater than or equal to 0")
+    .max(100, "Expected grade must be less than or equal to 100"),
+});
+
 // Types
 export type IClassCodeSchema = yup.InferType<typeof ClassCodeSchema>;
 export type IClassInformationSchema = yup.InferType<
@@ -76,3 +90,4 @@ export type IInviteEmailsSchema = yup.InferType<typeof InviteEmailsSchema>;
 export type IGradeCompositionSchema = yup.InferType<
   typeof GradeCompositionSchema
 >;
+export type IReviewGradeSchema = yup.InferType<typeof ReviewGradeSchema>;

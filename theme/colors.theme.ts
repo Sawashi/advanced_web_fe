@@ -53,16 +53,16 @@ const orange800 = "#8A2C0D";
 const orange900 = "#73230D";
 
 // yellow
-const yellow50 = "#FDF9EA";
-const yellow100 = "#FEF4D2";
-const yellow200 = "#FCEEBB";
-const yellow300 = "#F7E397";
-const yellow400 = "#FFDB5C";
-const yellow500 = "#FFD24C";
-const yellow600 = "#FBC113";
-const yellow700 = "#E4A606";
-const yellow800 = "#A36C00";
-const yellow900 = "#5E4100";
+export const yellow50 = "#FDF9EA";
+export const yellow100 = "#FEF4D2";
+export const yellow200 = "#FCEEBB";
+export const yellow300 = "#F7E397";
+export const yellow400 = "#FFDB5C";
+export const yellow500 = "#FFD24C";
+export const yellow600 = "#FBC113";
+export const yellow700 = "#E4A606";
+export const yellow800 = "#A36C00";
+export const yellow900 = "#5E4100";
 
 // green
 export const green50 = "#F3FAF7";

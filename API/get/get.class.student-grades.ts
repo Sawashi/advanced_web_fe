@@ -9,10 +9,10 @@ export interface IGetGradesOfStudentPayload {
   classId: string;
 }
 
-interface ICompositionGrade {
-  id: string;
-  grade: number;
-  composition: IComposition;
+export interface ICompositionGrade {
+  id?: string;
+  grade?: number;
+  composition?: IComposition;
 }
 
 export const getGradesOfStudent = async (

@@ -1,5 +1,13 @@
-import { VStack, HStack, Text, Center, Spinner } from "@chakra-ui/react";
-import { useGetGradesOfStudent } from "API/get/get.class.student-grades";
+import {
+  VStack,
+  HStack,
+  Text,
+  Center,
+  Spinner,
+  Button,
+  Tooltip,
+} from "@chakra-ui/react";
+import { ICompositionGrade, useGetGradesOfStudent } from "API/get/get.class.student-grades";
 import EmptyList from "components/EmptyState/EmptyList";
 import SvgIcon from "components/SvgIcon";
 import { ETabName } from "enums/classes";
@@ -7,10 +15,11 @@ import { useStores } from "hooks/useStores";
 import { IClass } from "interfaces/classes";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import routes from "routes";
-import { green500 } from "theme/colors.theme";
+import { red500, yellow700 } from "theme/colors.theme";
 import { getValidArray } from "utils/common";
+import RequestReviewModal from "./RequestReviewModal";
 
 interface Props {
   details: IClass;
@@ -19,6 +28,9 @@ interface Props {
 const StudentGradeBoard = ({ details }: Props) => {
   const { classStore } = useStores();
   const router = useRouter();
+  const [isRequestReviewModalVisible, setIsRequestReviewModalVisible] =
+    useState(false);
+  const [selectedGrade, setSelectedGrade] = useState<ICompositionGrade>()
   const { data: gradesList, isLoading: isLoadingGradesList } =
     useGetGradesOfStudent({
       classId: details?.id ?? "",
@@ -100,29 +112,65 @@ const StudentGradeBoard = ({ details }: Props) => {
               borderRadius={10}
               bgColor={isFinalized ? "gray.50" : "white"}
             >
-              <HStack>
-                {isFinalized ? (
-                  <SvgIcon
-                    iconName={"ic-lock.svg"}
-                    size={20}
-                    color={green500}
-                  />
-                ) : null}
+              <HStack
+                flex={1}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <HStack>
+                  {isFinalized ? (
+                    <SvgIcon
+                      iconName={"ic-lock.svg"}
+                      size={20}
+                      color={red500}
+                    />
+                  ) : null}
+                  <Text fontSize={"md"} fontWeight={"bold"}>
+                    {grade?.composition?.name} ({grade?.composition?.percentage}
+                    %)
+                  </Text>
+                </HStack>
+
                 <Text fontSize={"md"} fontWeight={"normal"}>
-                  {grade?.composition?.name} ({grade?.composition?.percentage}%)
+                  <Text fontSize={"md"} fontWeight={"bold"} as={"span"}>
+                    {grade?.grade}
+                  </Text>{" "}
+                  / 100
                 </Text>
               </HStack>
-
-              <Text fontSize={"md"} fontWeight={"normal"}>
-                <Text fontSize={"md"} fontWeight={"bold"} as={"span"}>
-                  {grade?.grade}
-                </Text>{" "}
-                / 100
-              </Text>
+              {isFinalized ? (
+                <Tooltip label={"Request change grade"}>
+                  <Button
+                    variant={"ghost"}
+                    p={0}
+                    bgColor={"transparent"}
+                    _hover={{
+                      bgColor: "transparent",
+                    }}
+                    rounded={"full"}
+                    onClick={() => {
+                      setSelectedGrade(grade);
+                      setIsRequestReviewModalVisible(true);
+                    }}
+                    rightIcon={
+                      <SvgIcon
+                        iconName={"ic-report.svg"}
+                        size={20}
+                        color={yellow700}
+                      />
+                    }
+                  />
+                </Tooltip>
+              ) : null}
             </HStack>
           );
         })}
       </VStack>
+      <RequestReviewModal
+        isVisible={isRequestReviewModalVisible && !!selectedGrade}
+        onClose={() => setIsRequestReviewModalVisible(false)}
+        initGrade={selectedGrade ?? {}}
+      />
     </VStack>
   );
 };
