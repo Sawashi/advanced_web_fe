@@ -26,7 +26,7 @@ const ManageClasses = () => {
   return (
     <AdminLayout title="Manage classes">
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>
-        <Text>Oh, hi manage classes</Text>
+        <Text>Oh hi</Text>
       </VStack>
     </AdminLayout>
   );
