@@ -59,4 +59,25 @@ export interface ICompositionGrade {
   id?: string;
   grade?: number;
   composition?: IComposition;
+  student?: IStudent;
+}
+
+export interface IReview {
+  id: string;
+  studentExplanation: string;
+  studentExpectedGrade: number;
+  studentCurrentGrade: number;
+  studentFinalGrade: any;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  grade: ICompositionGrade;
+  requester: IRequester;
+}
+
+export interface IRequester {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
 }

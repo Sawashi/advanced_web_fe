@@ -77,16 +77,16 @@ export const green800 = "#03543F";
 export const green900 = "#014737";
 
 // cyan
-const cyan50 = "#EDFAFA";
-const cyan100 = "#D5F5F6";
-const cyan200 = "#BFF0F2";
-const cyan300 = "#7EDCE2";
-const cyan400 = "#16BDCA";
-const cyan500 = "#0694A2";
-const cyan600 = "#047481";
-const cyan700 = "#036672";
-const cyan800 = "#05505C";
-const cyan900 = "#014451";
+export const cyan50 = "#EDFAFA";
+export const cyan100 = "#D5F5F6";
+export const cyan200 = "#BFF0F2";
+export const cyan300 = "#7EDCE2";
+export const cyan400 = "#16BDCA";
+export const cyan500 = "#0694A2";
+export const cyan600 = "#047481";
+export const cyan700 = "#036672";
+export const cyan800 = "#05505C";
+export const cyan900 = "#014451";
 
 // purple
 const purple50 = "#F5F3FF";
