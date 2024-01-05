@@ -16,11 +16,8 @@ import {
   ReviewGradeSchema,
   IReviewGradeSchema,
 } from "constants/validation/classes";
-import { usePostJoinClassViaClassCode } from "API/post/post.classes.join-class";
-import { useStores } from "hooks/useStores";
-import { useGetClassesAsStudent } from "API/get/get.classes.student";
-import { ICompositionGrade } from "API/get/get.class.student-grades";
 import { usePostRequestReview } from "API/post/post.class.request-review";
+import { ICompositionGrade } from "interfaces/classes";
 
 type RequestReviewModalProps = {
   isVisible: boolean;

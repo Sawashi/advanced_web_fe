@@ -54,3 +54,9 @@ export interface IStudent {
     id?: string;
   };
 }
+
+export interface ICompositionGrade {
+  id?: string;
+  grade?: number;
+  composition?: IComposition;
+}

@@ -1,18 +1,12 @@
 import { api } from "API";
 import { ClassesApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
-import { IComposition } from "interfaces/classes";
+import { IComposition, ICompositionGrade } from "interfaces/classes";
 import { useQuery } from "react-query";
 
 export interface IGetGradesOfStudentPayload {
   studentId: string;
   classId: string;
-}
-
-export interface ICompositionGrade {
-  id?: string;
-  grade?: number;
-  composition?: IComposition;
 }
 
 export const getGradesOfStudent = async (
@@ -39,4 +33,4 @@ export const useGetGradesOfStudent = (payload: IGetGradesOfStudentPayload) => {
     ],
     enabled: !!payload?.classId && !!payload?.studentId,
   });
-}
+};

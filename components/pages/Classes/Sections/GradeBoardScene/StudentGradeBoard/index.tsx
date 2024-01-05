@@ -7,12 +7,12 @@ import {
   Button,
   Tooltip,
 } from "@chakra-ui/react";
-import { ICompositionGrade, useGetGradesOfStudent } from "API/get/get.class.student-grades";
+import { useGetGradesOfStudent } from "API/get/get.class.student-grades";
 import EmptyList from "components/EmptyState/EmptyList";
 import SvgIcon from "components/SvgIcon";
 import { ETabName } from "enums/classes";
 import { useStores } from "hooks/useStores";
-import { IClass } from "interfaces/classes";
+import { IClass, ICompositionGrade } from "interfaces/classes";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
