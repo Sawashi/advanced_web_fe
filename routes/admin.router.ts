@@ -1,10 +1,10 @@
 const AdminRouter = {
   value: "/admin",
   manageAccount: {
-    value: "manage-accounts",
+    value: "/admin/manage-accounts",
   },
   manageClass: {
-    value: "manage-classes",
+    value: "/admin/manage-classes",
   },
 };
 
