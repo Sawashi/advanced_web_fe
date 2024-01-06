@@ -33,7 +33,7 @@ const AdminHeader = ({ onExpand }: IAdminHeaderProps) => {
     (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
 
   const onClickLogo = () => {
-    router.push(routes.user.home.value);
+    router.push(routes.admin.manageAccount.value);
   };
 
   const onExpandSidebar = () => {

@@ -1,5 +1,6 @@
 import AdminLayout from "components/Layout/AdminLayout";
 import {
+  Box,
   Button,
   Heading,
   Input,
@@ -24,23 +25,41 @@ import { useStores } from "hooks/useStores";
 import { auth } from "API";
 import { getAllClasses, getClassDetails } from "API/get/get.class.details";
 import { IClass } from "interfaces/classes";
-import { softDeleteClass } from "API/patch/patch.class";
+import {
+  mapStudentId,
+  softDeleteClass,
+  unmapStudentId,
+} from "API/patch/patch.class";
 import { restoreClass } from "API/patch/patch.class";
 import { getClassStudents } from "API/get/get.class.students";
+import { useGetClassAttendees } from "API/get/get.class.attendees";
+import { getValidArray } from "utils/common";
+import { EClassRole } from "enums/classes";
+
 const ManageClasses = () => {
   const toast = useToast();
   const [classInfo, setClassInfo] = useState<IClass>();
   const [MemberList, setMemberList] = useState<IClass[]>([]);
   const [ListToShow, setListToShow] = useState<IClass[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [userIdInput, setUserIdInput] = useState<string>("");
   const { authStore } = useStores();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortColumn, setSortColumn] = useState<string>(""); // Track the column to be sorted
-  const router = useRouter();
-  const MemberListSorted = ListToShow; // Create a copy to avoid mutating the original array
+  const [sortColumn, setSortColumn] = useState<string>("");
 
+  const router = useRouter();
+  const MemberListSorted = ListToShow;
+
+  const {
+    data: attendees,
+    isLoading,
+    refetch,
+  } = useGetClassAttendees(classInfo?.id ?? "");
+
+  const studentList = getValidArray(attendees?.data)?.filter(
+    (item) => item?.role === EClassRole.STUDENT
+  );
   const handleSort = (column: string) => {
-    // If clicking on the same column, toggle the sort order
     const newSortOrder =
       column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
 
@@ -48,7 +67,6 @@ const ManageClasses = () => {
     setSortColumn(column);
 
     MemberListSorted?.sort((a, b) => {
-      // Sort alphabetically based on the column
       const valueA = String(a[column]).toLowerCase();
       const valueB = String(b[column]).toLowerCase();
 
@@ -57,6 +75,7 @@ const ManageClasses = () => {
         : valueB.localeCompare(valueA);
     });
   };
+
   const renderSortIcon = (column: string) => {
     if (column === sortColumn) {
       return sortOrder === "asc" ? (
@@ -67,12 +86,12 @@ const ManageClasses = () => {
     }
     return null;
   };
+
   const getMemberList = async () => {
     try {
-      const res = await getClassStudents(router.query.id as string);
+      const res = await getClassStudents(router?.query?.id as string);
       setMemberList(res.data);
       setListToShow(res.data);
-      console.log(res.data);
     } catch (error) {
       toast({
         status: "error",
@@ -80,6 +99,7 @@ const ManageClasses = () => {
       });
     }
   };
+
   useEffect(() => {
     async function getInfoForCurrentUser() {
       const res = await getCurrentUser();
@@ -91,18 +111,26 @@ const ManageClasses = () => {
         authStore.logout();
       }
     }
+
     async function getClassInfo() {
-      const res = await getClassDetails(router.query.id as string);
-      setClassInfo(res);
+      if (router.isReady) {
+        const res = await getClassDetails(router.query.id as string);
+        setClassInfo(res);
+      }
     }
+
     getClassInfo();
     getInfoForCurrentUser();
     getMemberList();
-    console.log(router.query?.id);
-  }, []);
+  }, [router?.isReady]);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+  const handleUserIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserIdInput(event.target.value);
+  };
+
   useEffect(() => {
     setListToShow(
       MemberList?.filter((thisClass) =>
@@ -110,36 +138,47 @@ const ManageClasses = () => {
       )
     );
   }, [inputValue]);
-  const deactiveClass = async (id: string) => {
+
+  useEffect(() => {
+    setUserIdInput(userIdInput);
+  }, [userIdInput]);
+
+  const onClickMapStudentId = async (classId: string, studentId: string) => {
     try {
-      await softDeleteClass(id);
-      getMemberList();
+      const res = await mapStudentId(classId, studentId, userIdInput);
       toast({
         status: "success",
-        description: "Deactive class successfully",
+        description: "Map student id successfully",
       });
+      try {
+        await getMemberList();
+      } catch (error) {}
     } catch (error) {
       toast({
         status: "error",
-        description: "Deactive class failed",
+        description: "Map student id failed",
       });
     }
   };
-  const activeClass = async (id: string) => {
+
+  const onClickUnmapStudentId = async (classId: string, userId: string) => {
     try {
-      await restoreClass(id);
-      getMemberList();
+      const res = await unmapStudentId(classId, userId);
       toast({
         status: "success",
-        description: "Active class successfully",
+        description: "Unmap student id successfully",
       });
+      try {
+        await getMemberList();
+      } catch (error) {}
     } catch (error) {
       toast({
         status: "error",
-        description: "Active class failed",
+        description: "Map student id failed",
       });
     }
   };
+
   return (
     <AdminLayout title="Manage classes">
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>
@@ -198,13 +237,38 @@ const ManageClasses = () => {
                     </Td>
                     <Td>
                       {member?.user?.id ? (
-                        <Button colorScheme="red" variant="solid">
+                        <Button
+                          colorScheme="red"
+                          variant="solid"
+                          onClick={() =>
+                            onClickUnmapStudentId(
+                              classInfo?.id as string,
+                              member.user.id
+                            )
+                          }
+                        >
                           Unmap
                         </Button>
                       ) : (
-                        <Button colorScheme="green" variant="solid">
-                          Map
-                        </Button>
+                        <Box>
+                          <Input
+                            width={"15"}
+                            placeholder="User id"
+                            onChange={handleUserIdChange}
+                          ></Input>{" "}
+                          <Button
+                            colorScheme="green"
+                            variant="solid"
+                            onClick={() =>
+                              onClickMapStudentId(
+                                classInfo?.id as string,
+                                member.id as string
+                              )
+                            }
+                          >
+                            Map
+                          </Button>
+                        </Box>
                       )}
                     </Td>
                   </Tr>
@@ -217,4 +281,5 @@ const ManageClasses = () => {
     </AdminLayout>
   );
 };
+
 export default ManageClasses;
