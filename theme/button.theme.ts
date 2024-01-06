@@ -1,21 +1,16 @@
+import { background } from "@chakra-ui/react";
+
 export const CustomButton = {
   variants: {
     outline: {
-      field: {
-        background: "inherit",
-        border: "1px solid",
-        borderColor: "inherit",
-        _focus: {
-          borderColor: "teal.500",
-          borderWidth: 2,
-          boxShadow: "0 0 0 2px teal.500",
-        },
-        _invalid: {
-          borderColor: "red.500",
-          borderWidth: 2,
-          boxShadow: "0 0 0 2px red.500",
-        },
-        _hover: { borderColor: "gray.300" },
+      background: "inherit",
+      border: "1px solid",
+      borderColor: "gray.500",
+      _active: {
+        background: "gray.200",
+      },
+      _hover: {
+        background: "gray.100",
       },
     },
     primary: {
@@ -30,6 +25,14 @@ export const CustomButton = {
         background: "gray.400",
         color: "white",
         cursor: "not-allowed",
+      },
+    },
+    ghost: {
+      _hover: {
+        background: "gray.200",
+      },
+      _active: {
+        background: "gray.300",
       },
     },
     icon: {

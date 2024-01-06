@@ -14,6 +14,7 @@ class AuthStore {
   rootStore: RootStore;
   public accessToken: string = "";
   public isLoading: boolean = false;
+  public isAuthenticated: boolean = false;
   public user: IUser = {
     email: "",
   };
@@ -82,6 +83,7 @@ class AuthStore {
       this.accessToken = accessToken || "";
       this.user = await getCurrentUser();
       this.isLoading = false;
+      this.isAuthenticated = !!this.user?.id;
     });
   }
 
@@ -89,6 +91,7 @@ class AuthStore {
     this.user = {} as IUser;
     this.accessToken = "";
     this.isLoading = false;
+    this.isAuthenticated = false;
     this.rootStore.classStore.reset();
     this.rootStore.cookiesStore.removeItem(AuthenticateParams.ACCESS_TOKEN);
     this.rootStore.cookiesStore.removeItem(AuthenticateParams.REFRESH_TOKEN);

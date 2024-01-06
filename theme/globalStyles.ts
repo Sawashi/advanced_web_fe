@@ -40,6 +40,14 @@ export const breakPointValues = {
   xxl: "1739.9px",
 };
 
+export const containerSizes = {
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
+};
+
 export const maxTabletWidth = 1199.9;
 export const maxMobileWidth = 743.9;
 export const maxSmallMobileWidth = 375.9;
