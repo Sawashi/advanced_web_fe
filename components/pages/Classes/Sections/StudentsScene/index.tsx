@@ -58,7 +58,7 @@ const StudentsScene = ({ details }: Props) => {
     unMappedAttendeeStudentList,
     onUploadingStudentList,
     onDeleteStudentList,
-    isClassStudentsLoading
+    isClassStudentsLoading,
   } = useViewModel({ details });
   const [template, setTemplate] = React.useState<string>("");
   const csvRef = useRef<any>(null);
@@ -162,7 +162,7 @@ const StudentsScene = ({ details }: Props) => {
               </MenuButton>
             </Tooltip>
 
-            {checkValidArray(unMappedAttendeeStudentList) && (
+            {checkValidArray(unMappedAttendeeStudentList) && !student?.user && (
               <MenuList>
                 {getValidArray(unMappedAttendeeStudentList)?.map((attendee) => (
                   <Tooltip
