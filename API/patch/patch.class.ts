@@ -20,6 +20,7 @@ export const mapStudentId = async (
   studentId: string,
   userId: string
 ) => {
+  console.log("Running: ", classId, studentId, userId);
   const response = await api.patch(
     ClassesApiRouters.patch.map_student_id.value(classId),
     { studentId, userId }

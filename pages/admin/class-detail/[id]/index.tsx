@@ -2,6 +2,7 @@ import AdminLayout from "components/Layout/AdminLayout";
 import {
   Box,
   Button,
+  HStack,
   Heading,
   Input,
   Table,
@@ -16,7 +17,7 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { getCurrentUser } from "API/get/get.me";
 import { getIn } from "yup";
 import { useRouter } from "next/router";
@@ -35,7 +36,10 @@ import { getClassStudents } from "API/get/get.class.students";
 import { useGetClassAttendees } from "API/get/get.class.attendees";
 import { getValidArray } from "utils/common";
 import { EClassRole } from "enums/classes";
-
+import { CSVLink, CSVDownload } from "react-csv";
+interface FileUploadButtonProps {
+  onFileUpload: (data: string[][]) => void;
+}
 const ManageClasses = () => {
   const toast = useToast();
   const [classInfo, setClassInfo] = useState<IClass>();
@@ -56,9 +60,83 @@ const ManageClasses = () => {
     refetch,
   } = useGetClassAttendees(classInfo?.id ?? "");
 
+  const [fileContent, setFileContent] = useState<string[][] | null>(null);
+  const getMemberList = async () => {
+    try {
+      const res = await getClassStudents(router?.query?.id as string);
+      setMemberList(res.data);
+      setListToShow(res.data);
+    } catch (error) {
+      toast({
+        status: "error",
+        description: "Get user list failed",
+      });
+    }
+  };
+  const handleCSVData = async (data: string[][]) => {
+    try {
+      for (let i = 1; i < data.length; i++) {
+        const studentId = data[i][1];
+        const modifiedStudentId = studentId.slice(1);
+        const userId = data[i][0];
+        console.log("Read userid - studentid", userId, modifiedStudentId);
+        await mapStudentId(classInfo?.id as string, modifiedStudentId, userId);
+      }
+      await getMemberList();
+      toast({
+        status: "success",
+        description: "Map student id successfully",
+      });
+    } catch (error) {
+      toast({
+        status: "error",
+        description: "Some data failed to map, check csv again",
+      });
+    }
+  };
+  const header = [
+    { label: "user_id", key: "user_id" },
+    { label: "student_id", key: "student_id" },
+  ];
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const result = e.target?.result as string;
+          const parsedData = parseCSV(result);
+          setFileContent(parsedData);
+          //Handle data here
+          console.log(parsedData);
+          handleCSVData(parsedData);
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "Failed to parse CSV file.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      };
+
+      reader.readAsText(file);
+    }
+  };
+
+  const parseCSV = (data: string): string[][] => {
+    // Replace carriage return characters with an empty string
+    const cleanedData = data.replace(/\r/g, "");
+    return cleanedData.split("\n").map((line) => line.split(","));
+  };
+
   const studentList = getValidArray(attendees?.data)?.filter(
     (item) => item?.role === EClassRole.STUDENT
   );
+
   const handleSort = (column: string) => {
     const newSortOrder =
       column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
@@ -85,19 +163,6 @@ const ManageClasses = () => {
       );
     }
     return null;
-  };
-
-  const getMemberList = async () => {
-    try {
-      const res = await getClassStudents(router?.query?.id as string);
-      setMemberList(res.data);
-      setListToShow(res.data);
-    } catch (error) {
-      toast({
-        status: "error",
-        description: "Get user list failed",
-      });
-    }
   };
 
   useEffect(() => {
@@ -127,6 +192,7 @@ const ManageClasses = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+
   const handleUserIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserIdInput(event.target.value);
   };
@@ -178,7 +244,6 @@ const ManageClasses = () => {
       });
     }
   };
-
   return (
     <AdminLayout title="Manage classes">
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>
@@ -195,6 +260,36 @@ const ManageClasses = () => {
           <Heading as="h2" size="1xl" noOfLines={1}>
             Member list
           </Heading>
+          <HStack>
+            <>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <Button
+                onClick={() =>
+                  (
+                    document.querySelector(
+                      "input[type=file]"
+                    ) as HTMLInputElement
+                  )?.click()
+                }
+              >
+                Upload CSV
+              </Button>
+            </>
+            <CSVLink
+              data={[]}
+              headers={header}
+              filename={"admin-student-manager-template.csv"}
+            >
+              <Button colorScheme="cyan" variant={"solid"}>
+                Download template
+              </Button>
+            </CSVLink>
+          </HStack>
           <TableContainer>
             <Table variant="striped" colorScheme="gray">
               <Thead>
