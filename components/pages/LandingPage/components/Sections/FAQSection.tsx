@@ -9,7 +9,7 @@ import {
   Image,
   Stack,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { observer } from "mobx-react";
 import React, { useCallback } from "react";
@@ -118,7 +118,9 @@ const FAQSection: React.FC<Props> = ({ id }) => {
       }}
     >
       <Heading as="h2" size="xl" mb={5}>
-        <Fade triggerOnce>Frequently Asked Questions</Fade>
+        <Fade triggerOnce>
+          <Text>Frequently Asked Questions</Text>
+        </Fade>
       </Heading>
 
       <Stack
