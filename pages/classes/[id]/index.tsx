@@ -131,6 +131,7 @@ const ClassDetail = () => {
 
   const onChangeTab = (index: number) => {
     setTabIndex(index);
+    settingStore?.setClassSectionTab(tabListRender?.[index]?.tabName);
     router.push(
       `${routes.classes.value}/${router?.query?.id}?tab=${tabListRender?.[index]?.tabName}`
     );

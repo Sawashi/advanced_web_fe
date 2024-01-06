@@ -13,6 +13,15 @@ export enum ETabName {
   Reviews = "reviews",
 }
 
+export enum ETabDescription {
+  Stream = "Stream",
+  People = "People",
+  Students = "Students",
+  GradeStructure = "Grade Structure",
+  GradeBoard = "Grade Board",
+  Reviews = "Reviews",
+}
+
 export enum EReviewStatus {
   PENDING = 'pending',
   REJECTED = 'rejected',

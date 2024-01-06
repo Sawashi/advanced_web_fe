@@ -2,19 +2,14 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { RootStore } from ".";
 import { makePersistable } from "mobx-persist-store";
 import { IClass } from "interfaces/classes";
-
-type TSettingSidebar = {
-  enrolledClasses?: IClass[];
-  teachingClasses?: IClass[];
-  ownedClasses?: IClass[];
-};
+import { ETabName } from "enums/classes";
 
 class SettingStore {
   isLoading?: boolean | undefined = undefined;
   isHeaderLoading?: boolean | undefined = undefined;
   isSideBarExpanded: boolean = true;
   rootStore: RootStore;
-  settingSidebar: TSettingSidebar | undefined = undefined;
+  classSectionTab: ETabName = ETabName.Stream;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -55,8 +50,8 @@ class SettingStore {
     return this.isSideBarExpanded || false;
   }
 
-  setSettingSidebar = (settingSidebar: TSettingSidebar) => {
-    this.settingSidebar = settingSidebar;
+  setClassSectionTab = (tab: ETabName) => {
+    this.classSectionTab = tab;
   };
 }
 export default SettingStore;

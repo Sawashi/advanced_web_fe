@@ -21,6 +21,8 @@ import React from "react";
 import routes from "routes";
 import { gray500 } from "theme/colors.theme";
 import { IClass } from "interfaces/classes";
+import { ETabName } from "enums/classes";
+import capitalize from "lodash/capitalize";
 
 export interface IClassHeaderProps {
   onExpand?: () => void;
@@ -30,7 +32,7 @@ export interface IClassHeaderProps {
 const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   const router = useRouter();
   const { settingStore, authStore } = useStores();
-  const { isHeaderLoading } = settingStore;
+  const { isHeaderLoading, classSectionTab } = settingStore;
   const name =
     (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
 
@@ -94,6 +96,28 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
                       {classDetails?.name}
                     </Text>
                     <Text fontSize="xs">{classDetails?.description}</Text>
+                  </VStack>
+                </Skeleton>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                href={routes.classes.details.value(
+                  classDetails?.id ?? "",
+                  classSectionTab
+                )}
+              >
+                <Skeleton isLoaded={!isHeaderLoading}>
+                  <VStack alignItems={"start"} gap={0}>
+                    <Text fontSize="md" fontWeight="bold">
+                      {capitalize(
+                        (classSectionTab ?? ETabName.Students)?.replaceAll(
+                          "-",
+                          " "
+                        )
+                      )}
+                    </Text>
                   </VStack>
                 </Skeleton>
               </BreadcrumbLink>
