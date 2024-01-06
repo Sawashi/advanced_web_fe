@@ -50,6 +50,9 @@ export const UsersApiRouters = {
 
 export const ClassesApiRouters = {
   get: {
+    all_classes: {
+      value: `${API_URL}/classes?limit=99&page=1`,
+    },
     class_details: {
       value: (classId: ID) => `${API_URL}/classes/${classId}`,
     },
@@ -101,10 +104,16 @@ export const ClassesApiRouters = {
     leave_class: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/leave`,
     },
+    restore_soft_deleted_class: {
+      value: (classId: string) => `${API_URL}/classes/${classId}/restore`,
+    },
   },
   delete: {
     delete_students_list: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/students`,
+    },
+    soft_delete_class: {
+      value: (classId: string) => `${API_URL}/classes/${classId}`,
     },
   },
 };
