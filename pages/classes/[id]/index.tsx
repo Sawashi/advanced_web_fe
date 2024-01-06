@@ -104,7 +104,7 @@ const ClassDetail = () => {
         {
           name: "Reviews",
           component: <TeacherReviewsScene details={classDetails ?? {}} />,
-          tabName: ETabName.GradeBoard,
+          tabName: ETabName.Reviews,
         },
       ]);
     } else {

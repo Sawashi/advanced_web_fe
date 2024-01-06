@@ -53,7 +53,7 @@ const TeacherReviewsScene = ({ details }: Props) => {
             </Text>
           </HStack>
 
-          <VStack px={5} w={"full"}>
+          <VStack px={5} w={"full"} gap={7}>
             {getValidArray(classReviews)?.map(renderReviewItem)}
           </VStack>
         </VStack>

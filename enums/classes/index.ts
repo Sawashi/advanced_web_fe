@@ -10,4 +10,11 @@ export enum ETabName {
   Students = "students",
   GradeStructure = "grade-structure",
   GradeBoard = "grade-board",
+  Reviews = "reviews",
+}
+
+export enum EReviewStatus {
+  PENDING = 'pending',
+  REJECTED = 'rejected',
+  ACCEPTED = 'accepted',
 }
