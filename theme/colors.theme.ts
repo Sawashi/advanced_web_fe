@@ -101,16 +101,16 @@ const purple800 = "#5521B5";
 const purple900 = "#4A1D96";
 
 // pink
-const pink50 = "#FDF2F8";
-const pink100 = "#FCE8F3";
-const pink200 = "#FAD1E8";
-const pink300 = "#F8B4D9";
-const pink400 = "#F17EB8";
-const pink500 = "#E74694";
-const pink600 = "#D61F69";
-const pink700 = "#BF125D";
-const pink800 = "#99154B";
-const pink900 = "#751A3D";
+export const pink50 = "#FDF2F8";
+export const pink100 = "#FCE8F3";
+export const pink200 = "#FAD1E8";
+export const pink300 = "#F8B4D9";
+export const pink400 = "#F17EB8";
+export const pink500 = "#E74694";
+export const pink600 = "#D61F69";
+export const pink700 = "#BF125D";
+export const pink800 = "#99154B";
+export const pink900 = "#751A3D";
 
 // brand
 const primary50 = "#E9EAEC";

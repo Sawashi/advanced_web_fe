@@ -14,30 +14,28 @@ import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   RequestReviewGradeSchema,
-  IRequestReviewGradeSchema,
+  IReviewGradeSchema,
+  ReviewGradeSchema,
 } from "constants/validation/classes";
 import { usePostRequestReview } from "API/post/post.class.request-review";
-import { ICompositionGrade } from "interfaces/classes";
+import { ICompositionGrade, IReview } from "interfaces/classes";
+import { EReviewStatus } from "enums/classes";
 
-type RequestReviewModalProps = {
+type Props = {
   isVisible: boolean;
   onClose: () => void;
-  initGrade: ICompositionGrade;
+  review: IReview;
 };
 
-const RequestReviewModal = ({
-  isVisible,
-  onClose,
-  initGrade,
-}: RequestReviewModalProps) => {
+const ReviewModal = ({ isVisible, onClose, review }: Props) => {
   const { mutateAsync: createReview, isLoading } = usePostRequestReview();
   const toast = useToast();
-  const method = useForm<IRequestReviewGradeSchema>({
+  const method = useForm<IReviewGradeSchema>({
     defaultValues: {
-      explanation: "",
-      expectedGrade: 0,
+      finalGrade: 0,
+      status: EReviewStatus.ACCEPTED,
     },
-    resolver: yupResolver(RequestReviewGradeSchema),
+    resolver: yupResolver(ReviewGradeSchema),
     reValidateMode: "onChange",
     mode: "all",
   });
@@ -53,55 +51,47 @@ const RequestReviewModal = ({
     reset();
   };
 
-  const onSubmit = async (values: IRequestReviewGradeSchema) => {
-    const res = await createReview({
-      expectedGrade: values?.expectedGrade,
-      explanation: values?.explanation,
-      gradeId: initGrade?.id ?? "",
-    });
+  const onReject = async (values: IReviewGradeSchema) => {};
 
-    if (res.status >= 400) {
-      toast({
-        description: res?.data?.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-    else {
-      toast({
-        description: "Request review successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      onCloseModal();
-    }
-  };
+  const onAccept = async (values: IReviewGradeSchema) => {};
 
   useEffect(() => {
-    if (initGrade?.grade) {
-      method.setValue("expectedGrade", initGrade?.grade);
+    if (review) {
+      method.setValue("finalGrade", review?.studentExpectedGrade);
     }
-  }, [initGrade?.grade, isVisible]);
+  }, [review, isVisible]);
 
   const Title = useCallback(() => {
     return (
       <HStack w="full" justifyContent={"space-between"}>
         <Text fontSize={20} fontWeight={600}>
-          Request review to your teachers
+          Review
         </Text>
 
-        <Button
-          variant="primary"
-          isDisabled={!isValid}
-          size="md"
-          onClick={handleSubmit(onSubmit)}
-          w={100}
-          isLoading={isLoading}
-        >
-          Submit
-        </Button>
+        <HStack spacing={5}>
+          <Button
+            backgroundColor={"red.300"}
+            color={"red.600"}
+            size="md"
+            onClick={handleSubmit(onReject)}
+            w={100}
+            isLoading={isLoading}
+          >
+            Reject
+          </Button>
+
+          <Button
+            backgroundColor={"green.300"}
+            color={"green.600"}
+            isDisabled={!isValid}
+            size="md"
+            onClick={handleSubmit(onAccept)}
+            w={100}
+            isLoading={isLoading}
+          >
+            Submit
+          </Button>
+        </HStack>
       </HStack>
     );
   }, [isValid, isLoading]);
@@ -133,34 +123,24 @@ const RequestReviewModal = ({
               w={"full"}
             >
               <Text fontSize={18} fontWeight={900}>
-                Request review
+                Submit a review
               </Text>
 
               <FormInput
-                name="expectedGrade"
-                placeholder="Enter your expected grade"
+                name="finalGrade"
+                placeholder="The grade you want to give"
                 isRequired={true}
-                label="Your expected grade"
-              />
-
-              <FormInput
-                name="explanation"
-                placeholder="Enter your explanation"
-                isRequired={true}
-                multiple={true}
-                label="Explanation"
+                label="Final grade"
               />
             </VStack>
 
             <VStack alignItems={"start"} w={"full"}>
-              <Text fontWeight={600}>To request review to your teachers:</Text>
+              <Text fontWeight={600}>To submit a review:</Text>
               <UnorderedList>
                 <ListItem key={1}>
-                  Use an authorized account to request review
+                  Submit: Accept the review and submit the grade
                 </ListItem>
-                <ListItem key={2}>
-                  Fill in your expected grade and the reason why you want to
-                </ListItem>
+                <ListItem key={2}>Reject: Reject the review</ListItem>
               </UnorderedList>
             </VStack>
           </VStack>
@@ -170,4 +150,4 @@ const RequestReviewModal = ({
   );
 };
 
-export default RequestReviewModal;
+export default ReviewModal;
