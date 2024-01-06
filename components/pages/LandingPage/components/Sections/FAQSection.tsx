@@ -5,12 +5,11 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  HStack,
   Heading,
   Image,
   Stack,
   Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { observer } from "mobx-react";
 import React, { useCallback } from "react";

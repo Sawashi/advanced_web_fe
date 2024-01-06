@@ -1,4 +1,4 @@
-import { Box, Container, VStack, chakra } from "@chakra-ui/react";
+import { Container, VStack } from "@chakra-ui/react";
 import Footer from "components/pages/LandingPage/components/Footer";
 import Header from "components/pages/LandingPage/components/Header";
 import FAQSection from "components/pages/LandingPage/components/Sections/FAQSection";

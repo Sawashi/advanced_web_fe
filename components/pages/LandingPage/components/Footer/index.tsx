@@ -17,8 +17,6 @@ import {
 import SvgIcon from "components/SvgIcon";
 import NextLink from "next/link";
 import React from "react";
-import { useMediaQuery } from "react-responsive";
-import { maxMobileWidth, maxTabletWidth } from "theme/globalStyles";
 
 type Props = {};
 
