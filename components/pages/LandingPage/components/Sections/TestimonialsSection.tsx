@@ -166,7 +166,7 @@ const TestimonialsSection: React.FC<Props> = ({ id }) => {
     >
       <Heading as="h2" size="xl" mb={5}>
         <Fade triggerOnce direction="up">
-          What Our Customers Are Saying
+          <Text>What Our Customers Are Saying</Text>
         </Fade>
       </Heading>
 
