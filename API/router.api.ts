@@ -107,13 +107,13 @@ export const ClassesApiRouters = {
     restore_soft_deleted_class: {
       value: (classId: string) => `${API_URL}/classes/${classId}/restore`,
     },
+    soft_delete_class: {
+      value: (classId: string) => `${API_URL}/classes/${classId}/soft-delete`,
+    },
   },
   delete: {
     delete_students_list: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/students`,
-    },
-    soft_delete_class: {
-      value: (classId: string) => `${API_URL}/classes/${classId}`,
     },
   },
 };

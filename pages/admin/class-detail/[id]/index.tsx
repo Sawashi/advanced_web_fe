@@ -26,17 +26,18 @@ import { getAllClasses, getClassDetails } from "API/get/get.class.details";
 import { IClass } from "interfaces/classes";
 import { softDeleteClass } from "API/patch/patch.class";
 import { restoreClass } from "API/patch/patch.class";
+import { getClassStudents } from "API/get/get.class.students";
 const ManageClasses = () => {
   const toast = useToast();
-  const router = useRouter();
-  const [ClassList, setClassList] = useState<IClass[]>([]);
+  const [classInfo, setClassInfo] = useState<IClass>();
+  const [MemberList, setMemberList] = useState<IClass[]>([]);
   const [ListToShow, setListToShow] = useState<IClass[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const { authStore } = useStores();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<string>(""); // Track the column to be sorted
-
-  const ClassListSorted = ListToShow; // Create a copy to avoid mutating the original array
+  const router = useRouter();
+  const MemberListSorted = ListToShow; // Create a copy to avoid mutating the original array
 
   const handleSort = (column: string) => {
     // If clicking on the same column, toggle the sort order
@@ -46,7 +47,7 @@ const ManageClasses = () => {
     setSortOrder(newSortOrder);
     setSortColumn(column);
 
-    ClassListSorted?.sort((a, b) => {
+    MemberListSorted?.sort((a, b) => {
       // Sort alphabetically based on the column
       const valueA = String(a[column]).toLowerCase();
       const valueB = String(b[column]).toLowerCase();
@@ -66,48 +67,16 @@ const ManageClasses = () => {
     }
     return null;
   };
-  const getClassList = async () => {
+  const getMemberList = async () => {
     try {
-      const res1 = await getAllClasses();
-      setClassList(res1.data);
-      setListToShow(res1.data);
+      const res = await getClassStudents(router.query.id as string);
+      setMemberList(res.data);
+      setListToShow(res.data);
+      console.log(res.data);
     } catch (error) {
       toast({
         status: "error",
         description: "Get user list failed",
-      });
-    }
-  };
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-  const deactiveClass = async (id: string) => {
-    try {
-      await softDeleteClass(id);
-      getClassList();
-      toast({
-        status: "success",
-        description: "Deactive class successfully",
-      });
-    } catch (error) {
-      toast({
-        status: "error",
-        description: "Deactive class failed",
-      });
-    }
-  };
-  const activeClass = async (id: string) => {
-    try {
-      await restoreClass(id);
-      getClassList();
-      toast({
-        status: "success",
-        description: "Active class successfully",
-      });
-    } catch (error) {
-      toast({
-        status: "error",
-        description: "Active class failed",
       });
     }
   };
@@ -122,23 +91,61 @@ const ManageClasses = () => {
         authStore.logout();
       }
     }
+    async function getClassInfo() {
+      const res = await getClassDetails(router.query.id as string);
+      setClassInfo(res);
+    }
+    getClassInfo();
     getInfoForCurrentUser();
-    getClassList();
+    getMemberList();
+    console.log(router.query?.id);
   }, []);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
   useEffect(() => {
     setListToShow(
-      ClassList?.filter((thisClass) =>
+      MemberList?.filter((thisClass) =>
         thisClass?.name?.includes(inputValue ?? "")
       )
     );
   }, [inputValue]);
-
+  const deactiveClass = async (id: string) => {
+    try {
+      await softDeleteClass(id);
+      getMemberList();
+      toast({
+        status: "success",
+        description: "Deactive class successfully",
+      });
+    } catch (error) {
+      toast({
+        status: "error",
+        description: "Deactive class failed",
+      });
+    }
+  };
+  const activeClass = async (id: string) => {
+    try {
+      await restoreClass(id);
+      getMemberList();
+      toast({
+        status: "success",
+        description: "Active class successfully",
+      });
+    } catch (error) {
+      toast({
+        status: "error",
+        description: "Active class failed",
+      });
+    }
+  };
   return (
     <AdminLayout title="Manage classes">
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>
         <VStack w="full" flex={1} h="full" alignItems={"left"} p={5} gap={5}>
           <Heading as="h2" size="2xl" noOfLines={1}>
-            Classes list
+            {classInfo?.name}
           </Heading>
           <Input
             variant="outline"
@@ -146,78 +153,59 @@ const ManageClasses = () => {
             onChange={handleInputChange}
             value={inputValue}
           />
+          <Heading as="h2" size="1xl" noOfLines={1}>
+            Member list
+          </Heading>
           <TableContainer>
             <Table variant="striped" colorScheme="gray">
               <Thead>
                 <Tr>
-                  <Th onClick={() => handleSort("id")}>
-                    ID {renderSortIcon("id")}
-                  </Th>
                   <Th onClick={() => handleSort("name")}>
                     Name {renderSortIcon("name")}
                   </Th>
-                  <Th onClick={() => handleSort("owner")}>
-                    Owner email {renderSortIcon("owner")}
+                  <Th onClick={() => handleSort("name")}>
+                    Student ID {renderSortIcon("name")}
                   </Th>
-                  <Th onClick={() => handleSort("createdAt")}>
-                    Created {renderSortIcon("createdAt")}
+                  <Th onClick={() => handleSort("name")}>
+                    User ID {renderSortIcon("name")}
                   </Th>
-                  <Th onClick={() => handleSort("status")}>
-                    Status {renderSortIcon("status")}
+                  <Th onClick={() => handleSort("name")}>
+                    Mapped status {renderSortIcon("name")}
                   </Th>
-                  <Th>Functions</Th>
+                  <Th>Function</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {ListToShow?.map((thisClass) => (
-                  <Tr key={thisClass.id}>
-                    <Td>{thisClass.id}</Td>
-                    <Td>{thisClass.name}</Td>
-                    <Td>{thisClass.owner?.email}</Td>
-                    <Td>{thisClass.createdAt?.toString()}</Td>
+                {ListToShow?.map((member) => (
+                  <Tr key={member.id}>
+                    <Td>{member.name}</Td>
+                    <Td>{member.id}</Td>
+                    {member?.user?.id ? (
+                      <Td>{member.user.id}</Td>
+                    ) : (
+                      <Td>Not mapped</Td>
+                    )}
                     <Td>
-                      {thisClass.deletedAt ? (
-                        <Tag variant="solid" colorScheme="cyan">
-                          Deactived
+                      {member?.user?.id ? (
+                        <Tag variant="solid" colorScheme="green">
+                          Mapped
                         </Tag>
                       ) : (
-                        <Tag variant="solid" colorScheme="green">
-                          Active
+                        <Tag variant="solid" colorScheme="red">
+                          Unmapped
                         </Tag>
                       )}
                     </Td>
                     <Td>
-                      {thisClass.deletedAt ? (
-                        <Button
-                          colorScheme="green"
-                          variant="solid"
-                          onClick={() =>
-                            activeClass(thisClass.id?.toString() ?? "")
-                          }
-                        >
-                          Active
+                      {member?.user?.id ? (
+                        <Button colorScheme="red" variant="solid">
+                          Unmap
                         </Button>
                       ) : (
-                        <Button
-                          colorScheme="red"
-                          variant="solid"
-                          onClick={() =>
-                            deactiveClass(thisClass.id?.toString() ?? "")
-                          }
-                        >
-                          Deactive
+                        <Button colorScheme="green" variant="solid">
+                          Map
                         </Button>
                       )}
-                      <Button
-                        colorScheme="blue"
-                        variant="solid"
-                        style={{ marginLeft: "10px" }}
-                        onClick={() => {
-                          router.push("class-detail/" + thisClass.id);
-                        }}
-                      >
-                        Detail
-                      </Button>
                     </Td>
                   </Tr>
                 ))}
