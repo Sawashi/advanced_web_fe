@@ -1,5 +1,4 @@
 import { extendTheme } from "@chakra-ui/react";
-import { createBreakpoints } from "@chakra-ui/theme-tools";
 import { Dict } from "@chakra-ui/utils";
 import { colors } from "./colors.theme";
 import {
@@ -14,6 +13,7 @@ import {
   backgroundWhite500,
   backgroundWhite600,
   breakPointValues,
+  containerSizes,
   focusBorderColorPrimary,
   textGrey200,
   textGrey500,
@@ -28,11 +28,12 @@ import { CustomSelect } from "./Select.theme";
 import { CustomTextArea } from "./textArea.theme";
 import { CustomButton } from "./button.theme";
 
-const breakpoints = createBreakpoints(breakPointValues);
-
 export function getTheme(): Dict {
   const theme = extendTheme({
-    breakpoints,
+    breakpoints: breakPointValues,
+    sizes: {
+      container: containerSizes,
+    },
     components: {
       CloseButton: {
         sizes: {
@@ -65,8 +66,14 @@ export function getTheme(): Dict {
         "html, body": {
           background: "white",
         },
+        html: {
+          scrollBehavior: "smooth",
+        },
         ".is-clickable": {
           cursor: "pointer",
+        },
+        ".offset-anchor": {
+          scrollMarginTop: "100px",
         },
       },
     },
