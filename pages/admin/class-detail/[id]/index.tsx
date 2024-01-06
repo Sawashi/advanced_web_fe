@@ -79,7 +79,6 @@ const ManageClasses = () => {
         const studentId = data[i][1];
         const modifiedStudentId = studentId.slice(1);
         const userId = data[i][0];
-        console.log("Read userid - studentid", userId, modifiedStudentId);
         await mapStudentId(classInfo?.id as string, modifiedStudentId, userId);
       }
       await getMemberList();
@@ -110,7 +109,6 @@ const ManageClasses = () => {
           const parsedData = parseCSV(result);
           setFileContent(parsedData);
           //Handle data here
-          console.log(parsedData);
           handleCSVData(parsedData);
         } catch (error) {
           toast({
