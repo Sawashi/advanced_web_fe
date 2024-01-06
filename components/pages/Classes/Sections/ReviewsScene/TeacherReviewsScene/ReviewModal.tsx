@@ -8,18 +8,22 @@ import {
   VStack,
   ListItem,
   useToast,
+  Collapse,
+  Code,
+  Divider,
 } from "@chakra-ui/react";
 import FormInput from "components/FormInput";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  RequestReviewGradeSchema,
   IReviewGradeSchema,
   ReviewGradeSchema,
 } from "constants/validation/classes";
-import { usePostRequestReview } from "API/post/post.class.request-review";
-import { ICompositionGrade, IReview } from "interfaces/classes";
+import { IReview } from "interfaces/classes";
 import { EReviewStatus } from "enums/classes";
+import { useUpdateReview } from "API/patch/patch.class.update-review";
+import SvgIcon from "components/SvgIcon";
+import { gray700 } from "theme/colors.theme";
 
 type Props = {
   isVisible: boolean;
@@ -28,17 +32,18 @@ type Props = {
 };
 
 const ReviewModal = ({ isVisible, onClose, review }: Props) => {
-  const { mutateAsync: createReview, isLoading } = usePostRequestReview();
+  const { mutateAsync: updateReview, isLoading } = useUpdateReview(review?.id);
   const toast = useToast();
   const method = useForm<IReviewGradeSchema>({
     defaultValues: {
       finalGrade: 0,
-      status: EReviewStatus.ACCEPTED,
     },
     resolver: yupResolver(ReviewGradeSchema),
     reValidateMode: "onChange",
     mode: "all",
   });
+  const [isShowMoreExplanation, setIsShowMoreExplanation] =
+    React.useState(false);
 
   const {
     handleSubmit,
@@ -46,14 +51,65 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
     formState: { isValid },
   } = method;
 
+  const expectedGrade = method.watch("finalGrade");
+
   const onCloseModal = () => {
     onClose();
     reset();
   };
 
-  const onReject = async (values: IReviewGradeSchema) => {};
+  const onReject = async (values: IReviewGradeSchema) => {
+    const res = await updateReview({
+      status: EReviewStatus.REJECTED,
+      reviewId: review?.id,
+    });
+    if (res.status >= 400) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      onCloseModal();
+      return;
+    }
+    toast({
+      title: "Success",
+      description: "Review has been rejected",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    onCloseModal();
+  };
 
-  const onAccept = async (values: IReviewGradeSchema) => {};
+  const onAccept = async (values: IReviewGradeSchema) => {
+    const res = await updateReview({
+      status: EReviewStatus.ACCEPTED,
+      finalGrade: values.finalGrade,
+      reviewId: review?.id,
+    });
+    if (res.status >= 400) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      onCloseModal();
+      return;
+    }
+    toast({
+      title: "Success",
+      description: "Review has been accepted",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    onCloseModal();
+  };
 
   useEffect(() => {
     if (review) {
@@ -114,17 +170,20 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
             gap={8}
           >
             <VStack
-              gap={3}
+              gap={7}
               p={5}
               borderWidth={1}
               borderColor={"gray.300"}
               alignItems={"start"}
               borderRadius={10}
               w={"full"}
+              divider={<Divider borderColor={"gray.300"} borderWidth={1} />}
             >
-              <Text fontSize={18} fontWeight={900}>
-                Submit a review
-              </Text>
+              <VStack w={"full"} alignItems={"start"} gap={3}>
+                <Text fontSize={18} fontWeight={900}>
+                  Submit a review
+                </Text>
+              </VStack>
 
               <FormInput
                 name="finalGrade"
@@ -132,6 +191,203 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
                 isRequired={true}
                 label="Final grade"
               />
+
+              <VStack
+                w={"full"}
+                alignItems={"start"}
+                justifyContent={"space-between"}
+              >
+                <VStack w={"full"} alignItems={"start"}>
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"bold"}
+                    color={"primary.500"}
+                  >
+                    Details
+                  </Text>
+
+                  <VStack w={"full"} p={3}>
+                    <HStack w={"full"} gap={3} alignItems={"center"}>
+                      <Text
+                        fontSize={"sm"}
+                        color={"gray.500"}
+                        fontWeight={"bold"}
+                      >
+                        Composition:
+                      </Text>
+                      <Text
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        ml={2}
+                        color={"purple.700"}
+                      >
+                        {review?.grade?.composition?.name +
+                          " " +
+                          `(${review?.grade?.composition?.percentage}%)`}
+                      </Text>
+                    </HStack>
+                    <HStack w={"full"} gap={3} alignItems={"center"}>
+                      <Text
+                        fontSize={"sm"}
+                        color={"gray.500"}
+                        fontWeight={"bold"}
+                      >
+                        Student:
+                      </Text>
+                      <Text
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        ml={2}
+                        color={"purple.700"}
+                      >
+                        {review?.grade?.student?.id +
+                          " - " +
+                          review?.grade?.student?.name}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                </VStack>
+
+                <VStack w={"full"} alignItems={"start"}>
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"bold"}
+                    color={"primary.500"}
+                  >
+                    Review
+                  </Text>
+
+                  <HStack w={"full"} justifyContent={"space-between"} gap={5}>
+                    <VStack flex={1}>
+                      <Text
+                        fontSize={"lg"}
+                        color={"gray.700"}
+                        fontWeight={"bold"}
+                      >
+                        From
+                      </Text>
+                      <Code
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        borderRadius={6}
+                        p={2}
+                        backgroundColor={
+                          review?.studentCurrentGrade >
+                          review?.studentExpectedGrade
+                            ? "red.100"
+                            : "green.100"
+                        }
+                        color={
+                          review?.studentCurrentGrade >
+                          review?.studentExpectedGrade
+                            ? "red.500"
+                            : "green.500"
+                        }
+                      >
+                        {review?.studentCurrentGrade}
+                      </Code>
+                    </VStack>
+                    <SvgIcon
+                      iconName="ic-arrow-right.svg"
+                      size={20}
+                      color={gray700}
+                    />
+                    <VStack flex={1}>
+                      <Text
+                        fontSize={"md"}
+                        color={"gray.700"}
+                        fontWeight={"bold"}
+                      >
+                        To
+                      </Text>
+                      <HStack>
+                        <Code
+                          fontSize={"md"}
+                          fontWeight={"700"}
+                          borderRadius={6}
+                          p={2}
+                          backgroundColor={
+                            review?.studentCurrentGrade >
+                            review?.studentExpectedGrade
+                              ? "red.100"
+                              : "green.100"
+                          }
+                          color={
+                            review?.studentCurrentGrade >
+                            review?.studentExpectedGrade
+                              ? "red.500"
+                              : "green.500"
+                          }
+                          as={
+                            Number(expectedGrade) !==
+                            Number(review?.studentExpectedGrade)
+                              ? "del"
+                              : "span"
+                          }
+                        >
+                          {review?.studentExpectedGrade}
+                        </Code>
+
+                        <Code
+                          fontSize={"md"}
+                          fontWeight={"700"}
+                          borderRadius={6}
+                          p={2}
+                          backgroundColor={"yellow.100"}
+                          color={"yellow.700"}
+                          display={
+                            Number(expectedGrade) !==
+                            Number(review?.studentExpectedGrade)
+                              ? "inline-block"
+                              : "none"
+                          }
+                        >
+                          {expectedGrade}
+                        </Code>
+                      </HStack>
+                    </VStack>
+                  </HStack>
+                </VStack>
+
+                <VStack w={"full"} alignItems={"start"}>
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"bold"}
+                    color={"primary.500"}
+                  >
+                    Explanation
+                  </Text>
+
+                  <Collapse startingHeight={50} in={isShowMoreExplanation}>
+                    <Text
+                      fontSize={"xs"}
+                      fontWeight={"normal"}
+                      color={"gray.500"}
+                      ml={2}
+                      whiteSpace={"pre-line"}
+                    >
+                      {review?.studentExplanation}
+                    </Text>
+                  </Collapse>
+                  <Button
+                    variant={"link"}
+                    colorScheme={"primary"}
+                    size={"sm"}
+                    onClick={() =>
+                      setIsShowMoreExplanation(!isShowMoreExplanation)
+                    }
+                    alignSelf={"center"}
+                    color={"gray.400"}
+                  >
+                    <SvgIcon
+                      iconName={
+                        isShowMoreExplanation ? "ic-up.svg" : "ic-down.svg"
+                      }
+                      size={20}
+                    />
+                  </Button>
+                </VStack>
+              </VStack>
             </VStack>
 
             <VStack alignItems={"start"} w={"full"}>

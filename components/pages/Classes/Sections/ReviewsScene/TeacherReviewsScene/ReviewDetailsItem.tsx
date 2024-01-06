@@ -20,9 +20,10 @@ import ReviewModal from "./ReviewModal";
 
 type Props = {
   review: IReview;
+  refetch?: () => Promise<void>;
 };
 
-const ReviewsDetailItem = ({ review }: Props) => {
+const ReviewsDetailItem = ({ review, refetch }: Props) => {
   const timeRender = useMemo(() => {
     const now = moment();
     const createdAt = moment(review?.createdAt);
@@ -109,30 +110,40 @@ const ReviewsDetailItem = ({ review }: Props) => {
           w={"full"}
           justifyContent={"space-between"}
           alignItems={"center"}
-          gap={5}
-          onClick={() => setIsShowMoreReview(!isShowMoreReview)}
+          gap={2}
         >
-          <HStack flex={1} alignItems={"center"} gap={3}>
-            <Avatar
-              size={"sm"}
-              name={
-                review?.requester?.firstName + " " + review?.requester?.lastName
-              }
-              src={review?.requester?.avatar}
-            />
-            <VStack alignItems={"start"} flex={1} gap={1}>
-              <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-                {review?.requester?.firstName +
+          <HStack
+            flex={1}
+            alignItems={"center"}
+            gap={5}
+            w={"full"}
+            onClick={() => setIsShowMoreReview(!isShowMoreReview)}
+            _hover={{
+              cursor: "pointer",
+            }}
+          >
+            <HStack flex={1} alignItems={"center"} gap={3}>
+              <Avatar
+                size={"sm"}
+                name={
+                  review?.requester?.firstName +
                   " " +
-                  review?.requester?.lastName}
-              </Text>
-              <Text fontSize={"xs"} fontWeight={"normal"} color={"gray.500"}>
-                {review?.requester?.email}
-              </Text>
-            </VStack>
-          </HStack>
+                  review?.requester?.lastName
+                }
+                src={review?.requester?.avatar}
+              />
+              <VStack alignItems={"start"} flex={1} gap={1}>
+                <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
+                  {review?.requester?.firstName +
+                    " " +
+                    review?.requester?.lastName}
+                </Text>
+                <Text fontSize={"xs"} fontWeight={"normal"} color={"gray.500"}>
+                  {review?.requester?.email}
+                </Text>
+              </VStack>
+            </HStack>
 
-          <HStack flex={1} alignItems={"center"} gap={3}>
             <VStack flex={1} alignItems={"end"}>
               <Tooltip
                 label={moment(review?.createdAt).format("DD/MM/YYYY HH:mm:ss")}
@@ -145,22 +156,20 @@ const ReviewsDetailItem = ({ review }: Props) => {
 
               <StatusRender />
             </VStack>
-
-            {isPending ? (
-              <Button
-                variant={"ghost"}
-                colorScheme={"primary"}
-                size={"sm"}
-                onClick={() => setIsShowReviewModal(true)}
-                alignSelf={"center"}
-                color={"gray.400"}
-              >
-                <SvgIcon iconName="ic-release.svg" size={20} color={pink500} />
-              </Button>
-            ): (
-              null
-            )}
           </HStack>
+
+          {isPending ? (
+            <Button
+              variant={"ghost"}
+              colorScheme={"primary"}
+              size={"sm"}
+              onClick={() => setIsShowReviewModal(true)}
+              alignSelf={"center"}
+              color={"gray.400"}
+            >
+              <SvgIcon iconName="ic-release.svg" size={20} color={pink500} />
+            </Button>
+          ) : null}
         </HStack>
 
         <Collapse
@@ -301,9 +310,12 @@ const ReviewsDetailItem = ({ review }: Props) => {
         </Collapse>
       </VStack>
 
-      <ReviewModal 
+      <ReviewModal
         isVisible={isShowReviewModal && !!review}
-        onClose={() => setIsShowReviewModal(false)}
+        onClose={() => {
+          refetch?.();
+          setIsShowReviewModal(false);
+        }}
         review={review}
       />
     </VStack>

@@ -104,19 +104,18 @@ const RequestReviewModal = ({
           <Text fontSize={"md"} color={"gray.700"} fontWeight={"bold"}>
             {moment(review?.createdAt).format("HH:ss DD/MM/YYYY")}
           </Text>
-        ) : null}
-
-        <Button
-          variant="primary"
-          isDisabled={!isValid}
-          size="md"
-          onClick={handleSubmit(onSubmit)}
-          w={100}
-          isLoading={isLoading}
-          display={isEdit ? "block" : "none"}
-        >
-          Submit
-        </Button>
+        ) : (
+          <Button
+            variant="primary"
+            isDisabled={!isValid}
+            size="md"
+            onClick={handleSubmit(onSubmit)}
+            w={100}
+            isLoading={isLoading}
+          >
+            Submit
+          </Button>
+        )}
       </HStack>
     );
   }, [isValid, isLoading, isEdit]);

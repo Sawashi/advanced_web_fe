@@ -183,4 +183,9 @@ export const ReviewApiRouters = {
       value: `${API_URL}/reviews`,
     },
   },
+  patch: {
+    update_review: {
+      value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/status`,
+    },
+  },
 };

@@ -32,7 +32,15 @@ const TeacherReviewsScene = ({ details }: Props) => {
   }
 
   const renderReviewItem = (item: IReview) => {
-    return <ReviewsDetailItem review={item} key={item.id} />;
+    return (
+      <ReviewsDetailItem
+        review={item}
+        key={item.id}
+        refetch={async () => {
+          refetchClassReviews();
+        }}
+      />
+    );
   };
 
   return (

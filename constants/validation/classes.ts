@@ -82,11 +82,6 @@ export const RequestReviewGradeSchema = yup.object().shape({
 });
 
 export const ReviewGradeSchema = yup.object().shape({
-  status: yup
-    .string()
-    .trim()
-    .required("Status is required")
-    .oneOf([EReviewStatus.ACCEPTED, EReviewStatus.REJECTED], "Status must be approved or rejected"),
   finalGrade: yup
     .number()
     .required("Final grade is required")

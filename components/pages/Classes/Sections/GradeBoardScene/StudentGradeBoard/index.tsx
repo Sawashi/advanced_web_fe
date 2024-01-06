@@ -10,7 +10,7 @@ import {
 import { useGetGradesOfStudent } from "API/get/get.class.student-grades";
 import EmptyList from "components/EmptyState/EmptyList";
 import SvgIcon from "components/SvgIcon";
-import { ETabName } from "enums/classes";
+import { EReviewStatus, ETabName } from "enums/classes";
 import { useStores } from "hooks/useStores";
 import { IClass, ICompositionGrade, IReview } from "interfaces/classes";
 import { observer } from "mobx-react";
@@ -36,14 +36,20 @@ const StudentGradeBoard = ({ details }: Props) => {
     useState(false);
   const [selectedGrade, setSelectedGrade] = useState<ICompositionGrade>();
   const [selectedReview, setSelectedReview] = useState<IReview>();
-  const { data: gradesList, isLoading: isLoadingGradesList } =
-    useGetGradesOfStudent({
-      classId: details?.id ?? "",
-      studentId: classStore?.currentStudentId ?? "",
-    });
+  const {
+    data: gradesList,
+    isLoading: isLoadingGradesList,
+    refetch: refetchGradeList,
+  } = useGetGradesOfStudent({
+    classId: details?.id ?? "",
+    studentId: classStore?.currentStudentId ?? "",
+  });
 
-  const { data: getMyReviewsData, isLoading: isLoadingMyReviews } =
-    useGetMyReviews(classStore?.currentClass?.id ?? "");
+  const {
+    data: getMyReviewsData,
+    isLoading: isLoadingMyReviews,
+    refetch: refetchReviews,
+  } = useGetMyReviews(classStore?.currentClass?.id ?? "");
 
   const [renderList, setRenderList] = useState<IGradeReview[]>();
 
@@ -56,6 +62,10 @@ const StudentGradeBoard = ({ details }: Props) => {
   }, [renderList]);
 
   settingStore?.setHeaderLoading(isLoadingGradesList || isLoadingMyReviews);
+
+  const onRefresh = async () => {
+    await Promise.all([refetchGradeList(), refetchReviews()]);
+  };
 
   useEffect(() => {
     let tempRenderList: IGradeReview[] = [];
@@ -127,6 +137,7 @@ const StudentGradeBoard = ({ details }: Props) => {
 
         {getValidArray(renderList)?.map((grade) => {
           const isFinalized = grade?.composition?.finalized;
+          const isPending = grade?.review?.status === EReviewStatus.PENDING;
           return (
             <HStack
               w={"full"}
@@ -165,7 +176,7 @@ const StudentGradeBoard = ({ details }: Props) => {
                   / 100
                 </Text>
               </HStack>
-              {!!grade?.review ? (
+              {isPending ? (
                 <Text fontSize={"md"} fontWeight={"normal"}>
                   <Tooltip label={"Your pending review"}>
                     <Button
@@ -204,7 +215,7 @@ const StudentGradeBoard = ({ details }: Props) => {
                     onClick={() => {
                       setSelectedGrade(grade);
                       setIsRequestReviewModalVisible(true);
-                      setSelectedReview(undefined)
+                      setSelectedReview(undefined);
                     }}
                     rightIcon={
                       <SvgIcon
@@ -222,7 +233,10 @@ const StudentGradeBoard = ({ details }: Props) => {
       </VStack>
       <RequestReviewModal
         isVisible={isRequestReviewModalVisible && !!selectedGrade}
-        onClose={() => setIsRequestReviewModalVisible(false)}
+        onClose={() => {
+          onRefresh();
+          setIsRequestReviewModalVisible(false);
+        }}
         initGrade={selectedGrade ?? {}}
         review={selectedReview}
       />
