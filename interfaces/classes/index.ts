@@ -1,6 +1,7 @@
 import { EClassRole } from "enums/classes";
 
 export interface IClass {
+  [key: string]: any;
   id?: string;
   name?: string;
   description?: string;

@@ -9,9 +9,6 @@ export interface IAccountListResponse {
   meta: IMetaResponse;
 }
 export const getAllAccounts = async (roleUser: string) => {
-  console.log(
-    "Requesting: " + UsersApiRouters.get.all_accounts.value(roleUser)
-  );
   const response = await api.get<IAccountListResponse>(
     UsersApiRouters.get.all_accounts.value(roleUser)
   );
