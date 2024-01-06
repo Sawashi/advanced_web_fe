@@ -35,6 +35,7 @@ const StudentGradeBoard = ({ details }: Props) => {
   const [isRequestReviewModalVisible, setIsRequestReviewModalVisible] =
     useState(false);
   const [selectedGrade, setSelectedGrade] = useState<ICompositionGrade>();
+  const [selectedReview, setSelectedReview] = useState<IReview>();
   const { data: gradesList, isLoading: isLoadingGradesList } =
     useGetGradesOfStudent({
       classId: details?.id ?? "",
@@ -178,6 +179,7 @@ const StudentGradeBoard = ({ details }: Props) => {
                       onClick={() => {
                         setSelectedGrade(grade);
                         setIsRequestReviewModalVisible(true);
+                        setSelectedReview(grade?.review);
                       }}
                       rightIcon={
                         <SvgIcon
@@ -202,6 +204,7 @@ const StudentGradeBoard = ({ details }: Props) => {
                     onClick={() => {
                       setSelectedGrade(grade);
                       setIsRequestReviewModalVisible(true);
+                      setSelectedReview(undefined)
                     }}
                     rightIcon={
                       <SvgIcon
@@ -221,6 +224,7 @@ const StudentGradeBoard = ({ details }: Props) => {
         isVisible={isRequestReviewModalVisible && !!selectedGrade}
         onClose={() => setIsRequestReviewModalVisible(false)}
         initGrade={selectedGrade ?? {}}
+        review={selectedReview}
       />
     </VStack>
   );

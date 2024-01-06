@@ -17,20 +17,24 @@ import {
   IRequestReviewGradeSchema,
 } from "constants/validation/classes";
 import { usePostRequestReview } from "API/post/post.class.request-review";
-import { ICompositionGrade } from "interfaces/classes";
+import { ICompositionGrade, IReview } from "interfaces/classes";
+import moment from "moment";
 
 type RequestReviewModalProps = {
   isVisible: boolean;
   onClose: () => void;
   initGrade: ICompositionGrade;
+  review?: IReview;
 };
 
 const RequestReviewModal = ({
   isVisible,
   onClose,
   initGrade,
+  review = undefined,
 }: RequestReviewModalProps) => {
   const { mutateAsync: createReview, isLoading } = usePostRequestReview();
+  const isEdit = !review;
   const toast = useToast();
   const method = useForm<IRequestReviewGradeSchema>({
     defaultValues: {
@@ -67,8 +71,7 @@ const RequestReviewModal = ({
         duration: 3000,
         isClosable: true,
       });
-    }
-    else {
+    } else {
       toast({
         description: "Request review successfully",
         status: "success",
@@ -80,17 +83,28 @@ const RequestReviewModal = ({
   };
 
   useEffect(() => {
-    if (initGrade?.grade) {
-      method.setValue("expectedGrade", initGrade?.grade);
+    if (review) {
+      method.setValue("expectedGrade", review?.studentExpectedGrade);
+      method.setValue("explanation", review?.studentExplanation);
+    } else {
+      if (initGrade?.grade) {
+        method.setValue("expectedGrade", initGrade?.grade);
+      }
     }
-  }, [initGrade?.grade, isVisible]);
+  }, [initGrade?.grade, isVisible, review]);
 
   const Title = useCallback(() => {
     return (
       <HStack w="full" justifyContent={"space-between"}>
         <Text fontSize={20} fontWeight={600}>
-          Request review to your teachers
+          {isEdit ? "Request review to your teachers" : "Your review"}
         </Text>
+
+        {!isEdit ? (
+          <Text fontSize={"md"} color={"gray.700"} fontWeight={"bold"}>
+            {moment(review?.createdAt).format("HH:ss DD/MM/YYYY")}
+          </Text>
+        ) : null}
 
         <Button
           variant="primary"
@@ -99,12 +113,13 @@ const RequestReviewModal = ({
           onClick={handleSubmit(onSubmit)}
           w={100}
           isLoading={isLoading}
+          display={isEdit ? "block" : "none"}
         >
           Submit
         </Button>
       </HStack>
     );
-  }, [isValid, isLoading]);
+  }, [isValid, isLoading, isEdit]);
 
   return (
     <Modal
@@ -141,6 +156,7 @@ const RequestReviewModal = ({
                 placeholder="Enter your expected grade"
                 isRequired={true}
                 label="Your expected grade"
+                disabled={!isEdit}
               />
 
               <FormInput
@@ -149,6 +165,7 @@ const RequestReviewModal = ({
                 isRequired={true}
                 multiple={true}
                 label="Explanation"
+                disabled={!isEdit}
               />
             </VStack>
 
