@@ -11,6 +11,7 @@ import {
   FormErrorMessage,
   Button,
   NumberInputProps,
+  Textarea,
 } from "@chakra-ui/react";
 import get from "lodash/get";
 import startCase from "lodash/startCase";
@@ -44,6 +45,7 @@ export interface IFormItemProps {
   onFocusCapture?: () => void;
   labelMb?: number | string;
   numberWithoutStep?: boolean;
+  multiple?: boolean;
 }
 const FormInput = (props: IFormItemProps) => {
   const {
@@ -69,6 +71,7 @@ const FormInput = (props: IFormItemProps) => {
     maxLength,
     numberWithoutStep = false,
     labelMb = 4,
+    multiple = false,
   } = props;
   const {
     register,
@@ -124,21 +127,38 @@ const FormInput = (props: IFormItemProps) => {
       {children ? (
         children
       ) : type !== "number" ? (
-        <Input
-          height={height}
-          type={type}
-          autoComplete={autoComplete ?? name}
-          placeholder={placeholder}
-          isReadOnly={readonly}
-          color={inputColor}
-          maxLength={maxLength}
-          {...disabledProps}
-          {...register(name, {
-            required: isRequired
-              ? `${label ?? startCase(name)} is required`
-              : false,
-          })}
-        />
+        multiple ? (
+          <Textarea
+            height={height}
+            autoComplete={autoComplete ?? name}
+            placeholder={placeholder}
+            isReadOnly={readonly}
+            color={inputColor}
+            maxLength={maxLength}
+            {...disabledProps}
+            {...register(name, {
+              required: isRequired
+                ? `${label ?? startCase(name)} is required`
+                : false,
+            })}
+          />
+        ) : (
+          <Input
+            height={height}
+            type={type}
+            autoComplete={autoComplete ?? name}
+            placeholder={placeholder}
+            isReadOnly={readonly}
+            color={inputColor}
+            maxLength={maxLength}
+            {...disabledProps}
+            {...register(name, {
+              required: isRequired
+                ? `${label ?? startCase(name)} is required`
+                : false,
+            })}
+          />
+        )
       ) : (
         <Controller
           name={name}

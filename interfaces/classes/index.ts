@@ -1,4 +1,4 @@
-import { EClassRole } from "enums/classes";
+import { EClassRole, EReviewStatus } from "enums/classes";
 
 export interface IClass {
   [key: string]: any;
@@ -53,4 +53,32 @@ export interface IStudent {
     avatar?: any;
     id?: string;
   };
+}
+
+export interface ICompositionGrade {
+  id?: string;
+  grade?: number;
+  composition?: IComposition;
+  student?: IStudent;
+}
+
+export interface IReview {
+  id: string;
+  studentExplanation: string;
+  studentExpectedGrade: number;
+  studentCurrentGrade: number;
+  studentFinalGrade: any;
+  status: EReviewStatus;
+  createdAt: string;
+  updatedAt: string;
+  grade: ICompositionGrade;
+  requester: IRequester;
+}
+
+export interface IRequester {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatar: string
 }

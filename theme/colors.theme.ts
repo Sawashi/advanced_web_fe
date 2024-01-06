@@ -53,16 +53,16 @@ const orange800 = "#8A2C0D";
 const orange900 = "#73230D";
 
 // yellow
-const yellow50 = "#FDF9EA";
-const yellow100 = "#FEF4D2";
-const yellow200 = "#FCEEBB";
-const yellow300 = "#F7E397";
-const yellow400 = "#FFDB5C";
-const yellow500 = "#FFD24C";
-const yellow600 = "#FBC113";
-const yellow700 = "#E4A606";
-const yellow800 = "#A36C00";
-const yellow900 = "#5E4100";
+export const yellow50 = "#FDF9EA";
+export const yellow100 = "#FEF4D2";
+export const yellow200 = "#FCEEBB";
+export const yellow300 = "#F7E397";
+export const yellow400 = "#FFDB5C";
+export const yellow500 = "#FFD24C";
+export const yellow600 = "#FBC113";
+export const yellow700 = "#E4A606";
+export const yellow800 = "#A36C00";
+export const yellow900 = "#5E4100";
 
 // green
 export const green50 = "#F3FAF7";
@@ -77,16 +77,16 @@ export const green800 = "#03543F";
 export const green900 = "#014737";
 
 // cyan
-const cyan50 = "#EDFAFA";
-const cyan100 = "#D5F5F6";
-const cyan200 = "#BFF0F2";
-const cyan300 = "#7EDCE2";
-const cyan400 = "#16BDCA";
-const cyan500 = "#0694A2";
-const cyan600 = "#047481";
-const cyan700 = "#036672";
-const cyan800 = "#05505C";
-const cyan900 = "#014451";
+export const cyan50 = "#EDFAFA";
+export const cyan100 = "#D5F5F6";
+export const cyan200 = "#BFF0F2";
+export const cyan300 = "#7EDCE2";
+export const cyan400 = "#16BDCA";
+export const cyan500 = "#0694A2";
+export const cyan600 = "#047481";
+export const cyan700 = "#036672";
+export const cyan800 = "#05505C";
+export const cyan900 = "#014451";
 
 // purple
 const purple50 = "#F5F3FF";
@@ -101,16 +101,16 @@ const purple800 = "#5521B5";
 const purple900 = "#4A1D96";
 
 // pink
-const pink50 = "#FDF2F8";
-const pink100 = "#FCE8F3";
-const pink200 = "#FAD1E8";
-const pink300 = "#F8B4D9";
-const pink400 = "#F17EB8";
-const pink500 = "#E74694";
-const pink600 = "#D61F69";
-const pink700 = "#BF125D";
-const pink800 = "#99154B";
-const pink900 = "#751A3D";
+export const pink50 = "#FDF2F8";
+export const pink100 = "#FCE8F3";
+export const pink200 = "#FAD1E8";
+export const pink300 = "#F8B4D9";
+export const pink400 = "#F17EB8";
+export const pink500 = "#E74694";
+export const pink600 = "#D61F69";
+export const pink700 = "#BF125D";
+export const pink800 = "#99154B";
+export const pink900 = "#751A3D";
 
 // brand
 const primary50 = "#E9EAEC";

@@ -1,37 +1,86 @@
-import { VStack, HStack, Text, Center, Spinner } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Text,
+  Center,
+  Spinner,
+  Button,
+  Tooltip,
+} from "@chakra-ui/react";
 import { useGetGradesOfStudent } from "API/get/get.class.student-grades";
 import EmptyList from "components/EmptyState/EmptyList";
 import SvgIcon from "components/SvgIcon";
-import { ETabName } from "enums/classes";
+import { EReviewStatus, ETabName } from "enums/classes";
 import { useStores } from "hooks/useStores";
-import { IClass } from "interfaces/classes";
+import { IClass, ICompositionGrade, IReview } from "interfaces/classes";
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import routes from "routes";
-import { green500 } from "theme/colors.theme";
-import { getValidArray } from "utils/common";
+import { cyan500, red500, yellow700 } from "theme/colors.theme";
+import { checkValidArray, getValidArray } from "utils/common";
+import RequestReviewModal from "./RequestReviewModal";
+import { useGetMyReviews } from "API/get/get.class.my-reviews";
 
 interface Props {
   details: IClass;
 }
+interface IGradeReview extends ICompositionGrade {
+  review?: IReview;
+}
 
 const StudentGradeBoard = ({ details }: Props) => {
-  const { classStore } = useStores();
+  const { classStore, settingStore } = useStores();
   const router = useRouter();
-  const { data: gradesList, isLoading: isLoadingGradesList } =
-    useGetGradesOfStudent({
-      classId: details?.id ?? "",
-      studentId: classStore?.currentStudentId ?? "",
-    });
+  const [isRequestReviewModalVisible, setIsRequestReviewModalVisible] =
+    useState(false);
+  const [selectedGrade, setSelectedGrade] = useState<ICompositionGrade>();
+  const [selectedReview, setSelectedReview] = useState<IReview>();
+  const {
+    data: gradesList,
+    isLoading: isLoadingGradesList,
+    refetch: refetchGradeList,
+  } = useGetGradesOfStudent({
+    classId: details?.id ?? "",
+    studentId: classStore?.currentStudentId ?? "",
+  });
+
+  const {
+    data: getMyReviewsData,
+    isLoading: isLoadingMyReviews,
+    refetch: refetchReviews,
+  } = useGetMyReviews(classStore?.currentClass?.id ?? "");
+
+  const [renderList, setRenderList] = useState<IGradeReview[]>();
 
   const totalGrade = React.useMemo(() => {
-    return getValidArray(gradesList)?.reduce((acc, curr) => {
+    return getValidArray(renderList)?.reduce((acc, curr) => {
       return (
         acc + ((curr?.grade ?? 0) * (curr?.composition?.percentage ?? 0)) / 100
       );
     }, 0);
-  }, [gradesList]);
+  }, [renderList]);
+
+  settingStore?.setHeaderLoading(isLoadingGradesList || isLoadingMyReviews);
+
+  const onRefresh = async () => {
+    await Promise.all([refetchGradeList(), refetchReviews()]);
+  };
+
+  useEffect(() => {
+    let tempRenderList: IGradeReview[] = [];
+    if (checkValidArray(gradesList)) {
+      tempRenderList = getValidArray(gradesList)?.map((grade) => {
+        return {
+          ...grade,
+          review: getValidArray(getMyReviewsData?.data)?.find(
+            (review) => review?.grade?.id === grade?.id
+          ),
+        };
+      });
+    }
+    setRenderList(tempRenderList);
+  }, [getMyReviewsData, gradesList]);
 
   if (!classStore?.currentStudentId) {
     return (
@@ -51,7 +100,7 @@ const StudentGradeBoard = ({ details }: Props) => {
     );
   }
 
-  if (isLoadingGradesList) {
+  if (isLoadingGradesList || isLoadingMyReviews) {
     return (
       <Center mt={20}>
         <Spinner boxSize={30} />
@@ -76,7 +125,7 @@ const StudentGradeBoard = ({ details }: Props) => {
           </Text>
 
           <Text fontSize={"md"} fontWeight={"normal"}>
-            {getValidArray(gradesList)?.length} items
+            {getValidArray(renderList)?.length} items
           </Text>
         </HStack>
 
@@ -86,8 +135,9 @@ const StudentGradeBoard = ({ details }: Props) => {
           </Text>
         </HStack>
 
-        {getValidArray(gradesList)?.map((grade) => {
+        {getValidArray(renderList)?.map((grade) => {
           const isFinalized = grade?.composition?.finalized;
+          const isPending = grade?.review?.status === EReviewStatus.PENDING;
           return (
             <HStack
               w={"full"}
@@ -100,29 +150,96 @@ const StudentGradeBoard = ({ details }: Props) => {
               borderRadius={10}
               bgColor={isFinalized ? "gray.50" : "white"}
             >
-              <HStack>
-                {isFinalized ? (
-                  <SvgIcon
-                    iconName={"ic-lock.svg"}
-                    size={20}
-                    color={green500}
-                  />
-                ) : null}
+              <HStack
+                flex={1}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <HStack>
+                  {isFinalized ? (
+                    <SvgIcon
+                      iconName={"ic-lock.svg"}
+                      size={20}
+                      color={red500}
+                    />
+                  ) : null}
+                  <Text fontSize={"md"} fontWeight={"bold"}>
+                    {grade?.composition?.name} ({grade?.composition?.percentage}
+                    %)
+                  </Text>
+                </HStack>
+
                 <Text fontSize={"md"} fontWeight={"normal"}>
-                  {grade?.composition?.name} ({grade?.composition?.percentage}%)
+                  <Text fontSize={"md"} fontWeight={"bold"} as={"span"}>
+                    {grade?.grade}
+                  </Text>{" "}
+                  / 100
                 </Text>
               </HStack>
-
-              <Text fontSize={"md"} fontWeight={"normal"}>
-                <Text fontSize={"md"} fontWeight={"bold"} as={"span"}>
-                  {grade?.grade}
-                </Text>{" "}
-                / 100
-              </Text>
+              {isPending ? (
+                <Text fontSize={"md"} fontWeight={"normal"}>
+                  <Tooltip label={"Your pending review"}>
+                    <Button
+                      variant={"ghost"}
+                      p={0}
+                      bgColor={"transparent"}
+                      _hover={{
+                        bgColor: "transparent",
+                      }}
+                      rounded={"full"}
+                      onClick={() => {
+                        setSelectedGrade(grade);
+                        setIsRequestReviewModalVisible(true);
+                        setSelectedReview(grade?.review);
+                      }}
+                      rightIcon={
+                        <SvgIcon
+                          iconName={"ic-pending-review.svg"}
+                          size={20}
+                          color={cyan500}
+                        />
+                      }
+                    />
+                  </Tooltip>
+                </Text>
+              ) : isFinalized ? (
+                <Tooltip label={"Request change grade"}>
+                  <Button
+                    variant={"ghost"}
+                    p={0}
+                    bgColor={"transparent"}
+                    _hover={{
+                      bgColor: "transparent",
+                    }}
+                    rounded={"full"}
+                    onClick={() => {
+                      setSelectedGrade(grade);
+                      setIsRequestReviewModalVisible(true);
+                      setSelectedReview(undefined);
+                    }}
+                    rightIcon={
+                      <SvgIcon
+                        iconName={"ic-report.svg"}
+                        size={20}
+                        color={yellow700}
+                      />
+                    }
+                  />
+                </Tooltip>
+              ) : null}
             </HStack>
           );
         })}
       </VStack>
+      <RequestReviewModal
+        isVisible={isRequestReviewModalVisible && !!selectedGrade}
+        onClose={() => {
+          onRefresh();
+          setIsRequestReviewModalVisible(false);
+        }}
+        initGrade={selectedGrade ?? {}}
+        review={selectedReview}
+      />
     </VStack>
   );
 };

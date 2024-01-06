@@ -15,18 +15,14 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentUser } from "API/get/get.me";
-import { getIn } from "yup";
-import { useRouter } from "next/router";
-import routes from "routes";
 import { useStores } from "hooks/useStores";
-import { auth } from "API";
 import { getAllAccounts } from "API/get/get.account";
 import { IUser } from "interfaces/user";
+
+
 import { updateSomeoneAccount } from "API/patch/patch.auth.account";
-import { FaSortDown, FaSortUp } from "react-icons/fa";
-import { set } from "lodash";
 const ManageAccounts = () => {
   const [userLists, setUserLists] = useState<IUser[]>();
   const [ListToShow, setListToShow] = useState<IUser[]>();

@@ -79,6 +79,12 @@ export const ClassesApiRouters = {
       value: (classId: ID, studentId: ID) =>
         `${API_URL}/classes/${classId}/students/${studentId}/grades`,
     },
+    my_reviews: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/my-reviews`,
+    },
+    reviews: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/reviews`,
+    },
   },
   post: {
     create_a_class: {
@@ -167,6 +173,19 @@ export const GlobalApiRouters = {
     },
     templates_grades: {
       value: `${BASE_URL}/api/static/templates/grades.csv`,
+    },
+  },
+};
+
+export const ReviewApiRouters = {
+  post: {
+    create_review: {
+      value: `${API_URL}/reviews`,
+    },
+  },
+  patch: {
+    update_review: {
+      value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/status`,
     },
   },
 };
