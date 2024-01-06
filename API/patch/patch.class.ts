@@ -15,3 +15,23 @@ export const softDeleteClass = async (classId: string) => {
   if (response.status !== 200) throw new Error(response.statusText);
   return response.data;
 };
+export const mapStudentId = async (
+  classId: string,
+  studentId: string,
+  userId: string
+) => {
+  const response = await api.patch(
+    ClassesApiRouters.patch.map_student_id.value(classId),
+    { studentId, userId }
+  );
+  if (response.status !== 200) throw new Error(response.statusText);
+  return response.data;
+};
+export const unmapStudentId = async (classId: string, userId: string) => {
+  const response = await api.patch(
+    ClassesApiRouters.patch.unmap_student_id.value(classId),
+    { userId }
+  );
+  if (response.status !== 200) throw new Error(response.statusText);
+  return response.data;
+};

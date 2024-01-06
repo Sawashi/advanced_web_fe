@@ -110,6 +110,14 @@ export const ClassesApiRouters = {
     soft_delete_class: {
       value: (classId: string) => `${API_URL}/classes/${classId}/soft-delete`,
     },
+    map_student_id: {
+      value: (classId: string) =>
+        `${API_URL}/classes/${classId}/map-student-id`,
+    },
+    unmap_student_id: {
+      value: (classId: string) =>
+        `${API_URL}/classes/${classId}/unmap-student-id`,
+    },
   },
   delete: {
     delete_students_list: {
