@@ -81,7 +81,10 @@ export const ClassesApiRouters = {
     },
     my_reviews: {
       value: (classId: ID) => `${API_URL}/classes/${classId}/my-reviews`,
-    }
+    },
+    reviews: {
+      value: (classId: ID) => `${API_URL}/classes/${classId}/reviews`,
+    },
   },
   post: {
     create_a_class: {

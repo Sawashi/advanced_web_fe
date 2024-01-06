@@ -24,7 +24,7 @@ import StreamScene from "components/pages/Classes/Sections/StreamScene";
 import { getValidArray } from "utils/common";
 import SvgIcon from "components/SvgIcon";
 import UpdateClassModal from "components/pages/Classes/UpdateClassModal";
-import GradeStructureScene from "components/pages/Classes/Sections/GradeStructureScene";
+import GradeStructureScene from "GradeStructureScene";
 import StudentsScene from "components/pages/Classes/Sections/StudentsScene";
 import { red500 } from "theme/colors.theme";
 import Modal from "components/Modal";
@@ -34,6 +34,7 @@ import TeacherGradeBoard from "components/pages/Classes/Sections/GradeBoardScene
 import { ETabName } from "enums/classes";
 import StudentGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/StudentGradeBoard";
 import { useGetUserMappedStudent } from "API/get/get.class.user-mapped-student";
+import TeacherReviewsScene from "components/pages/Classes/Sections/ReviewsScene/TeacherReviewsScene";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -66,7 +67,7 @@ const ClassDetail = () => {
       : "Class";
 
   const tabListRender = useMemo(() => {
-    const tabs = [
+    let tabs = [
       {
         name: "Stream",
         component: (
@@ -94,17 +95,26 @@ const ClassDetail = () => {
       },
     ];
     if (!isStudentOfClass) {
-      tabs.push({
-        name: "Manage grade",
-        component: <TeacherGradeBoard details={classDetails ?? {}} />,
-        tabName: ETabName.GradeBoard,
-      });
+      tabs = tabs.concat([
+        {
+          name: "Manage grade",
+          component: <TeacherGradeBoard details={classDetails ?? {}} />,
+          tabName: ETabName.GradeBoard,
+        },
+        {
+          name: "Reviews",
+          component: <TeacherReviewsScene details={classDetails ?? {}} />,
+          tabName: ETabName.GradeBoard,
+        },
+      ]);
     } else {
-      tabs.push({
-        name: "Your grade",
-        component: <StudentGradeBoard details={classDetails ?? {}} />,
-        tabName: ETabName.GradeBoard,
-      });
+      tabs = tabs.concat([
+        {
+          name: "My grade",
+          component: <StudentGradeBoard details={classDetails ?? {}} />,
+          tabName: ETabName.GradeBoard,
+        },
+      ]);
     }
     return tabs;
   }, [classDetails, isStudentOfClass]);
