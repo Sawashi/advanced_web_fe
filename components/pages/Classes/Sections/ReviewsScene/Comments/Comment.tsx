@@ -17,6 +17,7 @@ import { EReviewStatus } from "enums/classes";
 import SvgIcon from "components/SvgIcon";
 import { primary500 } from "theme/colors.theme";
 import { useGetReviewCommentReplies } from "API/get/get.review.comment-replies";
+import { usePostCreateReviewCommentReply } from "API/post/post.review.comment-reply";
 
 const Comment = ({
   comment,
@@ -38,6 +39,12 @@ const Comment = ({
   });
   const { data: reviewCommentReplies } = dataGetReviewCommentReplies ?? {};
 
+  const {
+    mutateAsync: mutateCreateReviewCommentReply,
+    isLoading: isCreatingReviewCommentReply,
+  } = usePostCreateReviewCommentReply(review.id, comment.id, () => {
+    refetchGetReviewCommentReplies();
+  });
   const updatedTime = useMemo(() => {
     return timeAgo(comment?.updatedAt);
   }, [comment?.updatedAt]);
@@ -47,7 +54,14 @@ const Comment = ({
     [reviewCommentReplies, review, comment]
   );
 
-  const handleSendReply = (value: string) => {};
+  const handleSendReply = (value: string) => {
+    mutateCreateReviewCommentReply({
+      reviewId: review.id,
+      commentId: comment.id,
+      content: value,
+    });
+    replyInputRef.current!.value = "";
+  };
 
   return (
     <VStack w={"full"} alignItems={"start"} gap={2}>
@@ -149,7 +163,7 @@ const Comment = ({
                     borderRadius={12}
                     colorScheme={"primary"}
                     p={0}
-                    isLoading={false}
+                    isLoading={isCreatingReviewCommentReply}
                     onClick={() => {
                       if (replyInputRef.current?.value) {
                         handleSendReply(replyInputRef.current?.value);

@@ -202,6 +202,10 @@ export const ReviewApiRouters = {
     review_comment: {
       value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/comments`,
     },
+    review_comment_reply: {
+      value: (reviewId: ID, commentId: ID) =>
+        `${API_URL}/reviews/${reviewId}/comments/${commentId}/reply`,
+    },
   },
   patch: {
     update_review: {
