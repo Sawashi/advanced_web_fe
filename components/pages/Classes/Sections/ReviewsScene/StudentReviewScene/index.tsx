@@ -90,7 +90,7 @@ const StudentReviewsScene = ({ details }: Props) => {
       >
         <HStack w={"full"} justifyContent={"space-between"}>
           <Text fontSize={"xl"} fontWeight={"bold"}>
-            Reviews
+            Reviews history
           </Text>
         </HStack>
 

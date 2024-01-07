@@ -9,6 +9,7 @@ import {
   Button,
   Collapse,
   Tooltip,
+  Box,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { EReviewStatus } from "enums/classes";
@@ -116,6 +117,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             _hover={{
               cursor: "pointer",
             }}
+            divider={<Box h={"20px"} w={'2px'} bgColor={"gray.300"} />}
           >
             <HStack flex={1} alignItems={"center"} gap={3}>
               <Avatar
@@ -175,24 +177,53 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                   color={gray700}
                 />
                 <VStack flex={1}>
-                  <Code
-                    fontSize={"md"}
-                    fontWeight={"700"}
-                    borderRadius={6}
-                    p={2}
-                    backgroundColor={
-                      review?.studentCurrentGrade > review?.studentExpectedGrade
-                        ? "red.100"
-                        : "green.100"
-                    }
-                    color={
-                      review?.studentCurrentGrade > review?.studentExpectedGrade
-                        ? "red.500"
-                        : "green.500"
-                    }
-                  >
-                    {review?.studentExpectedGrade}
-                  </Code>
+                  <HStack>
+                    <Code
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      borderRadius={6}
+                      p={2}
+                      backgroundColor={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.100"
+                          : "green.100"
+                      }
+                      color={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.500"
+                          : "green.500"
+                      }
+                      as={
+                        !!review?.studentFinalGrade &&
+                        Number(review?.studentFinalGrade) !==
+                          Number(review?.studentExpectedGrade)
+                          ? "del"
+                          : "span"
+                      }
+                    >
+                      {review?.studentExpectedGrade}
+                    </Code>
+
+                    <Code
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      borderRadius={6}
+                      p={2}
+                      backgroundColor={"yellow.100"}
+                      color={"yellow.700"}
+                      display={
+                        !!review?.studentFinalGrade &&
+                        Number(review?.studentFinalGrade) !==
+                          Number(review?.studentExpectedGrade)
+                          ? "inline-block"
+                          : "none"
+                      }
+                    >
+                      {review?.studentFinalGrade}
+                    </Code>
+                  </HStack>
                 </VStack>
               </HStack>
             )}
@@ -334,26 +365,53 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                     >
                       To
                     </Text>
-                    <Code
-                      fontSize={"md"}
-                      fontWeight={"700"}
-                      borderRadius={6}
-                      p={2}
-                      backgroundColor={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.100"
-                          : "green.100"
-                      }
-                      color={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.500"
-                          : "green.500"
-                      }
-                    >
-                      {review?.studentExpectedGrade}
-                    </Code>
+                    <HStack>
+                      <Code
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        borderRadius={6}
+                        p={2}
+                        backgroundColor={
+                          review?.studentCurrentGrade >
+                          review?.studentExpectedGrade
+                            ? "red.100"
+                            : "green.100"
+                        }
+                        color={
+                          review?.studentCurrentGrade >
+                          review?.studentExpectedGrade
+                            ? "red.500"
+                            : "green.500"
+                        }
+                        as={
+                          !!review?.studentFinalGrade &&
+                          Number(review?.studentFinalGrade) !==
+                            Number(review?.studentExpectedGrade)
+                            ? "del"
+                            : "span"
+                        }
+                      >
+                        {review?.studentExpectedGrade}
+                      </Code>
+
+                      <Code
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        borderRadius={6}
+                        p={2}
+                        backgroundColor={"yellow.100"}
+                        color={"yellow.700"}
+                        display={
+                          !!review?.studentFinalGrade &&
+                          Number(review?.studentFinalGrade) !==
+                            Number(review?.studentExpectedGrade)
+                            ? "inline-block"
+                            : "none"
+                        }
+                      >
+                        {review?.studentFinalGrade}
+                      </Code>
+                    </HStack>
                   </VStack>
                 </HStack>
               </VStack>

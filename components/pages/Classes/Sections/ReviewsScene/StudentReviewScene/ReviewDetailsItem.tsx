@@ -220,7 +220,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             <VStack gap={5} w="full">
               <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
                 <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-                  Details
+                  Composition
                 </Text>
 
                 <VStack w={"full"} p={3}>
