@@ -97,7 +97,9 @@ const FAQSection: React.FC<Props> = ({ id }) => {
               </AccordionButton>
 
               <AccordionPanel pb={4}>
-                <Text>{faq.answer}</Text>
+                <Text
+                  lineHeight={1.6}
+                >{faq.answer}</Text>
               </AccordionPanel>
             </AccordionItem>
           );
