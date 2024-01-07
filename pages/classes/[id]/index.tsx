@@ -175,7 +175,7 @@ const ClassDetail = () => {
       return;
     }
     setTabIndex(0);
-  }, [tabName]);
+  }, [tabName, tabListRender]);
 
   useEffect(() => {
     classStore.setCurrentStudentId(studentMapped?.studentId ?? null);

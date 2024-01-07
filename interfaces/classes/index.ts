@@ -80,5 +80,21 @@ export interface IRequester {
   email: string;
   firstName: string;
   lastName: string;
-  avatar: string
+  avatar: string;
+}
+
+export interface IReviewComment {
+  id: string;
+  content: string;
+  level: number;
+  createdAt: string;
+  updatedAt: string;
+  childrenCount: number;
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+  };
 }

@@ -113,16 +113,16 @@ export const pink800 = "#99154B";
 export const pink900 = "#751A3D";
 
 // brand
-const primary50 = "#E9EAEC";
-const primary100 = "#B9BDC3";
-const primary200 = "#989DA6";
-const primary300 = "#68717E";
-const primary400 = "#4B5565";
-const primary500 = "#1E2B3E";
-const primary600 = "#1B2738";
-const primary700 = "#151F2C";
-const primary800 = "#111822";
-const primary900 = "#0D121A";
+export const primary50 = "#E9EAEC";
+export const primary100 = "#B9BDC3";
+export const primary200 = "#989DA6";
+export const primary300 = "#68717E";
+export const primary400 = "#4B5565";
+export const primary500 = "#1E2B3E";
+export const primary600 = "#1B2738";
+export const primary700 = "#151F2C";
+export const primary800 = "#111822";
+export const primary900 = "#0D121A";
 
 // brand orange
 const brandOrange50 = "#FDF2EB";
