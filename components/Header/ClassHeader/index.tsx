@@ -25,6 +25,7 @@ import { IClass } from "interfaces/classes";
 import { ETabName } from "enums/classes";
 import capitalize from "lodash/capitalize";
 import { useGetMyUnseenNotifications } from "API/get/get.me.notifications";
+import BellNotifications from "../components/BellNotifications";
 
 export interface IClassHeaderProps {
   onExpand?: () => void;
@@ -35,12 +36,8 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   const router = useRouter();
   const { settingStore, authStore } = useStores();
   const { isHeaderLoading, classSectionTab } = settingStore;
-  const { data: unseenNotificationsCount } = useGetMyUnseenNotifications();
   const name =
     (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
-
-  console.log(unseenNotificationsCount?.data);
-
   const onClickLogo = () => {
     router.push(routes.user.home.value);
   };
@@ -131,37 +128,7 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
         </HStack>
 
         <HStack alignItems={"center"} gap={6}>
-          <Box
-            position={"relative"}
-            _hover={{
-              cursor: "pointer",
-            }}
-          >
-            <SvgIcon
-              iconName={"ic-notification.svg"}
-              size={30}
-              onClick={() => {}}
-              color={gray700}
-            />
-            <Circle
-              position={"absolute"}
-              top={-1}
-              right={"-5px"}
-              size={4}
-              bg={"red.500"}
-              color={"white"}
-              fontSize={"xs"}
-              fontWeight={"bold"}
-              display={
-                Number(unseenNotificationsCount?.data) > 0 ? "flex" : "none"
-              }
-              alignItems={"center"}
-              justifyContent={"center"}
-              p={"10px"}
-            >
-              {unseenNotificationsCount?.data}
-            </Circle>
-          </Box>
+          <BellNotifications />
           <Tooltip
             label={
               <VStack

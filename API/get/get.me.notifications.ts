@@ -3,7 +3,7 @@ import { NotificationsApiRouters } from "API/router.api";
 import { IResponseData } from "API/types";
 import { IMetaResponse } from "interfaces/classes";
 import { INotification } from "interfaces/user";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 interface IGetMeNotificationsResponse {
   data: INotification[];
@@ -11,21 +11,21 @@ interface IGetMeNotificationsResponse {
 }
 
 export const getMeNotifications = async () => {
-  const res = await api.get<IGetMeNotificationsResponse>(
+  const res = await api.get<{}, IResponseData<IGetMeNotificationsResponse>>(
     NotificationsApiRouters.get.my_notifications.value
   );
   return res.data;
 };
 
 export const getMeUnseenNotifications = async () => {
-  const res = await api.get<{},IResponseData<number>>(
+  const res = await api.get<{}, IResponseData<number>>(
     NotificationsApiRouters.get.my_notifications.value + "/count-unseen"
   );
   return res;
 };
 
 export const useGetMyNotifications = () => {
-  return useQuery(
+  return useMutation(
     [NotificationsApiRouters.get.my_notifications.value],
     getMeNotifications
   );
