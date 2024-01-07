@@ -25,7 +25,7 @@ import routes from "routes";
 import { useStores } from "hooks/useStores";
 import { auth } from "API";
 import { getAllClasses, getClassDetails } from "API/get/get.class.details";
-import { IClass } from "interfaces/classes";
+import { IClass, IStudent } from "interfaces/classes";
 import {
   mapStudentId,
   softDeleteClass,
@@ -43,8 +43,8 @@ interface FileUploadButtonProps {
 const ManageClasses = () => {
   const toast = useToast();
   const [classInfo, setClassInfo] = useState<IClass>();
-  const [MemberList, setMemberList] = useState<IClass[]>([]);
-  const [ListToShow, setListToShow] = useState<IClass[]>([]);
+  const [MemberList, setMemberList] = useState<IStudent[]>([]);
+  const [ListToShow, setListToShow] = useState<IStudent[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [userIdInput, setUserIdInput] = useState<string>("");
   const { authStore } = useStores();
@@ -197,8 +197,8 @@ const ManageClasses = () => {
 
   useEffect(() => {
     setListToShow(
-      MemberList?.filter((thisClass) =>
-        thisClass?.name?.includes(inputValue ?? "")
+      MemberList?.filter((thisPerson) =>
+        thisPerson?.id?.includes(inputValue ?? "")
       )
     );
   }, [inputValue]);
@@ -251,7 +251,7 @@ const ManageClasses = () => {
           </Heading>
           <Input
             variant="outline"
-            placeholder="Search by name"
+            placeholder="Search by student id"
             onChange={handleInputChange}
             value={inputValue}
           />
@@ -336,7 +336,7 @@ const ManageClasses = () => {
                           onClick={() =>
                             onClickUnmapStudentId(
                               classInfo?.id as string,
-                              member.user.id
+                              member.user.id as string
                             )
                           }
                         >

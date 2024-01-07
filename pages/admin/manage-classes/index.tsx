@@ -26,6 +26,7 @@ import { getAllClasses, getClassDetails } from "API/get/get.class.details";
 import { IClass } from "interfaces/classes";
 import { softDeleteClass } from "API/patch/patch.class";
 import { restoreClass } from "API/patch/patch.class";
+import NewPagination from "components/NewPagination/NewPagination";
 const ManageClasses = () => {
   const toast = useToast();
   const router = useRouter();
@@ -35,7 +36,8 @@ const ManageClasses = () => {
   const { authStore } = useStores();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<string>(""); // Track the column to be sorted
-
+  const [pageNow, setPageNow] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const ClassListSorted = ListToShow; // Create a copy to avoid mutating the original array
 
   const handleSort = (column: string) => {
@@ -66,11 +68,13 @@ const ManageClasses = () => {
     }
     return null;
   };
-  const getClassList = async () => {
+  const getClassListAtPage = async (pageNumber: number) => {
     try {
-      const res1 = await getAllClasses();
+      const res1 = await getAllClasses(pageNumber.toString());
       setClassList(res1.data);
       setListToShow(res1.data);
+      setPageNow(pageNumber);
+      setTotalPages(res1.meta.totalPages);
     } catch (error) {
       toast({
         status: "error",
@@ -84,7 +88,7 @@ const ManageClasses = () => {
   const deactiveClass = async (id: string) => {
     try {
       await softDeleteClass(id);
-      getClassList();
+      getClassListAtPage(pageNow);
       toast({
         status: "success",
         description: "Deactive class successfully",
@@ -99,7 +103,7 @@ const ManageClasses = () => {
   const activeClass = async (id: string) => {
     try {
       await restoreClass(id);
-      getClassList();
+      getClassListAtPage(pageNow);
       toast({
         status: "success",
         description: "Active class successfully",
@@ -123,7 +127,7 @@ const ManageClasses = () => {
       }
     }
     getInfoForCurrentUser();
-    getClassList();
+    getClassListAtPage(1);
   }, []);
   useEffect(() => {
     setListToShow(
@@ -224,6 +228,12 @@ const ManageClasses = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <NewPagination
+            currentPage={pageNow}
+            totalPages={totalPages}
+            isDisabled={false}
+            getUserListAtPage={getClassListAtPage}
+          />
         </VStack>
       </VStack>
     </AdminLayout>

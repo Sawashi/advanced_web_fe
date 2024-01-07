@@ -21,8 +21,9 @@ import { useStores } from "hooks/useStores";
 import { getAllAccounts } from "API/get/get.account";
 import { IUser } from "interfaces/user";
 
-
 import { updateSomeoneAccount } from "API/patch/patch.auth.account";
+import NewPagination from "components/NewPagination/NewPagination";
+import { set } from "lodash";
 const ManageAccounts = () => {
   const [userLists, setUserLists] = useState<IUser[]>();
   const [ListToShow, setListToShow] = useState<IUser[]>();
@@ -31,7 +32,8 @@ const ManageAccounts = () => {
   const { authStore } = useStores();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<string>(""); // Track the column to be sorted
-
+  const [pageNow, setPageNow] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const userListsSorted = ListToShow; // Create a copy to avoid mutating the original array
 
   const handleSort = (column: string) => {
@@ -62,12 +64,13 @@ const ManageAccounts = () => {
     }
     return null;
   };
-  const getUserLists = async () => {
+  const getUserListsAtPage = async (pageNumber: number) => {
     try {
-      const res1 = await getAllAccounts("user");
-      const res2 = await getAllAccounts("admin");
-      setUserLists(res1.data.concat(res2.data));
-      setListToShow(res1.data.concat(res2.data));
+      const res1 = await getAllAccounts(pageNumber.toString());
+      setUserLists(res1.data);
+      setListToShow(res1.data);
+      setPageNow(pageNumber);
+      setTotalPages(res1.meta.totalPages);
     } catch (error) {
       toast({
         status: "error",
@@ -88,7 +91,7 @@ const ManageAccounts = () => {
     }
 
     getInfoForCurrentUser();
-    getUserLists();
+    getUserListsAtPage(1);
   }, []);
   const onClickBan = async (id: string) => {
     try {
@@ -100,7 +103,7 @@ const ManageAccounts = () => {
         });
       }
       try {
-        await getUserLists();
+        await getUserListsAtPage(pageNow);
       } catch (error) {}
     } catch (error) {
       toast({
@@ -119,7 +122,7 @@ const ManageAccounts = () => {
         });
       }
       try {
-        await getUserLists();
+        await getUserListsAtPage(pageNow);
       } catch (error) {}
     } catch (error) {
       toast({
@@ -136,6 +139,9 @@ const ManageAccounts = () => {
       userLists?.filter((user) => user?.email?.includes(inputValue ?? ""))
     );
   }, [inputValue]);
+  useEffect(() => {
+    console.log("Page useEffect: " + pageNow);
+  }, [pageNow]);
   return (
     <AdminLayout title="Manage accounts">
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>
@@ -169,7 +175,7 @@ const ManageAccounts = () => {
                     Date created {renderSortIcon("createdAt")}
                   </Th>
                   <Th onClick={() => handleSort("status")}>
-                    Admin {renderSortIcon("status")}
+                    Role {renderSortIcon("status")}
                   </Th>
                   <Th>Functions</Th>
                 </Tr>
@@ -245,6 +251,12 @@ const ManageAccounts = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <NewPagination
+            currentPage={pageNow}
+            totalPages={totalPages}
+            isDisabled={false}
+            getUserListAtPage={getUserListsAtPage}
+          />
         </VStack>
       </VStack>
     </AdminLayout>

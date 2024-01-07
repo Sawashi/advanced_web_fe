@@ -44,6 +44,7 @@ export interface IComposition {
 }
 
 export interface IStudent {
+  [key: string]: any;
   id: string;
   name: string;
   user: {
@@ -80,5 +81,5 @@ export interface IRequester {
   email: string;
   firstName: string;
   lastName: string;
-  avatar: string
+  avatar: string;
 }
