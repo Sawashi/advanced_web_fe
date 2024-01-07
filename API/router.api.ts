@@ -1,16 +1,21 @@
 export const API_URL = process.env.API_URL;
 export const BASE_URL = process.env.BASE_URL;
 
+import { omit } from "lodash";
 import type { ID, URLQueryType } from "./types";
 
 export { ID, URLQueryType };
 
-export const getQueries = <T>(query: URLQueryType<T>) => {
-  const queryArray = Object.entries(query).map(([key, value]) =>
+export function getQueries<T>(query: URLQueryType<T>) {
+  const filters = Object.entries(query?.filter ?? {}).map(([key, value]) =>
+    key && value ? `filter.${key}=${value}` : ""
+  );
+  const omitFilter = omit(query, "filter");
+  const queryArray = Object.entries(omitFilter).map(([key, value]) =>
     key && value ? `${key}=${value}` : ""
   );
-  return queryArray.join("&");
-};
+  return [...filters, ...queryArray].join("&");
+}
 
 export const getUrlWithQuery = <T>(url: string, query: URLQueryType<T>) => {
   return `${url}?${getQueries(query)}`;
@@ -83,7 +88,8 @@ export const ClassesApiRouters = {
       value: (classId: ID) => `${API_URL}/classes/${classId}/my-reviews`,
     },
     reviews: {
-      value: (classId: ID) => `${API_URL}/classes/${classId}/reviews`,
+      value: (classId: ID, query?: URLQueryType<{}>) =>
+        `${API_URL}/classes/${classId}/reviews?${getQueries(query ?? {})}`,
     },
   },
   post: {
