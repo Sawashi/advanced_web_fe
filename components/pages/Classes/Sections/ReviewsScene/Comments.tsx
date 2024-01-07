@@ -127,9 +127,17 @@ const Comments = ({ review }: Props) => {
     <VStack w={"full"} alignItems={"start"} gap={5}>
       <VStack w={"full"} alignItems={"start"} gap={6}>
         <HStack w={"full"} justifyContent={"space-between"}>
-          <Text fontSize={"md"} fontWeight={"bold"}>
-            Comments
-          </Text>
+          <HStack gap={2}>
+            <Text fontSize={"md"} fontWeight={"bold"}>
+              Comments
+            </Text>
+
+            <Tooltip label={"You just can comment when status is pending"}>
+              <Box>
+                <SvgIcon iconName="ic-help.svg" size={20} color={primary500} />
+              </Box>
+            </Tooltip>
+          </HStack>
 
           <HStack
             alignItems={"center"}

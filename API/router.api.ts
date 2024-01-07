@@ -86,7 +86,7 @@ export const ClassesApiRouters = {
         `${API_URL}/classes/${classId}/students/${studentId}/grades`,
     },
     my_reviews: {
-      value: (classId: ID) => `${API_URL}/classes/${classId}/my-reviews`,
+      value: (classId: ID, query?: URLQueryType<{}>) => `${API_URL}/classes/${classId}/my-reviews?${getQueries(query ?? {})}`,
     },
     reviews: {
       value: (classId: ID, query?: URLQueryType<{}>) =>

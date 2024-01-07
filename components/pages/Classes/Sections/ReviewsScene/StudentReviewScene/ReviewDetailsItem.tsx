@@ -6,7 +6,6 @@ import {
   Avatar,
   Badge,
   Code,
-  Button,
   Collapse,
   Tooltip,
 } from "@chakra-ui/react";
@@ -15,10 +14,9 @@ import { EReviewStatus } from "enums/classes";
 import { IReview } from "interfaces/classes";
 import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
-import { gray500, gray700, pink500 } from "theme/colors.theme";
-import ReviewModal from "./ReviewModal";
-import Comments from "../Comments";
+import { gray700 } from "theme/colors.theme";
 import { timeAgo } from "utils/common";
+import Comments from "../Comments";
 
 type Props = {
   review: IReview;
@@ -32,7 +30,6 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
 
   const [isShowMoreExplanation, setIsShowMoreExplanation] = useState(false);
   const [isShowMoreReview, setIsShowMoreReview] = useState(false);
-  const [isShowReviewModal, setIsShowReviewModal] = useState(false);
 
   const isPending = review?.status === EReviewStatus.PENDING;
 
@@ -117,38 +114,33 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               cursor: "pointer",
             }}
           >
-            <HStack flex={1} alignItems={"center"} gap={3}>
-              <Avatar
-                size={"sm"}
-                name={
-                  review?.requester?.firstName +
-                  " " +
-                  review?.requester?.lastName
-                }
-                src={review?.requester?.avatar}
-              />
-              <VStack alignItems={"start"} flex={1} gap={1}>
-                <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-                  {review?.requester?.firstName +
-                    " " +
-                    review?.requester?.lastName}
-                </Text>
-                <Text fontSize={"xs"} fontWeight={"normal"} color={"gray.500"}>
-                  {review?.requester?.email}
-                </Text>
-              </VStack>
-            </HStack>
-
-            {isShowMoreReview ? null : (
-              <HStack justifyContent={"space-between"} gap={5}>
-                <Text
-                  fontSize={"md"}
-                  color={"purple.500"}
-                  fontWeight={"bold"}
-                  whiteSpace={"nowrap"}
-                >
-                  {review?.grade?.composition?.name}
-                </Text>
+            <HStack
+              justifyContent={"space-between"}
+              gap={5}
+              divider={
+                <Divider
+                  orientation="horizontal"
+                  borderColor={"gray.300"}
+                  borderWidth={1}
+                  h={5}
+                  w={0}
+                />
+              }
+            >
+              <Text
+                fontSize={"md"}
+                color={"purple.500"}
+                fontWeight={"bold"}
+                whiteSpace={"nowrap"}
+              >
+                {review?.grade?.composition?.name}
+              </Text>
+              <HStack
+                w={"full"}
+                justifyContent={"space-between"}
+                gap={5}
+                alignItems={"center"}
+              >
                 <VStack flex={1}>
                   <Code
                     fontSize={"md"}
@@ -195,7 +187,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                   </Code>
                 </VStack>
               </HStack>
-            )}
+            </HStack>
 
             <VStack flex={1} alignItems={"end"}>
               <Tooltip
@@ -210,19 +202,6 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               <StatusRender />
             </VStack>
           </HStack>
-
-          {isPending ? (
-            <Button
-              variant={"ghost"}
-              colorScheme={"primary"}
-              size={"sm"}
-              onClick={() => setIsShowReviewModal(true)}
-              alignSelf={"center"}
-              color={"gray.400"}
-            >
-              <SvgIcon iconName="ic-release.svg" size={20} color={pink500} />
-            </Button>
-          ) : null}
         </HStack>
 
         <Collapse
@@ -251,7 +230,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                       color={"gray.500"}
                       fontWeight={"bold"}
                     >
-                      Composition:
+                      Percentage:
                     </Text>
                     <Text
                       fontSize={"md"}
@@ -259,103 +238,10 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                       ml={2}
                       color={"purple.700"}
                     >
-                      {review?.grade?.composition?.name +
-                        " " +
-                        `(${review?.grade?.composition?.percentage}%)`}
-                    </Text>
-                  </HStack>
-                  <HStack w={"full"} gap={3} alignItems={"center"}>
-                    <Text
-                      fontSize={"sm"}
-                      color={"gray.500"}
-                      fontWeight={"bold"}
-                    >
-                      Student:
-                    </Text>
-                    <Text
-                      fontSize={"md"}
-                      fontWeight={"700"}
-                      ml={2}
-                      color={"purple.700"}
-                    >
-                      {review?.grade?.student?.id +
-                        " - " +
-                        review?.grade?.student?.name}
+                      {review?.grade?.composition?.percentage || 0}%
                     </Text>
                   </HStack>
                 </VStack>
-              </VStack>
-
-              <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
-                <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-                  Review
-                </Text>
-
-                <HStack w={"full"} justifyContent={"space-between"} gap={5}>
-                  <VStack flex={1}>
-                    <Text
-                      fontSize={"lg"}
-                      color={"gray.700"}
-                      fontWeight={"bold"}
-                    >
-                      From
-                    </Text>
-                    <Code
-                      fontSize={"md"}
-                      fontWeight={"700"}
-                      borderRadius={6}
-                      p={2}
-                      backgroundColor={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.100"
-                          : "green.100"
-                      }
-                      color={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.500"
-                          : "green.500"
-                      }
-                    >
-                      {review?.studentCurrentGrade}
-                    </Code>
-                  </VStack>
-                  <SvgIcon
-                    iconName="ic-arrow-right.svg"
-                    size={20}
-                    color={gray700}
-                  />
-                  <VStack flex={1}>
-                    <Text
-                      fontSize={"md"}
-                      color={"gray.700"}
-                      fontWeight={"bold"}
-                    >
-                      To
-                    </Text>
-                    <Code
-                      fontSize={"md"}
-                      fontWeight={"700"}
-                      borderRadius={6}
-                      p={2}
-                      backgroundColor={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.100"
-                          : "green.100"
-                      }
-                      color={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.500"
-                          : "green.500"
-                      }
-                    >
-                      {review?.studentExpectedGrade}
-                    </Code>
-                  </VStack>
-                </HStack>
               </VStack>
 
               {!isPending ? (
@@ -459,15 +345,6 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
           </VStack>
         </Collapse>
       </VStack>
-
-      <ReviewModal
-        isVisible={isShowReviewModal && !!review}
-        onClose={() => {
-          refetch?.();
-          setIsShowReviewModal(false);
-        }}
-        review={review}
-      />
     </VStack>
   );
 };

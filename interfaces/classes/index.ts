@@ -74,6 +74,7 @@ export interface IReview {
   updatedAt: string;
   grade: ICompositionGrade;
   requester: IRequester;
+  endedBy: Omit<IRequester, 'avatar'> | null;
 }
 
 export interface IRequester {

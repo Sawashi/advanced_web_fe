@@ -35,6 +35,7 @@ import { ETabName } from "enums/classes";
 import StudentGradeBoard from "components/pages/Classes/Sections/GradeBoardScene/StudentGradeBoard";
 import { useGetUserMappedStudent } from "API/get/get.class.user-mapped-student";
 import TeacherReviewsScene from "components/pages/Classes/Sections/ReviewsScene/TeacherReviewsScene";
+import StudentReviewsScene from "components/pages/Classes/Sections/ReviewsScene/StudentReviewScene";
 
 const ClassDetail = () => {
   const router = useRouter();
@@ -113,6 +114,11 @@ const ClassDetail = () => {
           name: "My grade",
           component: <StudentGradeBoard details={classDetails ?? {}} />,
           tabName: ETabName.GradeBoard,
+        },
+        {
+          name: "Reviews history",
+          component: <StudentReviewsScene details={classDetails ?? {}} />,
+          tabName: ETabName.Reviews,
         },
       ]);
     }
