@@ -193,6 +193,9 @@ export const ReviewApiRouters = {
     create_review: {
       value: `${API_URL}/reviews`,
     },
+    review_comment: {
+      value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/comments`,
+    },
   },
   patch: {
     update_review: {

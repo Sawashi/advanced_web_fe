@@ -18,6 +18,8 @@ import { useState } from "react";
 import { primary500 } from "theme/colors.theme";
 import { getValidArray, timeAgo } from "utils/common";
 import moment from "moment";
+import { usePostCreateReviewComment } from "API/post/post.review.comment";
+import { EReviewStatus } from "enums/classes";
 
 type Props = {
   review: IReview;
@@ -92,15 +94,27 @@ const Comment = ({ comment }: { comment: IReviewComment }) => {
 };
 
 const Comments = ({ review }: Props) => {
-  const { data: dataGetReviewComments } = useGetReviewComments({
-    reviewId: review.id,
-  });
+  const isPending = review?.status === EReviewStatus.PENDING;
+  const { data: dataGetReviewComments, refetch: refetchGetReviewComments } =
+    useGetReviewComments({
+      reviewId: review.id,
+    });
   const { data: reviewComments } = dataGetReviewComments ?? {};
+
+  const {
+    mutateAsync: mutateCreateReviewComment,
+    isLoading: isCreatingReviewComment,
+  } = usePostCreateReviewComment(review.id, () => {
+    refetchGetReviewComments();
+  });
   const [isShowComments, setIsShowComments] = useState(true);
   const commentInputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleShowComments = (value: string) => {
-    console.log(value);
+  const handleShowComments = async (value: string) => {
+    await mutateCreateReviewComment({
+      reviewId: review.id,
+      content: value,
+    });
     commentInputRef.current!.value = "";
   };
 
@@ -149,48 +163,51 @@ const Comments = ({ review }: Props) => {
           </VStack>
         </Collapse>
       </VStack>
-      <HStack w={"full"}>
-        <Input
-          ref={commentInputRef}
-          placeholder="Add a comment"
-          h={50}
-          outline={"none"}
-          flex={1}
-          w={"full"}
-          borderRadius={12}
-          borderWidth={1}
-          borderColor={"gray.300"}
-          _focus={{
-            borderColor: "gray.500",
-          }}
-          _hover={{
-            borderColor: "gray.500",
-          }}
-          fontSize={"sm"}
-          enterKeyHint={"send"}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
+      {isPending ? (
+        <HStack w={"full"}>
+          <Input
+            ref={commentInputRef}
+            placeholder="Add a comment"
+            h={50}
+            outline={"none"}
+            flex={1}
+            w={"full"}
+            borderRadius={12}
+            borderWidth={1}
+            borderColor={"gray.300"}
+            _focus={{
+              borderColor: "gray.500",
+            }}
+            _hover={{
+              borderColor: "gray.500",
+            }}
+            fontSize={"sm"}
+            enterKeyHint={"send"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (commentInputRef.current?.value) {
+                  handleShowComments(commentInputRef.current?.value);
+                }
+              }
+            }}
+          />
+          <Button
+            rounded={"ghost"}
+            borderWidth={0}
+            borderRadius={12}
+            colorScheme={"primary"}
+            p={0}
+            isLoading={isCreatingReviewComment}
+            onClick={() => {
               if (commentInputRef.current?.value) {
                 handleShowComments(commentInputRef.current?.value);
               }
-            }
-          }}
-        />
-        <Button
-          rounded={"ghost"}
-          borderWidth={0}
-          borderRadius={12}
-          colorScheme={"primary"}
-          p={0}
-          onClick={() => {
-            if (commentInputRef.current?.value) {
-              handleShowComments(commentInputRef.current?.value);
-            }
-          }}
-        >
-          <SvgIcon iconName="ic-send.svg" size={20} color={primary500} />
-        </Button>
-      </HStack>
+            }}
+          >
+            <SvgIcon iconName="ic-send.svg" size={20} color={primary500} />
+          </Button>
+        </HStack>
+      ) : null}
     </VStack>
   );
 };
