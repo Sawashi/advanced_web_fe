@@ -8,7 +8,6 @@ import {
   TabList,
   Tab,
 } from "@chakra-ui/react";
-import { useGetClassReviews } from "API/get/get.class.reviews";
 import EmptyList from "components/EmptyState/EmptyList";
 import { useStores } from "hooks/useStores";
 import { IClass, IReview } from "interfaces/classes";
@@ -34,11 +33,15 @@ const StudentReviewsScene = ({ details }: Props) => {
   } = useGetMyReviews(details?.id ?? "", {
     "filter.status": filterStatus,
   });
+  const { data: getAllClassReviews, isLoading: isAllClassReviewsLoading } =
+    useGetMyReviews(details?.id ?? "");
   const { data: classReviews } = getClassReviews ?? {};
 
-  settingStore?.setHeaderLoading(isClassReviewsLoading);
+  settingStore?.setHeaderLoading(
+    isClassReviewsLoading || isAllClassReviewsLoading
+  );
 
-  if (isClassReviewsLoading) {
+  if (isClassReviewsLoading || isAllClassReviewsLoading) {
     return (
       <Center mt={20}>
         <Spinner boxSize={30} />
@@ -79,72 +82,79 @@ const StudentReviewsScene = ({ details }: Props) => {
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"} h="full" flex={1}>
-      <VStack
-        w={"full"}
-        maxW={"container.lg"}
-        p={10}
-        borderColor={"gray.300"}
-        alignItems={"start"}
-        h={"full"}
-        gap={5}
-      >
-        <HStack w={"full"} justifyContent={"space-between"}>
-          <Text fontSize={"xl"} fontWeight={"bold"}>
-            Reviews history
-          </Text>
-        </HStack>
+      {!checkValidArray(getAllClassReviews?.data) ? (
+        <EmptyList title={"No reviews"} description={"There are no reviews"} />
+      ) : (
+        <VStack
+          w={"full"}
+          maxW={"container.lg"}
+          p={10}
+          borderColor={"gray.300"}
+          alignItems={"start"}
+          h={"full"}
+          gap={5}
+        >
+          <HStack w={"full"} justifyContent={"space-between"}>
+            <Text fontSize={"xl"} fontWeight={"bold"}>
+              Reviews history
+            </Text>
+          </HStack>
 
-        <Tabs isFitted variant="enclosed" w={"full"} onChange={onChangeTab}>
-          <TabList mb="1em">
-            <Tab
-              _selected={{
-                color: "primary.500",
-                fontWeight: "bold",
-                bg: "primary.100",
-              }}
-            >
-              All
-            </Tab>
-            <Tab
-              _selected={{
-                color: "yellow.800",
-                fontWeight: "bold",
-                bg: "yellow.100",
-              }}
-            >
-              Pending ⌛️
-            </Tab>
-            <Tab
-              _selected={{
-                color: "green.500",
-                fontWeight: "bold",
-                bg: "green.100",
-              }}
-            >
-              Approved ✅
-            </Tab>
-            <Tab
-              _selected={{
-                color: "red.500",
-                fontWeight: "bold",
-                bg: "red.100",
-              }}
-            >
-              Rejected ❌
-            </Tab>
-          </TabList>
-        </Tabs>
-        {checkValidArray(classReviews) ? (
-          <VStack px={5} w={"full"} gap={7}>
-            {getValidArray(classReviews)?.map(renderReviewItem)}
-          </VStack>
-        ) : (
-          <EmptyList
-            title={"No reviews"}
-            description={"There are no reviews"}
-          />
-        )}
-      </VStack>
+          <Tabs isFitted variant="enclosed" w={"full"} onChange={onChangeTab}>
+            <TabList mb="1em">
+              <Tab
+                _selected={{
+                  color: "primary.500",
+                  fontWeight: "bold",
+                  bg: "primary.100",
+                }}
+              >
+                All
+              </Tab>
+              <Tab
+                color="yellow.900"
+                _selected={{
+                  color: "yellow.800",
+                  fontWeight: "bold",
+                  bg: "yellow.100",
+                }}
+              >
+                Pending
+              </Tab>
+              <Tab
+                color="green.900"
+                _selected={{
+                  color: "green.500",
+                  fontWeight: "bold",
+                  bg: "green.100",
+                }}
+              >
+                Approved
+              </Tab>
+              <Tab
+                color="red.900"
+                _selected={{
+                  color: "red.500",
+                  fontWeight: "bold",
+                  bg: "red.100",
+                }}
+              >
+                Rejected
+              </Tab>
+            </TabList>
+          </Tabs>
+          {checkValidArray(classReviews) ? (
+            <VStack px={5} w={"full"} gap={7}>
+              {getValidArray(classReviews)?.map(renderReviewItem)}
+            </VStack>
+          ) : (
+            <EmptyList
+              title={"No reviews"}
+              description={"There are no reviews"}
+            />
+          )}
+        </VStack>
+      )}
     </VStack>
   );
 };
