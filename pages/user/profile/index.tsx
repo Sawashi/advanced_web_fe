@@ -139,6 +139,14 @@ function UserProfileEdit() {
               authStore.user?.lastName ?? ""
             }`}</Text>
 
+            <Text
+              mt={-4}
+              fontSize="md"
+              color={useColorModeValue("gray.800", "gray.200")}
+            >
+              {authStore.user?.email ?? ""}
+            </Text>
+
             <VStack spacing={8} w="100%">
               <FormInput
                 name="firstName"
