@@ -111,7 +111,7 @@ const TeacherReviewsScene = ({ details }: Props) => {
                 bg: "yellow.100",
               }}
             >
-              Pending
+              Pending ⌛️
             </Tab>
             <Tab
               _selected={{
@@ -120,7 +120,7 @@ const TeacherReviewsScene = ({ details }: Props) => {
                 bg: "green.100",
               }}
             >
-              Approved
+              Approved ✅
             </Tab>
             <Tab
               _selected={{
@@ -129,7 +129,7 @@ const TeacherReviewsScene = ({ details }: Props) => {
                 bg: "red.100",
               }}
             >
-              Rejected
+              Rejected ❌
             </Tab>
           </TabList>
         </Tabs>
