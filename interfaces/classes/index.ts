@@ -44,6 +44,7 @@ export interface IComposition {
 }
 
 export interface IStudent {
+  [key: string]: any;
   id: string;
   name: string;
   user: {

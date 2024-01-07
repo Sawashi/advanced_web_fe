@@ -8,9 +8,9 @@ export interface IAccountListResponse {
   data: IUser[];
   meta: IMetaResponse;
 }
-export const getAllAccounts = async (roleUser: string) => {
+export const getAllAccounts = async (pageNumber: string) => {
   const response = await api.get<IAccountListResponse>(
-    UsersApiRouters.get.all_accounts.value(roleUser)
+    UsersApiRouters.get.all_accounts.value(pageNumber)
   );
   if (response.status !== 200) throw new Error(response.statusText);
   return response.data;

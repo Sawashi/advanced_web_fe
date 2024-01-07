@@ -24,9 +24,9 @@ export const useGetClassDetails = (classId: string) => {
   });
 };
 
-export const getAllClasses = async () => {
+export const getAllClasses = async (pageNumber: string) => {
   const response = await api.get<IAccountListResponse>(
-    ClassesApiRouters.get.all_classes.value
+    ClassesApiRouters.get.all_classes.value(pageNumber)
   );
   if (response.status !== 200) throw new Error(response.statusText);
   return response.data;

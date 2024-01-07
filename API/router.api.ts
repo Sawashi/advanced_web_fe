@@ -36,8 +36,8 @@ export const UsersApiRouters = {
         `${API_URL}/users/${userId}/owned-classes?${getQueries(query)}`,
     },
     all_accounts: {
-      value: (roleUser: string) =>
-        `${API_URL}/users?limit=99&page=1&filter.role=${roleUser}&sortBy=email:ASC`,
+      value: (pageNumber: string) =>
+        `${API_URL}/users?limit=10&page=${pageNumber}&sortBy=email:ASC`,
     },
   },
   post: {
@@ -56,7 +56,8 @@ export const UsersApiRouters = {
 export const ClassesApiRouters = {
   get: {
     all_classes: {
-      value: `${API_URL}/classes?limit=99&page=1`,
+      value: (pageNumber: string) =>
+        `${API_URL}/classes?limit=10&page=${pageNumber}`,
     },
     class_details: {
       value: (classId: ID) => `${API_URL}/classes/${classId}`,
