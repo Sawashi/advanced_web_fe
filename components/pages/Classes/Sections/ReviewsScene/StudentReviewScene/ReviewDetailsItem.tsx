@@ -8,6 +8,7 @@ import {
   Code,
   Collapse,
   Tooltip,
+  Box,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { EReviewStatus } from "enums/classes";
@@ -113,20 +114,9 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             _hover={{
               cursor: "pointer",
             }}
+            divider={<Box h={"20px"} w={"2px"} bgColor={"gray.300"} />}
           >
-            <HStack
-              justifyContent={"space-between"}
-              gap={5}
-              divider={
-                <Divider
-                  orientation="horizontal"
-                  borderColor={"gray.300"}
-                  borderWidth={1}
-                  h={5}
-                  w={0}
-                />
-              }
-            >
+            <HStack justifyContent={"space-between"} gap={5}>
               <Text
                 fontSize={"md"}
                 color={"purple.500"}
@@ -135,13 +125,33 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               >
                 {review?.grade?.composition?.name}
               </Text>
-              <HStack
-                w={"full"}
-                justifyContent={"space-between"}
-                gap={5}
-                alignItems={"center"}
-              >
-                <VStack flex={1}>
+              <VStack flex={1}>
+                <Code
+                  fontSize={"md"}
+                  fontWeight={"700"}
+                  borderRadius={6}
+                  p={2}
+                  backgroundColor={
+                    review?.studentCurrentGrade > review?.studentExpectedGrade
+                      ? "red.100"
+                      : "green.100"
+                  }
+                  color={
+                    review?.studentCurrentGrade > review?.studentExpectedGrade
+                      ? "red.500"
+                      : "green.500"
+                  }
+                >
+                  {review?.studentCurrentGrade}
+                </Code>
+              </VStack>
+              <SvgIcon
+                iconName="ic-arrow-right.svg"
+                size={20}
+                color={gray700}
+              />
+              <VStack flex={1}>
+                <HStack>
                   <Code
                     fontSize={"md"}
                     fontWeight={"700"}
@@ -157,38 +167,37 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         ? "red.500"
                         : "green.500"
                     }
-                  >
-                    {review?.studentCurrentGrade}
-                  </Code>
-                </VStack>
-                <SvgIcon
-                  iconName="ic-arrow-right.svg"
-                  size={20}
-                  color={gray700}
-                />
-                <VStack flex={1}>
-                  <Code
-                    fontSize={"md"}
-                    fontWeight={"700"}
-                    borderRadius={6}
-                    p={2}
-                    backgroundColor={
-                      review?.studentCurrentGrade > review?.studentExpectedGrade
-                        ? "red.100"
-                        : "green.100"
-                    }
-                    color={
-                      review?.studentCurrentGrade > review?.studentExpectedGrade
-                        ? "red.500"
-                        : "green.500"
+                    as={
+                      !!review?.studentFinalGrade &&
+                      Number(review?.studentFinalGrade) !==
+                        Number(review?.studentExpectedGrade)
+                        ? "del"
+                        : "span"
                     }
                   >
                     {review?.studentExpectedGrade}
                   </Code>
-                </VStack>
-              </HStack>
-            </HStack>
 
+                  <Code
+                    fontSize={"md"}
+                    fontWeight={"700"}
+                    borderRadius={6}
+                    p={2}
+                    backgroundColor={"yellow.100"}
+                    color={"yellow.700"}
+                    display={
+                      !!review?.studentFinalGrade &&
+                      Number(review?.studentFinalGrade) !==
+                        Number(review?.studentExpectedGrade)
+                        ? "inline-block"
+                        : "none"
+                    }
+                  >
+                    {review?.studentFinalGrade}
+                  </Code>
+                </HStack>
+              </VStack>
+            </HStack>
             <VStack flex={1} alignItems={"end"}>
               <Tooltip
                 label={moment(review?.createdAt).format("DD/MM/YYYY HH:mm:ss")}
