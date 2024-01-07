@@ -50,6 +50,9 @@ export const UsersApiRouters = {
     avatar: {
       value: `${API_URL}/auth/me/avatar`,
     },
+    create_user_by_admin: {
+      value: `${API_URL}/users`,
+    },
   },
 };
 

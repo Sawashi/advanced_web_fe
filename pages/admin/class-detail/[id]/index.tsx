@@ -281,6 +281,12 @@ const ManageClasses = () => {
                     ) as HTMLInputElement
                   )?.click()
                 }
+                as={"div"}
+                variant={"ghost"}
+                borderRadius={"full"}
+                _hover={{
+                  bgColor: "gray.200",
+                }}
               >
                 Upload CSV
               </Button>
