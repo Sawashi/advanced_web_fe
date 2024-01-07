@@ -117,17 +117,26 @@ const ManageClasses = () => {
   };
   useEffect(() => {
     async function getInfoForCurrentUser() {
-      const res = await getCurrentUser();
-      if (res.role !== "admin") {
+      try {
+        const res = await getCurrentUser();
+        if (res.role !== "admin") {
+          toast({
+            status: "error",
+            description: "Your are not admin",
+          });
+          authStore.logout();
+        } else {
+          getClassListAtPage(1);
+        }
+      } catch (error) {
         toast({
           status: "error",
-          description: "Your are not admin",
+          description: "Something went wrong",
         });
-        authStore.logout();
+        router.push("auth/login");
       }
     }
     getInfoForCurrentUser();
-    getClassListAtPage(1);
   }, []);
   useEffect(() => {
     setListToShow(

@@ -24,6 +24,7 @@ import { IUser } from "interfaces/user";
 import { updateSomeoneAccount } from "API/patch/patch.auth.account";
 import NewPagination from "components/NewPagination/NewPagination";
 import { set } from "lodash";
+import { useRouter } from "next/router";
 const ManageAccounts = () => {
   const [userLists, setUserLists] = useState<IUser[]>();
   const [ListToShow, setListToShow] = useState<IUser[]>();
@@ -35,7 +36,7 @@ const ManageAccounts = () => {
   const [pageNow, setPageNow] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const userListsSorted = ListToShow; // Create a copy to avoid mutating the original array
-
+  const router = useRouter();
   const handleSort = (column: string) => {
     // If clicking on the same column, toggle the sort order
     const newSortOrder =
@@ -80,18 +81,26 @@ const ManageAccounts = () => {
   };
   useEffect(() => {
     async function getInfoForCurrentUser() {
-      const res = await getCurrentUser();
-      if (res.role !== "admin") {
+      try {
+        const res = await getCurrentUser();
+        if (res.role !== "admin") {
+          toast({
+            status: "error",
+            description: "Your are not admin",
+          });
+          authStore.logout();
+        } else {
+          getUserListsAtPage(1);
+        }
+      } catch (error) {
         toast({
           status: "error",
-          description: "Your are not admin",
+          description: "Something went wrong",
         });
-        authStore.logout();
+        router.push("auth/login");
       }
     }
-
     getInfoForCurrentUser();
-    getUserListsAtPage(1);
   }, []);
   const onClickBan = async (id: string) => {
     try {

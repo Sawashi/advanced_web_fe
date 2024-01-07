@@ -25,7 +25,7 @@ import routes from "routes";
 import { useStores } from "hooks/useStores";
 import { auth } from "API";
 import { getAllClasses, getClassDetails } from "API/get/get.class.details";
-import { IClass, IStudent } from "interfaces/classes";
+import { IAttendee, IClass, IStudent } from "interfaces/classes";
 import {
   mapStudentId,
   softDeleteClass,
@@ -33,7 +33,10 @@ import {
 } from "API/patch/patch.class";
 import { restoreClass } from "API/patch/patch.class";
 import { getClassStudents } from "API/get/get.class.students";
-import { useGetClassAttendees } from "API/get/get.class.attendees";
+import {
+  getClassAttendees,
+  useGetClassAttendees,
+} from "API/get/get.class.attendees";
 import { getValidArray } from "utils/common";
 import { EClassRole } from "enums/classes";
 import { CSVLink, CSVDownload } from "react-csv";
@@ -50,15 +53,12 @@ const ManageClasses = () => {
   const { authStore } = useStores();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<string>("");
+  const [assignableStudentList, setAssignableStudentList] = useState<
+    IAttendee[]
+  >([]);
 
   const router = useRouter();
   const MemberListSorted = ListToShow;
-
-  const {
-    data: attendees,
-    isLoading,
-    refetch,
-  } = useGetClassAttendees(classInfo?.id ?? "");
 
   const [fileContent, setFileContent] = useState<string[][] | null>(null);
   const getMemberList = async () => {
@@ -131,10 +131,6 @@ const ManageClasses = () => {
     return cleanedData.split("\n").map((line) => line.split(","));
   };
 
-  const studentList = getValidArray(attendees?.data)?.filter(
-    (item) => item?.role === EClassRole.STUDENT
-  );
-
   const handleSort = (column: string) => {
     const newSortOrder =
       column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
@@ -164,27 +160,38 @@ const ManageClasses = () => {
   };
 
   useEffect(() => {
-    async function getInfoForCurrentUser() {
-      const res = await getCurrentUser();
-      if (res.role !== "admin") {
-        toast({
-          status: "error",
-          description: "Your are not admin",
-        });
-        authStore.logout();
-      }
-    }
-
     async function getClassInfo() {
       if (router.isReady) {
         const res = await getClassDetails(router.query.id as string);
         setClassInfo(res);
+        const res2 = await getClassAttendees(router.query.id as string);
+        const res3 = res2.data.filter((user) => user.role === "student");
+        console.log(res3);
+        setAssignableStudentList(res3);
       }
     }
-
-    getClassInfo();
+    async function getInfoForCurrentUser() {
+      try {
+        const res = await getCurrentUser();
+        if (res.role !== "admin") {
+          toast({
+            status: "error",
+            description: "Your are not admin",
+          });
+          authStore.logout();
+        } else {
+          getClassInfo();
+          getMemberList();
+        }
+      } catch (error) {
+        toast({
+          status: "error",
+          description: "Something went wrong",
+        });
+        router.push("auth/login");
+      }
+    }
     getInfoForCurrentUser();
-    getMemberList();
   }, [router?.isReady]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -283,7 +290,14 @@ const ManageClasses = () => {
               headers={header}
               filename={"admin-student-manager-template.csv"}
             >
-              <Button colorScheme="cyan" variant={"solid"}>
+              <Button
+                as={"div"}
+                variant={"ghost"}
+                borderRadius={"full"}
+                _hover={{
+                  bgColor: "gray.200",
+                }}
+              >
                 Download template
               </Button>
             </CSVLink>
@@ -364,6 +378,37 @@ const ManageClasses = () => {
                         </Box>
                       )}
                     </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+          <Heading as="h2" size="1xl" noOfLines={1}>
+            Assignable student list
+          </Heading>
+          <TableContainer>
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th onClick={() => handleSort("as_name")}>
+                    Name {renderSortIcon("as_name")}
+                  </Th>
+                  <Th onClick={() => handleSort("as_email")}>
+                    Email {renderSortIcon("as_email")}
+                  </Th>
+                  <Th onClick={() => handleSort("as_id")}>
+                    ID {renderSortIcon("as_id")}
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {assignableStudentList?.map((student) => (
+                  <Tr key={student.user?.id}>
+                    <Td>
+                      {student.user?.firstName} {student.user?.lastName}
+                    </Td>
+                    <Td>{student.user?.email}</Td>
+                    <Td>{student.user?.id}</Td>
                   </Tr>
                 ))}
               </Tbody>
