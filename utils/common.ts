@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import capitalize from "lodash/capitalize";
 import get from "lodash/get";
+import moment from "moment";
 import { NextRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 dayjs.extend(isSameOrBefore);
@@ -295,4 +296,15 @@ export function convertBreakPointToNumber(
 ): number {
   const breakPointNumber: number = Number(breakPoint.replace(unit, ""));
   return breakPointNumber;
+}
+
+export function timeAgo(time: string) {
+  const now = moment();
+  const createdAt = moment(time);
+  const diff = now.diff(createdAt, "hours");
+  if (diff < 24) {
+    return createdAt.fromNow();
+  } else {
+    return createdAt.format("DD/MM/YYYY");
+  }
 }

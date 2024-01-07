@@ -7,8 +7,6 @@ import {
   Tabs,
   TabList,
   Tab,
-  TabPanels,
-  TabPanel,
 } from "@chakra-ui/react";
 import { useGetClassReviews } from "API/get/get.class.reviews";
 import EmptyList from "components/EmptyState/EmptyList";
@@ -80,72 +78,72 @@ const TeacherReviewsScene = ({ details }: Props) => {
 
   return (
     <VStack alignSelf={"center"} alignItems={"center"} h="full" flex={1}>
-      {checkValidArray(classReviews) ? (
-        <VStack
-          w={"full"}
-          maxW={"container.lg"}
-          p={10}
-          borderColor={"gray.300"}
-          alignItems={"start"}
-          h={"full"}
-          gap={5}
-        >
-          <HStack w={"full"} justifyContent={"space-between"}>
-            <Text fontSize={"xl"} fontWeight={"bold"}>
-              Reviews
-            </Text>
-          </HStack>
+      <VStack
+        w={"full"}
+        maxW={"container.lg"}
+        p={10}
+        borderColor={"gray.300"}
+        alignItems={"start"}
+        h={"full"}
+        gap={5}
+      >
+        <HStack w={"full"} justifyContent={"space-between"}>
+          <Text fontSize={"xl"} fontWeight={"bold"}>
+            Reviews
+          </Text>
+        </HStack>
 
-          <Tabs isFitted variant="enclosed" w={"full"} onChange={onChangeTab}>
-            <TabList mb="1em">
-              <Tab
-                _selected={{
-                  color: "primary.500",
-                  fontWeight: "bold",
-                  bg: "primary.100",
-                }}
-              >
-                All
-              </Tab>
-              <Tab
-                _selected={{
-                  color: "yellow.500",
-                  fontWeight: "bold",
-                  bg: "yellow.100",
-                }}
-              >
-                Pending
-              </Tab>
-              <Tab
-                _selected={{
-                  color: "green.500",
-                  fontWeight: "bold",
-                  bg: "green.100",
-                }}
-              >
-                Approved
-              </Tab>
-              <Tab
-                _selected={{
-                  color: "red.500",
-                  fontWeight: "bold",
-                  bg: "red.100",
-                }}
-              >
-                Rejected
-              </Tab>
-            </TabList>
-          </Tabs>
+        <Tabs isFitted variant="enclosed" w={"full"} onChange={onChangeTab}>
+          <TabList mb="1em">
+            <Tab
+              _selected={{
+                color: "primary.500",
+                fontWeight: "bold",
+                bg: "primary.100",
+              }}
+            >
+              All
+            </Tab>
+            <Tab
+              _selected={{
+                color: "yellow.800",
+                fontWeight: "bold",
+                bg: "yellow.100",
+              }}
+            >
+              Pending ⌛️
+            </Tab>
+            <Tab
+              _selected={{
+                color: "green.500",
+                fontWeight: "bold",
+                bg: "green.100",
+              }}
+            >
+              Approved ✅
+            </Tab>
+            <Tab
+              _selected={{
+                color: "red.500",
+                fontWeight: "bold",
+                bg: "red.100",
+              }}
+            >
+              Rejected ❌
+            </Tab>
+          </TabList>
+        </Tabs>
+        {checkValidArray(classReviews) ? (
           <VStack px={5} w={"full"} gap={7}>
             {getValidArray(classReviews)?.map(renderReviewItem)}
           </VStack>
-        </VStack>
-      ) : (
-        <EmptyList
-          title={"No reviews"}
-          description={"There are no reviews for this class"}
-        />
-      )}
+        ) : (
+          <EmptyList
+            title={"No reviews"}
+            description={"There are no reviews"}
+          />
+        )}
+      </VStack>
     </VStack>
   );
 };
