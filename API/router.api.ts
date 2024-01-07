@@ -184,6 +184,11 @@ export const GlobalApiRouters = {
 };
 
 export const ReviewApiRouters = {
+  get: {
+    review_comments: {
+      value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/comments`,
+    },
+  },
   post: {
     create_review: {
       value: `${API_URL}/reviews`,

@@ -18,6 +18,7 @@ import { useCallback, useMemo, useState } from "react";
 import { gray500, gray700, pink500 } from "theme/colors.theme";
 import ReviewModal from "./ReviewModal";
 import Comments from "./Comments";
+import { timeAgo } from "utils/common";
 
 type Props = {
   review: IReview;
@@ -26,14 +27,7 @@ type Props = {
 
 const ReviewsDetailItem = ({ review, refetch }: Props) => {
   const timeRender = useMemo(() => {
-    const now = moment();
-    const createdAt = moment(review?.createdAt);
-    const diff = now.diff(createdAt, "hours");
-    if (diff < 24) {
-      return createdAt.fromNow();
-    } else {
-      return createdAt.format("DD/MM/YYYY");
-    }
+    return timeAgo(review?.createdAt);
   }, [review?.createdAt]);
 
   const [isShowMoreExplanation, setIsShowMoreExplanation] = useState(false);

@@ -7,8 +7,6 @@ import {
   Tabs,
   TabList,
   Tab,
-  TabPanels,
-  TabPanel,
 } from "@chakra-ui/react";
 import { useGetClassReviews } from "API/get/get.class.reviews";
 import EmptyList from "components/EmptyState/EmptyList";
