@@ -49,7 +49,9 @@ const Comments = ({ review }: Props) => {
   };
 
   const renderComment = useCallback(
-    (item: IReviewComment) => <Comment comment={item} review={review} />,
+    (item: IReviewComment) => (
+      <Comment comment={item} review={review} showingReply={true} />
+    ),
     [reviewComments, review]
   );
 
