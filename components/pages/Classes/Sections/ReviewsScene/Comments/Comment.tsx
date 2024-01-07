@@ -22,11 +22,9 @@ import { usePostCreateReviewCommentReply } from "API/post/post.review.comment-re
 const Comment = ({
   comment,
   review,
-  showingReply = false,
 }: {
   comment: IReviewComment;
   review: IReview;
-  showingReply?: boolean;
 }) => {
   const isPending = review?.status === EReviewStatus.PENDING;
   const replyInputRef = React.useRef<HTMLInputElement>(null);
@@ -113,7 +111,6 @@ const Comment = ({
             <Text
               fontSize={"xs"}
               color={"gray.500"}
-              display={!showingReply ? "none" : "block"}
               _hover={{
                 cursor: "pointer",
                 color: "primary.500",
@@ -127,7 +124,7 @@ const Comment = ({
             </Text>
           </HStack>
 
-          <Collapse in={isShowReplies && showingReply} style={{ width: "100%" }}>
+          <Collapse in={isShowReplies} style={{ width: "100%" }}>
             <VStack w={"full"} alignItems={"start"}>
               <VStack w={"full"} alignItems={"start"}>
                 {getValidArray(reviewCommentReplies)?.map(renderReply)}
