@@ -1,3 +1,5 @@
+import { ENotificationType } from "enums/classes";
+
 export interface IUser {
   [key: string]: any;
   createdAt?: Date;
@@ -21,7 +23,7 @@ export interface INotification {
   title: string;
   description: string;
   seen: boolean;
-  type: string;
+  type: ENotificationType;
   data: string;
   createdAt: string;
   user: IUser;

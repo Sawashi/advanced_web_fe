@@ -223,4 +223,10 @@ export const NotificationsApiRouters = {
       value: `${API_URL}/notifications`,
     },
   },
+  patch: {
+    mark_seen: {
+      value: (notificationId: ID) =>
+        `${API_URL}/notifications/${notificationId}/seen`,
+    },
+  },
 };

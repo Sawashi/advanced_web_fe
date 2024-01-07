@@ -11,7 +11,6 @@ import {
   BreadcrumbLink,
   Skeleton,
   Box,
-  Circle,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import SvgIcon from "components/SvgIcon";
@@ -20,11 +19,10 @@ import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import React from "react";
 import routes from "routes";
-import { gray500, gray700 } from "theme/colors.theme";
+import { gray500 } from "theme/colors.theme";
 import { IClass } from "interfaces/classes";
 import { ETabName } from "enums/classes";
 import capitalize from "lodash/capitalize";
-import { useGetMyUnseenNotifications } from "API/get/get.me.notifications";
 import BellNotifications from "../components/BellNotifications";
 
 export interface IClassHeaderProps {

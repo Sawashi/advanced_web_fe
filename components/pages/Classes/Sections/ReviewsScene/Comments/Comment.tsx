@@ -50,7 +50,9 @@ const Comment = ({
   }, [comment?.updatedAt]);
 
   const renderReply = useCallback(
-    (item: IReviewComment) => <Comment comment={item} review={review} />,
+    (item: IReviewComment) => (
+      <Comment comment={item} review={review} key={item?.id} />
+    ),
     [reviewCommentReplies, review, comment]
   );
 
