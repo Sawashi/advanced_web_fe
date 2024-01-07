@@ -109,7 +109,7 @@ const TeacherReviewsScene = ({ details }: Props) => {
               </Tab>
               <Tab
                 _selected={{
-                  color: "yellow.500",
+                  color: "yellow.800",
                   fontWeight: "bold",
                   bg: "yellow.100",
                 }}

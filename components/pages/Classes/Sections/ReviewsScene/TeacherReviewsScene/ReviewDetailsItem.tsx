@@ -15,8 +15,9 @@ import { EReviewStatus } from "enums/classes";
 import { IReview } from "interfaces/classes";
 import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
-import { gray700, pink500 } from "theme/colors.theme";
+import { gray500, gray700, pink500 } from "theme/colors.theme";
 import ReviewModal from "./ReviewModal";
+import Comments from "./Comments";
 
 type Props = {
   review: IReview;
@@ -178,134 +179,180 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             width: "100%",
           }}
         >
-          <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
-            <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-              Details
-            </Text>
+          <VStack
+            gap={5}
+            w={"full"}
+            alignItems={"start"}
+            justifyContent={"space-between"}
+            divider={<Divider />}
+          >
+            <VStack gap={5} w="full">
+              <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
+                <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
+                  Details
+                </Text>
 
-            <VStack w={"full"} p={3}>
-              <HStack w={"full"} gap={3} alignItems={"center"}>
-                <Text fontSize={"sm"} color={"gray.500"} fontWeight={"bold"}>
-                  Composition:
-                </Text>
-                <Text
-                  fontSize={"md"}
-                  fontWeight={"700"}
-                  ml={2}
-                  color={"purple.700"}
-                >
-                  {review?.grade?.composition?.name +
-                    " " +
-                    `(${review?.grade?.composition?.percentage}%)`}
-                </Text>
-              </HStack>
-              <HStack w={"full"} gap={3} alignItems={"center"}>
-                <Text fontSize={"sm"} color={"gray.500"} fontWeight={"bold"}>
-                  Student:
-                </Text>
-                <Text
-                  fontSize={"md"}
-                  fontWeight={"700"}
-                  ml={2}
-                  color={"purple.700"}
-                >
-                  {review?.grade?.student?.id +
-                    " - " +
-                    review?.grade?.student?.name}
-                </Text>
-              </HStack>
-            </VStack>
-          </VStack>
-
-          <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
-            <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-              Review
-            </Text>
-
-            <HStack w={"full"} justifyContent={"space-between"} gap={5}>
-              <VStack flex={1}>
-                <Text fontSize={"lg"} color={"gray.700"} fontWeight={"bold"}>
-                  From
-                </Text>
-                <Code
-                  fontSize={"md"}
-                  fontWeight={"700"}
-                  borderRadius={6}
-                  p={2}
-                  backgroundColor={
-                    review?.studentCurrentGrade > review?.studentExpectedGrade
-                      ? "red.100"
-                      : "green.100"
-                  }
-                  color={
-                    review?.studentCurrentGrade > review?.studentExpectedGrade
-                      ? "red.500"
-                      : "green.500"
-                  }
-                >
-                  {review?.studentCurrentGrade}
-                </Code>
+                <VStack w={"full"} p={3}>
+                  <HStack w={"full"} gap={3} alignItems={"center"}>
+                    <Text
+                      fontSize={"sm"}
+                      color={"gray.500"}
+                      fontWeight={"bold"}
+                    >
+                      Composition:
+                    </Text>
+                    <Text
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      ml={2}
+                      color={"purple.700"}
+                    >
+                      {review?.grade?.composition?.name +
+                        " " +
+                        `(${review?.grade?.composition?.percentage}%)`}
+                    </Text>
+                  </HStack>
+                  <HStack w={"full"} gap={3} alignItems={"center"}>
+                    <Text
+                      fontSize={"sm"}
+                      color={"gray.500"}
+                      fontWeight={"bold"}
+                    >
+                      Student:
+                    </Text>
+                    <Text
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      ml={2}
+                      color={"purple.700"}
+                    >
+                      {review?.grade?.student?.id +
+                        " - " +
+                        review?.grade?.student?.name}
+                    </Text>
+                  </HStack>
+                </VStack>
               </VStack>
-              <SvgIcon
-                iconName="ic-arrow-right.svg"
-                size={20}
-                color={gray700}
-              />
-              <VStack flex={1}>
-                <Text fontSize={"md"} color={"gray.700"} fontWeight={"bold"}>
-                  To
+
+              <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
+                <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
+                  Review
                 </Text>
-                <Code
-                  fontSize={"md"}
-                  fontWeight={"700"}
-                  borderRadius={6}
-                  p={2}
-                  backgroundColor={
-                    review?.studentCurrentGrade > review?.studentExpectedGrade
-                      ? "red.100"
-                      : "green.100"
-                  }
-                  color={
-                    review?.studentCurrentGrade > review?.studentExpectedGrade
-                      ? "red.500"
-                      : "green.500"
-                  }
-                >
-                  {review?.studentExpectedGrade}
-                </Code>
+
+                <HStack w={"full"} justifyContent={"space-between"} gap={5}>
+                  <VStack flex={1}>
+                    <Text
+                      fontSize={"lg"}
+                      color={"gray.700"}
+                      fontWeight={"bold"}
+                    >
+                      From
+                    </Text>
+                    <Code
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      borderRadius={6}
+                      p={2}
+                      backgroundColor={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.100"
+                          : "green.100"
+                      }
+                      color={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.500"
+                          : "green.500"
+                      }
+                    >
+                      {review?.studentCurrentGrade}
+                    </Code>
+                  </VStack>
+                  <SvgIcon
+                    iconName="ic-arrow-right.svg"
+                    size={20}
+                    color={gray700}
+                  />
+                  <VStack flex={1}>
+                    <Text
+                      fontSize={"md"}
+                      color={"gray.700"}
+                      fontWeight={"bold"}
+                    >
+                      To
+                    </Text>
+                    <Code
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      borderRadius={6}
+                      p={2}
+                      backgroundColor={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.100"
+                          : "green.100"
+                      }
+                      color={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.500"
+                          : "green.500"
+                      }
+                    >
+                      {review?.studentExpectedGrade}
+                    </Code>
+                  </VStack>
+                </HStack>
               </VStack>
-            </HStack>
-          </VStack>
 
-          <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
-            <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
-              Explanation
-            </Text>
-
-            <Collapse startingHeight={50} in={isShowMoreExplanation}>
-              <Text
-                fontSize={"xs"}
-                fontWeight={"normal"}
-                color={"gray.500"}
-                ml={2}
-                whiteSpace={"pre-line"}
+              <VStack
+                w={"full"}
+                maxW={"container.lg"}
+                alignItems={"start"}
+                onClick={() => setIsShowMoreExplanation(!isShowMoreExplanation)}
+                _hover={{
+                  cursor: "pointer",
+                }}
               >
-                {review?.studentExplanation}
-              </Text>
-            </Collapse>
-            <Button
-              variant={"link"}
-              colorScheme={"primary"}
-              size={"sm"}
-              onClick={() => setIsShowMoreExplanation(!isShowMoreExplanation)}
-              alignSelf={"center"}
-              color={"gray.400"}
-            >
-              <SvgIcon
-                iconName={isShowMoreExplanation ? "ic-up.svg" : "ic-down.svg"}
-                size={20}
-              />
-            </Button>
+                <HStack
+                  w={"full"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  gap={5}
+                >
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"bold"}
+                    color={"primary.500"}
+                  >
+                    Explanation
+                  </Text>
+                  <SvgIcon
+                    iconName={
+                      isShowMoreExplanation ? "ic-up.svg" : "ic-down.svg"
+                    }
+                    size={20}
+                  />
+                </HStack>
+
+                <Collapse startingHeight={50} in={isShowMoreExplanation}>
+                  <Text
+                    fontSize={"xs"}
+                    fontWeight={"normal"}
+                    color={"gray.500"}
+                    ml={2}
+                    whiteSpace={"pre-line"}
+                  >
+                    {review?.studentExplanation}
+                  </Text>
+                </Collapse>
+              </VStack>
+            </VStack>
+
+            <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
+              <Comments review={review} />
+            </VStack>
           </VStack>
         </Collapse>
       </VStack>
