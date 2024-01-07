@@ -216,3 +216,11 @@ export const ReviewApiRouters = {
     },
   },
 };
+
+export const NotificationsApiRouters = {
+  get: {
+    my_notifications: {
+      value: `${API_URL}/notifications`,
+    },
+  },
+};

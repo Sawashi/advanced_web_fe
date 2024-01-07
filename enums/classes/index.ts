@@ -23,7 +23,15 @@ export enum ETabDescription {
 }
 
 export enum EReviewStatus {
-  PENDING = 'pending',
-  REJECTED = 'rejected',
-  ACCEPTED = 'accepted',
+  PENDING = "pending",
+  REJECTED = "rejected",
+  ACCEPTED = "accepted",
+}
+
+export enum ENotificationType {
+  GRADE_COMPOSITION_FINALIZED = "GRADE_COMPOSITION_FINALIZED", // grade board
+  GRADE_REVIEW_REQUESTED = "GRADE_REVIEW_REQUESTED", // review
+  MARK_REVIEW_DECISION = "MARK_REVIEW_DECISION", // review
+  COMMENT = "COMMENT", // review
+  COMMENT_REPLY = "COMMENT_REPLY", // review
 }

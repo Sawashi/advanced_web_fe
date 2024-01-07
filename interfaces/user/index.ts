@@ -15,3 +15,14 @@ export interface IUser {
 export interface IVerifyTokenResponse {
   isValidToken: boolean;
 }
+
+export interface INotification {
+  id: string;
+  title: string;
+  description: string;
+  seen: boolean;
+  type: string;
+  data: string;
+  createdAt: string;
+  user: IUser;
+}
