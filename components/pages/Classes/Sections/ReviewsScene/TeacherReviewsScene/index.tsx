@@ -13,10 +13,12 @@ import EmptyList from "components/EmptyState/EmptyList";
 import { useStores } from "hooks/useStores";
 import { IClass, IReview } from "interfaces/classes";
 import { observer } from "mobx-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { checkValidArray, getValidArray } from "utils/common";
 import ReviewsDetailItem from "./ReviewDetailsItem";
 import { EReviewStatus } from "enums/classes";
+import ReviewDetails from "../ReviewDetailsModal";
+import { useRouter } from "next/router";
 
 interface Props {
   details: IClass;
@@ -25,6 +27,17 @@ interface Props {
 const TeacherReviewsScene = ({ details }: Props) => {
   const { settingStore } = useStores();
   const [filterStatus, setFilterStatus] = React.useState<EReviewStatus>();
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [selectedReviewId, setSelectedReviewId] = React.useState<string>("");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router?.isReady) return;
+    if (router?.query?.reviewId) {
+      setIsModalOpen(true);
+      setSelectedReviewId(router?.query?.reviewId as string);
+    }
+  }, [router?.isReady, router?.query?.reviewId]);
 
   const {
     data: getClassReviews,
@@ -153,6 +166,11 @@ const TeacherReviewsScene = ({ details }: Props) => {
           )}
         </VStack>
       )}
+      <ReviewDetails
+        isVisible={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        reviewId={selectedReviewId}
+      />
     </VStack>
   );
 };

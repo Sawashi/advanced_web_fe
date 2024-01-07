@@ -70,7 +70,10 @@ const NotificationItem = React.memo(
         case ENotificationType.MARK_REVIEW_DECISION:
           router
             .push(
-              routes.classes.details.value(dataParse?.classId, ETabName.Reviews)
+              routes.classes.details.value(
+                dataParse?.classId,
+                ETabName.Reviews
+              ) + `&reviewId=${dataParse?.reviewId}`
             )
             .then(() => {
               router.reload();

@@ -34,7 +34,7 @@ const Comments = ({ review }: Props) => {
   const {
     mutateAsync: mutateCreateReviewComment,
     isLoading: isCreatingReviewComment,
-  } = usePostCreateReviewComment(review.id, () => {
+  } = usePostCreateReviewComment(review?.id, () => {
     refetchGetReviewComments();
   });
   const [isShowComments, setIsShowComments] = useState(true);
@@ -49,9 +49,7 @@ const Comments = ({ review }: Props) => {
   };
 
   const renderComment = useCallback(
-    (item: IReviewComment) => (
-      <Comment comment={item} review={review} />
-    ),
+    (item: IReviewComment) => <Comment comment={item} review={review} />,
     [reviewComments, review]
   );
 

@@ -30,7 +30,6 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
   const timeRender = useMemo(() => {
     return timeAgo(review?.createdAt);
   }, [review?.createdAt]);
-
   const [isShowMoreExplanation, setIsShowMoreExplanation] = useState(false);
   const [isShowMoreReview, setIsShowMoreReview] = useState(false);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
@@ -117,7 +116,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             _hover={{
               cursor: "pointer",
             }}
-            divider={<Box h={"20px"} w={'2px'} bgColor={"gray.300"} />}
+            divider={<Box h={"20px"} w={"2px"} bgColor={"gray.300"} />}
           >
             <HStack flex={1} alignItems={"center"} gap={3}>
               <Avatar
@@ -251,7 +250,11 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               alignSelf={"center"}
               color={"gray.400"}
             >
-              <SvgIcon iconName="ic-check-review.svg" size={20} color={pink600} />
+              <SvgIcon
+                iconName="ic-check-review.svg"
+                size={20}
+                color={pink600}
+              />
             </Button>
           ) : null}
         </HStack>

@@ -190,6 +190,9 @@ export const GlobalApiRouters = {
 
 export const ReviewApiRouters = {
   get: {
+    review_details: {
+      value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}`,
+    },
     review_comments: {
       value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/comments`,
     },
