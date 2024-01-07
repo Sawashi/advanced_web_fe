@@ -98,7 +98,7 @@ const ClassDetail = () => {
     if (!isStudentOfClass) {
       tabs = tabs.concat([
         {
-          name: "Manage grade",
+          name: "Manage grades",
           component: <TeacherGradeBoard details={classDetails ?? {}} />,
           tabName: ETabName.GradeBoard,
         },
