@@ -86,7 +86,8 @@ export const ClassesApiRouters = {
         `${API_URL}/classes/${classId}/students/${studentId}/grades`,
     },
     my_reviews: {
-      value: (classId: ID, query?: URLQueryType<{}>) => `${API_URL}/classes/${classId}/my-reviews?${getQueries(query ?? {})}`,
+      value: (classId: ID, query?: URLQueryType<{}>) =>
+        `${API_URL}/classes/${classId}/my-reviews?${getQueries(query ?? {})}`,
     },
     reviews: {
       value: (classId: ID, query?: URLQueryType<{}>) =>
@@ -188,6 +189,10 @@ export const ReviewApiRouters = {
   get: {
     review_comments: {
       value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/comments`,
+    },
+    review_comment_replies: {
+      value: (reviewId: ID, commentId: ID) =>
+        `${API_URL}/reviews/${reviewId}/comments/${commentId}/replies`,
     },
   },
   post: {

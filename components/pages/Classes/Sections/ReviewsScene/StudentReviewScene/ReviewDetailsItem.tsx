@@ -17,7 +17,7 @@ import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
 import { gray700 } from "theme/colors.theme";
 import { timeAgo } from "utils/common";
-import Comments from "../Comments";
+import Comments from "../Comments/index.ts";
 
 type Props = {
   review: IReview;

@@ -1,8 +1,6 @@
 import {
-  Avatar,
   Box,
   Button,
-  Circle,
   Collapse,
   HStack,
   Input,
@@ -13,84 +11,16 @@ import {
 import { useGetReviewComments } from "API/get/get.review.comments";
 import SvgIcon from "components/SvgIcon";
 import { IReview, IReviewComment } from "interfaces/classes";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { useState } from "react";
 import { primary500 } from "theme/colors.theme";
-import { getValidArray, timeAgo } from "utils/common";
-import moment from "moment";
+import { checkValidArray, getValidArray } from "utils/common";
 import { usePostCreateReviewComment } from "API/post/post.review.comment";
 import { EReviewStatus } from "enums/classes";
+import Comment from "./Comment";
 
 type Props = {
   review: IReview;
-};
-
-const Comment = ({ comment }: { comment: IReviewComment }) => {
-  const updatedTime = useMemo(() => {
-    return timeAgo(comment?.updatedAt);
-  }, [comment?.updatedAt]);
-
-  return (
-    <VStack w={"full"} alignItems={"start"} gap={2}>
-      <HStack w={"full"} justifyContent={"start"} gap={3} alignItems={"start"}>
-        <Avatar
-          size={"sm"}
-          name={comment?.user?.firstName + " " + comment?.user?.lastName}
-          src={comment?.user?.avatar}
-          borderWidth={1}
-          borderColor={"gray.200"}
-          mt={1}
-        />
-        <VStack w={"full"} alignItems={"start"} gap={1}>
-          <VStack
-            w={"full"}
-            backgroundColor={"gray.50"}
-            borderRadius={12}
-            key={comment?.id}
-            alignItems={"start"}
-            boxShadow={"md"}
-            p={5}
-            gap={1}
-          >
-            <HStack w={"full"} justifyContent={"space-between"}>
-              <Tooltip label={comment?.user?.email}>
-                <Text fontSize={"md"} fontWeight={"bold"}>
-                  {comment?.user?.firstName + " " + comment?.user?.lastName}
-                </Text>
-              </Tooltip>
-            </HStack>
-            <Text>{comment?.content}</Text>
-          </VStack>
-
-          <HStack
-            w={"full"}
-            justifyContent={"start"}
-            px={2}
-            gap={2}
-            divider={<Circle size={1} backgroundColor={"gray.500"} />}
-          >
-            <Tooltip label={moment(comment?.updatedAt).format("LLL")}>
-              <Text fontSize={"xs"} color={"gray.500"}>
-                {updatedTime}
-              </Text>
-            </Tooltip>
-
-            <Text
-              fontSize={"xs"}
-              color={"gray.500"}
-              _hover={{
-                cursor: "pointer",
-                color: "primary.500",
-                textDecoration: "underline",
-              }}
-            >
-              {`${comment?.childrenCount ?? 0} replies`}
-            </Text>
-          </HStack>
-        </VStack>
-      </HStack>
-    </VStack>
-  );
 };
 
 const Comments = ({ review }: Props) => {
@@ -119,8 +49,8 @@ const Comments = ({ review }: Props) => {
   };
 
   const renderComment = useCallback(
-    (item: IReviewComment) => <Comment comment={item} />,
-    [reviewComments]
+    (item: IReviewComment) => <Comment comment={item} review={review} />,
+    [reviewComments, review]
   );
 
   return (
@@ -161,7 +91,7 @@ const Comments = ({ review }: Props) => {
         </HStack>
 
         <Collapse
-          in={isShowComments}
+          in={isShowComments && checkValidArray(reviewComments)}
           style={{
             width: "100%",
           }}
