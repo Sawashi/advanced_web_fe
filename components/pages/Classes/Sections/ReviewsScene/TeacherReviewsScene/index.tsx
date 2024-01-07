@@ -1,4 +1,15 @@
-import { VStack, HStack, Text, Center, Spinner } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Text,
+  Center,
+  Spinner,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from "@chakra-ui/react";
 import { useGetClassReviews } from "API/get/get.class.reviews";
 import EmptyList from "components/EmptyState/EmptyList";
 import { useStores } from "hooks/useStores";
@@ -7,6 +18,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { checkValidArray, getValidArray } from "utils/common";
 import ReviewsDetailItem from "./ReviewDetailsItem";
+import { EReviewStatus } from "enums/classes";
 
 interface Props {
   details: IClass;
@@ -14,11 +26,15 @@ interface Props {
 
 const TeacherReviewsScene = ({ details }: Props) => {
   const { settingStore } = useStores();
+  const [filterStatus, setFilterStatus] = React.useState<EReviewStatus>();
+
   const {
     data: getClassReviews,
     isLoading: isClassReviewsLoading,
     refetch: refetchClassReviews,
-  } = useGetClassReviews(details?.id ?? "");
+  } = useGetClassReviews(details?.id ?? "", {
+    "filter.status": filterStatus,
+  });
   const { data: classReviews } = getClassReviews ?? {};
 
   settingStore?.setHeaderLoading(isClassReviewsLoading);
@@ -43,6 +59,25 @@ const TeacherReviewsScene = ({ details }: Props) => {
     );
   };
 
+  const onChangeTab = async (index: number) => {
+    switch (index) {
+      case 0:
+        setFilterStatus(undefined);
+        break;
+      case 1:
+        setFilterStatus(EReviewStatus.PENDING);
+        break;
+      case 2:
+        setFilterStatus(EReviewStatus.ACCEPTED);
+        break;
+      case 3:
+        setFilterStatus(EReviewStatus.REJECTED);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <VStack alignSelf={"center"} alignItems={"center"} h="full" flex={1}>
       {checkValidArray(classReviews) ? (
@@ -61,6 +96,46 @@ const TeacherReviewsScene = ({ details }: Props) => {
             </Text>
           </HStack>
 
+          <Tabs isFitted variant="enclosed" w={"full"} onChange={onChangeTab}>
+            <TabList mb="1em">
+              <Tab
+                _selected={{
+                  color: "primary.500",
+                  fontWeight: "bold",
+                  bg: "primary.100",
+                }}
+              >
+                All
+              </Tab>
+              <Tab
+                _selected={{
+                  color: "yellow.500",
+                  fontWeight: "bold",
+                  bg: "yellow.100",
+                }}
+              >
+                Pending
+              </Tab>
+              <Tab
+                _selected={{
+                  color: "green.500",
+                  fontWeight: "bold",
+                  bg: "green.100",
+                }}
+              >
+                Approved
+              </Tab>
+              <Tab
+                _selected={{
+                  color: "red.500",
+                  fontWeight: "bold",
+                  bg: "red.100",
+                }}
+              >
+                Rejected
+              </Tab>
+            </TabList>
+          </Tabs>
           <VStack px={5} w={"full"} gap={7}>
             {getValidArray(classReviews)?.map(renderReviewItem)}
           </VStack>

@@ -9,6 +9,7 @@ export type URLQueryType<T> = {
   limit?: string | number;
   exclude?: string | number | null;
   page?: string | number;
+  filter?: Object;
 } & T;
 
 export type ID = string | number;
