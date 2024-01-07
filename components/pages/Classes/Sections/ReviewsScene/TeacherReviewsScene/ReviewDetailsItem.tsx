@@ -139,6 +139,64 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               </VStack>
             </HStack>
 
+            {isShowMoreReview ? null : (
+              <HStack justifyContent={"space-between"} gap={5}>
+                <Text
+                  fontSize={"md"}
+                  color={"purple.500"}
+                  fontWeight={"bold"}
+                  whiteSpace={"nowrap"}
+                >
+                  {review?.grade?.composition?.name}
+                </Text>
+                <VStack flex={1}>
+                  <Code
+                    fontSize={"md"}
+                    fontWeight={"700"}
+                    borderRadius={6}
+                    p={2}
+                    backgroundColor={
+                      review?.studentCurrentGrade > review?.studentExpectedGrade
+                        ? "red.100"
+                        : "green.100"
+                    }
+                    color={
+                      review?.studentCurrentGrade > review?.studentExpectedGrade
+                        ? "red.500"
+                        : "green.500"
+                    }
+                  >
+                    {review?.studentCurrentGrade}
+                  </Code>
+                </VStack>
+                <SvgIcon
+                  iconName="ic-arrow-right.svg"
+                  size={20}
+                  color={gray700}
+                />
+                <VStack flex={1}>
+                  <Code
+                    fontSize={"md"}
+                    fontWeight={"700"}
+                    borderRadius={6}
+                    p={2}
+                    backgroundColor={
+                      review?.studentCurrentGrade > review?.studentExpectedGrade
+                        ? "red.100"
+                        : "green.100"
+                    }
+                    color={
+                      review?.studentCurrentGrade > review?.studentExpectedGrade
+                        ? "red.500"
+                        : "green.500"
+                    }
+                  >
+                    {review?.studentExpectedGrade}
+                  </Code>
+                </VStack>
+              </HStack>
+            )}
+
             <VStack flex={1} alignItems={"end"}>
               <Tooltip
                 label={moment(review?.createdAt).format("DD/MM/YYYY HH:mm:ss")}
