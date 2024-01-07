@@ -19,6 +19,7 @@ import {
   StudentClassBackground,
   TeacherClassBackground,
 } from "constants/pages/classes";
+import EmptyList from "components/EmptyState/EmptyList";
 
 export type ClassesListProps = {
   classes: IClass[];
@@ -146,7 +147,6 @@ const ClassesList = ({
     <HStack
       alignItems={checkValidArray(classes) ? "start" : "center"}
       w={"full"}
-      p={5}
       overflowX={"hidden"}
       overflowY={"auto"}
       spacing={5}
@@ -163,12 +163,10 @@ const ClassesList = ({
           {checkValidArray(classes) ? (
             getValidArray(classes)?.map(renderClassItem)
           ) : (
-            <VStack>
-              <SvgIcon iconName={"ic-empty.svg"} size={100} fill="gray.300" />
-              <Text fontSize={25} fontWeight={600} textAlign={"center"}>
-                No class found
-              </Text>
-            </VStack>
+            <EmptyList 
+            title="No classes found"
+            description="You have no classes yet, create or join one now!"
+            />
           )}
         </>
       )}
