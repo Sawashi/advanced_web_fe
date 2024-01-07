@@ -1,10 +1,10 @@
 import { ChakraProvider } from "@chakra-ui/react";
+import "@fontsource/poppins";
 import { Provider } from "mobx-react";
 import type { AppProps } from "next/app";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { getTheme } from "theme";
 import { rootStore } from "../stores";
-import { QueryClient, QueryClientProvider } from "react-query";
-import "@fontsource/poppins";
 
 const queryClient = new QueryClient();
 export const theme = getTheme();

@@ -56,6 +56,7 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
       onClose={onCloseModal}
       title={<Title />}
       size="full"
+      scrollBehavior="inside"
     >
       <VStack alignItems={"center"} spacing={5} p={5}>
         <VStack

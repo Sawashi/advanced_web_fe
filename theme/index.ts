@@ -75,6 +75,14 @@ export function getTheme(): Dict {
         ".offset-anchor": {
           scrollMarginTop: "100px",
         },
+        "::-webkit-scrollbar": {
+          width: "8px",
+          backgroundColor: "#F5F5F5",
+        },
+        "::-webkit-scrollbar-thumb": {
+          borderRadius: "10px",
+          backgroundColor: "#BFBFBF",
+        },
       },
     },
     colors: {

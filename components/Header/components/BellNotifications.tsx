@@ -26,7 +26,9 @@ import SvgIcon from "components/SvgIcon";
 import { ENotificationType, ETabName } from "enums/classes";
 import { INotification } from "interfaces/user";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useQueryClient } from "react-query";
 import routes from "routes";
 import { gray700 } from "theme/colors.theme";
 import { checkValidArray, getValidArray, timeAgo } from "utils/common";
@@ -106,7 +108,6 @@ const NotificationItem = React.memo(
           <Text
             fontSize={"sm"}
             fontWeight={"normal"}
-            ml={2}
             color={"gray.500"}
             lineHeight={"normal"}
           >
@@ -115,8 +116,7 @@ const NotificationItem = React.memo(
           <Text
             fontSize={"2xs"}
             fontWeight={"normal"}
-            ml={2}
-            color={"blue.500"}
+            color={"gray.600"}
             lineHeight={"normal"}
           >
             {timeAgo(notification?.createdAt)}
@@ -137,20 +137,28 @@ const BellNotifications = React.memo(() => {
   const { data: unseenNotificationsCount } = useGetMyUnseenNotifications();
   const {
     data: dataNotifications,
+    fetchNextPage: fetchNextPageNotifications,
+    hasNextPage: hasNextPageNotifications,
     isLoading: isLoadingNotifications,
-    mutateAsync,
-  } = useGetMyNotifications();
-  const { data: notifications } = dataNotifications || {};
+    reset: resetNotifications,
+  } = useGetMyNotifications(isOpen);
+
+  const notifications = dataNotifications?.pages?.flatMap((page) => page?.data);
 
   const onOpenBellNotifications = () => {
     onOpen();
-    mutateAsync();
+    resetNotifications();
+  };
+
+  const onCloseBellNotifications = () => {
+    onClose();
   };
 
   const renderNotification = useCallback(
     (notification: INotification) => {
       return (
         <NotificationItem
+          key={notification?.id}
           notification={notification}
           onSuccess={() => {
             onClose();
@@ -162,7 +170,11 @@ const BellNotifications = React.memo(() => {
   );
 
   return (
-    <Popover onOpen={onOpenBellNotifications} onClose={onClose} isOpen={isOpen}>
+    <Popover
+      onOpen={onOpenBellNotifications}
+      onClose={onCloseBellNotifications}
+      isOpen={isOpen}
+    >
       <PopoverTrigger>
         <Box
           position={"relative"}
@@ -196,7 +208,15 @@ const BellNotifications = React.memo(() => {
           </Circle>
         </Box>
       </PopoverTrigger>
-      <PopoverContent m={2} mx={4} boxShadow={"sm"}>
+      <PopoverContent
+        m={2}
+        mx={4}
+        minW={"320px"}
+        _focus={{
+          boxShadow: "none",
+        }}
+        minH={"300px"}
+      >
         <PopoverArrow />
         <PopoverCloseButton me={"5px"} mt={"5px"} />
         <PopoverHeader>
@@ -211,14 +231,7 @@ const BellNotifications = React.memo(() => {
           </Text>
         </PopoverHeader>
         <PopoverBody p={0}>
-          <VStack
-            maxH={"500px"}
-            minH={"200px"}
-            overflowY={"auto"}
-            w={"full"}
-            p={0}
-            alignItems={"flex-start"}
-          >
+          <VStack w={"full"} p={0} alignItems={"flex-start"}>
             {isLoadingNotifications ? (
               <Center w={"full"} h={"full"} mt={4}>
                 <Spinner boxSize={30} />
@@ -229,20 +242,31 @@ const BellNotifications = React.memo(() => {
                 description={"You don't have any notifications"}
               />
             ) : (
-              <VStack
-                w={"full"}
-                alignItems={"flex-start"}
-                spacing={1}
-                divider={
-                  <Divider
-                    orientation="horizontal"
-                    borderColor={"gray.300"}
-                    w={"full"}
-                  />
-                }
+              <InfiniteScroll
+                dataLength={getValidArray(notifications)?.length ?? 0}
+                hasMore={!!hasNextPageNotifications}
+                loader={null}
+                next={fetchNextPageNotifications}
+                scrollableTarget="scrollableDiv"
               >
-                {getValidArray(notifications)?.map(renderNotification)}
-              </VStack>
+                <VStack
+                  w={"full"}
+                  alignItems={"flex-start"}
+                  spacing={1}
+                  divider={
+                    <Divider
+                      orientation="horizontal"
+                      borderColor={"gray.300"}
+                      w={"full"}
+                    />
+                  }
+                  id="scrollableDiv"
+                  maxH={"450px"}
+                  overflowY={"auto"}
+                >
+                  {getValidArray(notifications)?.map(renderNotification)}
+                </VStack>
+              </InfiniteScroll>
             )}
           </VStack>
         </PopoverBody>
