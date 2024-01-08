@@ -3,19 +3,16 @@ import {
   HStack,
   Spinner,
   Stack,
-  VStack,
   chakra,
-  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import withAuth from "HOCs/withAuth";
 import { observer } from "mobx-react";
 import SideBar, { ISidebarRefProps } from "../UserLayout/components/Sidebar";
 import ClassHeader from "components/Header/ClassHeader";
 import { IClass } from "interfaces/classes";
-import { useStores } from "hooks/useStores";
-import { EUserRole } from "enums/auth";
+import withUser from "HOCs/withUser";
 
 interface IClassLayoutProps {
   title?: string;
@@ -25,17 +22,6 @@ interface IClassLayoutProps {
 }
 
 const ClassLayout = (props: IClassLayoutProps) => {
-  const { authStore } = useStores();
-  const toast = useToast();
-  useEffect(() => {
-    if (authStore?.user?.id && authStore?.user?.role === EUserRole.ADMIN) {
-      toast({
-        status: "error",
-        description: "You are not user",
-      });
-      authStore.logout();
-    }
-  }, []);
   const { title, children, details, isLoading = false } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
 
@@ -69,4 +55,4 @@ const ClassLayout = (props: IClassLayoutProps) => {
   );
 };
 
-export default withAuth(observer(ClassLayout));
+export default withUser(withAuth(observer(ClassLayout)));
