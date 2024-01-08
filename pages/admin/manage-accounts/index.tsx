@@ -295,7 +295,7 @@ const ManageAccounts = () => {
                     <Td>{user.createdAt?.toString()}</Td>
                     <Td>{user.role}</Td>
                     <Td>
-                      {user.status == "pending" ? (
+                      {user.role === "user" && (user.status == "active" || user.status == "pending") ? (
                         <Button
                           colorScheme="red"
                           variant="solid"
@@ -306,17 +306,7 @@ const ManageAccounts = () => {
                       ) : (
                         <></>
                       )}
-                      {user.status == "active" ? (
-                        <Button
-                          colorScheme="red"
-                          variant="solid"
-                          onClick={() => onClickBan(user.id ?? "")}
-                        >
-                          Ban
-                        </Button>
-                      ) : (
-                        <></>
-                      )}
+
                       {user.status == "blocked" ? (
                         <Button
                           colorScheme="green"
