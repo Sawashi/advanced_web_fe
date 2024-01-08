@@ -215,9 +215,6 @@ const ManageAccounts = () => {
       userLists?.filter((user) => user?.email?.includes(inputValue ?? ""))
     );
   }, [inputValue]);
-  useEffect(() => {
-    console.log("Page useEffect: " + pageNow);
-  }, [pageNow]);
   return (
     <AdminLayout title="Manage accounts">
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>

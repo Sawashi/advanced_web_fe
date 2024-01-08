@@ -40,6 +40,7 @@ import {
 import { getValidArray } from "utils/common";
 import { EClassRole } from "enums/classes";
 import { CSVLink, CSVDownload } from "react-csv";
+import NewPagination from "components/NewPagination/NewPagination";
 interface FileUploadButtonProps {
   onFileUpload: (data: string[][]) => void;
 }
@@ -166,7 +167,6 @@ const ManageClasses = () => {
         setClassInfo(res);
         const res2 = await getClassAttendees(router.query.id as string);
         const res3 = res2.data.filter((user) => user.role === "student");
-        console.log(res3);
         setAssignableStudentList(res3);
       }
     }
@@ -389,6 +389,12 @@ const ManageClasses = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <NewPagination
+            currentPage={1}
+            totalPages={1}
+            isDisabled={false}
+            getUserListAtPage={() => {}}
+          />
           <Heading as="h2" size="1xl" noOfLines={1}>
             Assignable student list
           </Heading>
@@ -420,6 +426,12 @@ const ManageClasses = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <NewPagination
+            currentPage={1}
+            totalPages={1}
+            isDisabled={false}
+            getUserListAtPage={() => {}}
+          />
         </VStack>
       </VStack>
     </AdminLayout>
