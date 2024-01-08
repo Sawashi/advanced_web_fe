@@ -6,6 +6,7 @@ const config = {
     API_URL: process.env.API_URL,
     BASE_URL: process.env.BASE_URL,
     HOST: process.env.HOST,
+    API_TEMPLATE_URL: process.env.API_TEMPLATE_URL,
   },
   async redirects() {
     return [
