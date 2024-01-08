@@ -17,10 +17,15 @@ import withUser from "HOCs/withUser";
 interface IAuthenticationLayoutProps {
   title?: string;
   children?: ReactNode;
+  onCloseCreateClassModal?: () => void;
+  onCloseJoinClassModal?: () => void;
 }
 
 const UserLayout = (props: IAuthenticationLayoutProps) => {
-  const { title, children } = props;
+  const { title, children,
+    onCloseCreateClassModal,
+    onCloseJoinClassModal
+  } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
   const {
     isOpen: isOpenJoinClass,
@@ -33,6 +38,16 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
     onClose: onCloseCreateClass,
     onOpen: onOpenCreateClass,
   } = useDisclosure();
+
+  const handleCloseCreateClassModal = () => {
+    onCloseCreateClassModal?.();
+    onCloseCreateClass();
+  }
+
+  const handleCloseJoinClassModal = () => {
+    onCloseJoinClass();
+    onCloseJoinClassModal?.();
+  }
 
   return (
     <>
@@ -60,11 +75,11 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
           </Stack>
           <JoinClassModal
             isVisible={isOpenJoinClass}
-            onClose={onCloseJoinClass}
+            onClose={handleCloseJoinClassModal}
           />
           <CreateClassModal
             isVisible={isOpenCreateClass}
-            onClose={onCloseCreateClass}
+            onClose={handleCloseCreateClassModal}
           />
         </HStack>
       </chakra.main>

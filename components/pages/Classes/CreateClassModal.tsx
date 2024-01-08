@@ -62,6 +62,7 @@ const CreateClassModal = ({ isVisible, onClose }: CreateClassModalProps) => {
       values?.nameOfClass,
       values?.descriptionOfClass
     );
+    setIsLoading(false);
     if (data?.message && data?.error && data?.statusCode >= 400) {
       toast({
         description: data?.message,
