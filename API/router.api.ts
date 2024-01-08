@@ -1,5 +1,6 @@
 export const API_URL = process.env.API_URL;
 export const BASE_URL = process.env.BASE_URL;
+export const API_TEMPLATE_URL = process.env.API_TEMPLATE_URL;
 
 import { omit } from "lodash";
 import type { ID, URLQueryType } from "./types";
@@ -180,10 +181,10 @@ export const CompositionsApiRouters = {
 export const GlobalApiRouters = {
   get: {
     templates_student_list: {
-      value: `${BASE_URL}/api/static/templates/student-list.csv`,
+      value: `${API_TEMPLATE_URL}/static/templates/student-list.csv`,
     },
     templates_grades: {
-      value: `${BASE_URL}/api/static/templates/grades.csv`,
+      value: `${API_TEMPLATE_URL}/static/templates/grades.csv`,
     },
   },
 };
