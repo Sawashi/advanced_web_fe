@@ -17,11 +17,7 @@ export const ClassInformationSchema = yup.object().shape({
     .string()
     .trim()
     .required("Class name is required")
-    .min(1, "Class name must not be empty")
-    .matches(
-      /^[a-zA-Z0-9\s]+$/,
-      "Class name can only contain letters, numbers, and spaces"
-    ),
+    .min(1, "Class name must not be empty"),
   descriptionOfClass: yup.string().trim(),
 });
 
@@ -30,11 +26,7 @@ export const UpdateClassSchema = yup.object().shape({
     .string()
     .trim()
     .required("Class name is required")
-    .min(1, "Class name must not be empty")
-    .matches(
-      /^[a-zA-Z0-9\s]+$/,
-      "Class name can only contain letters, numbers, and spaces"
-    ),
+    .min(1, "Class name must not be empty"),
   description: yup.string().trim(),
 });
 

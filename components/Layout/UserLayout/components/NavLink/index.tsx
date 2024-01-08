@@ -60,11 +60,17 @@ const NavLink = (props: INavLinkProps) => {
   }, [isCollapsed]);
 
   return (
-    <VStack w={"100%"} spacing={0} alignItems="flex-start">
+    <VStack
+      w={"100%"}
+      spacing={0}
+      alignItems="flex-start"
+      maxW={isExpanded ? "250px" : undefined}
+    >
       <HStack
         className={undefined}
         paddingY={3}
         px={1}
+        w={"100%"}
         borderRadius="lg"
         minW={isExpanded ? "250px" : undefined}
         bgColor={isActive ? "gray.200" : "transparent"}
@@ -83,8 +89,9 @@ const NavLink = (props: INavLinkProps) => {
           }}
           as={href ? NextLink : undefined}
           flex={1}
+          w={"full"}
         >
-          <HStack spacing={3} px={3} flex={1}>
+          <HStack spacing={3} px={3} flex={1} w={"full"}>
             {isSVGIcon ? (
               <SvgIcon
                 iconName={icon}
@@ -108,6 +115,9 @@ const NavLink = (props: INavLinkProps) => {
                 fontWeight={600}
                 fontSize="sm"
                 lineHeight="1.5rem"
+                noOfLines={1}
+                isTruncated
+                w={"100%"}
               >
                 {label}
               </Text>
