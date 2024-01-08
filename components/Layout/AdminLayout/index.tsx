@@ -1,8 +1,6 @@
-import { HStack, Stack, chakra, useDisclosure } from "@chakra-ui/react";
+import { HStack, Stack, chakra } from "@chakra-ui/react";
 import withAuth from "HOCs/withAuth";
 import AdminHeader from "components/Header/AdminHeader";
-import CreateClassModal from "components/pages/Classes/CreateClassModal";
-import JoinClassModal from "components/pages/HomePage/JoinClassModal";
 import { observer } from "mobx-react";
 import Head from "next/head";
 import React, { ReactNode } from "react";
@@ -16,17 +14,6 @@ interface IAuthenticationLayoutProps {
 const UserLayout = (props: IAuthenticationLayoutProps) => {
   const { title, children } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
-  const {
-    isOpen: isOpenJoinClass,
-    onClose: onCloseJoinClass,
-    onOpen: onOpenJoinClass,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenCreateClass,
-    onClose: onCloseCreateClass,
-    onOpen: onOpenCreateClass,
-  } = useDisclosure();
 
   return (
     <>
@@ -50,14 +37,6 @@ const UserLayout = (props: IAuthenticationLayoutProps) => {
           <Stack h={"100%"} overflow={"auto"} w={"full"} flex={1}>
             {children}
           </Stack>
-          <JoinClassModal
-            isVisible={isOpenJoinClass}
-            onClose={onCloseJoinClass}
-          />
-          <CreateClassModal
-            isVisible={isOpenCreateClass}
-            onClose={onCloseCreateClass}
-          />
         </HStack>
       </chakra.main>
     </>

@@ -14,10 +14,13 @@ import { debounce } from "lodash";
 const EnrolledClasses = () => {
   const { authStore, settingStore } = useStores();
   const [search, setSearch] = useState<string>("");
-  const { data: studentClasses, isLoading: isLoadingStudentClasses } =
-    useGetClassesAsStudent(authStore?.user?.id ?? "", {
-      search,
-    });
+  const {
+    data: studentClasses,
+    isLoading: isLoadingStudentClasses,
+    refetch,
+  } = useGetClassesAsStudent(authStore?.user?.id ?? "", {
+    search,
+  });
   const debouncedSearch = debounce((value: string) => {
     setSearch(value);
   }, 500);
@@ -27,7 +30,12 @@ const EnrolledClasses = () => {
   }, [isLoadingStudentClasses]);
 
   return (
-    <UserLayout title="Home">
+    <UserLayout
+      title="Home"
+      onCloseCreateClassModal={() => {
+        refetch();
+      }}
+    >
       <VStack w="full" flex={1} h="full" alignItems={"start"} p={5} gap={5}>
         <Text fontSize="2xl" fontWeight="bold" mb={4}>
           Enrolled Classes

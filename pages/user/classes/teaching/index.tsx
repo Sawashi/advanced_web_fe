@@ -15,10 +15,13 @@ const TeachingClasses = () => {
   const { authStore, settingStore } = useStores();
   const [search, setSearch] = useState<string>("");
 
-  const { data: teachingClasses, isLoading: isLoadingTeachingClasses } =
-    useGetClassesAsTeacher(authStore?.user?.id ?? "", {
-      search,
-    });
+  const {
+    data: teachingClasses,
+    isLoading: isLoadingTeachingClasses,
+    refetch,
+  } = useGetClassesAsTeacher(authStore?.user?.id ?? "", {
+    search,
+  });
 
   const debouncedSearch = debounce((value: string) => {
     setSearch(value);
@@ -29,7 +32,12 @@ const TeachingClasses = () => {
   }, [isLoadingTeachingClasses]);
 
   return (
-    <UserLayout title="Home">
+    <UserLayout
+      title="Home"
+      onCloseCreateClassModal={() => {
+        refetch();
+      }}
+    >
       <VStack w="full" flex={1} h="full" alignItems={"start"} p={5} gap={5}>
         <Text fontSize="2xl" fontWeight="bold" mb={4}>
           Teaching Classes

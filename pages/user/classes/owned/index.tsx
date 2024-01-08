@@ -14,10 +14,13 @@ import { gray500 } from "theme/colors.theme";
 const OwnedClasses = () => {
   const { authStore, settingStore } = useStores();
   const [search, setSearch] = useState<string>("");
-  const { data: ownedClasses, isLoading: isLoadingOwnedClasses } =
-    useGetClassesAsOwner(authStore?.user?.id ?? "", {
-      search,
-    });
+  const {
+    data: ownedClasses,
+    isLoading: isLoadingOwnedClasses,
+    refetch,
+  } = useGetClassesAsOwner(authStore?.user?.id ?? "", {
+    search,
+  });
 
   const debouncedSearch = debounce((value: string) => {
     setSearch(value);
@@ -28,7 +31,12 @@ const OwnedClasses = () => {
   }, [isLoadingOwnedClasses]);
 
   return (
-    <UserLayout title="Home">
+    <UserLayout
+      title="Home"
+      onCloseCreateClassModal={() => {
+        refetch();
+      }}
+    >
       <VStack w="full" flex={1} h="full" alignItems={"start"} p={5} gap={5}>
         <Text fontSize="2xl" fontWeight="bold" mb={4}>
           Owned Classes
