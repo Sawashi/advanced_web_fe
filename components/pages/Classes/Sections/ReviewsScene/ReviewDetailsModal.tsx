@@ -15,6 +15,9 @@ import { useGetReview } from "API/get/get.review.details";
 import SvgIcon from "components/SvgIcon";
 import { gray700 } from "theme/colors.theme";
 import Comments from "./Comments/index.ts";
+import { StatusRender } from "./TeacherReviewsScene/ReviewDetailsItem";
+import { timeAgo } from "utils/common";
+import { EReviewStatus } from "enums/classes";
 
 type Props = {
   isVisible: boolean;
@@ -29,6 +32,8 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
     refetch: refetchReview,
   } = useGetReview(reviewId);
 
+  const isPending = review?.status === EReviewStatus.PENDING;
+
   const [isShowMoreExplanation, setIsShowMoreExplanation] =
     React.useState(false);
 
@@ -39,12 +44,15 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
   const Title = useCallback(() => {
     return (
       <HStack w="full" justifyContent={"space-between"}>
-        <Text fontSize={20} fontWeight={600}>
-          Review
-        </Text>
+        <HStack>
+          <Text fontSize={20} fontWeight={600}>
+            Review
+          </Text>
+          <StatusRender review={review} />
+        </HStack>
       </HStack>
     );
-  }, []);
+  }, [review]);
 
   if (isReviewLoading) {
     return null;
@@ -64,6 +72,7 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
           alignItems={"start"}
           maxW={"container.lg"}
           justifyContent={"space-between"}
+          gap={5}
         >
           <VStack w={"full"} alignItems={"start"}>
             <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
@@ -101,8 +110,60 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
                     review?.grade?.student?.name}
                 </Text>
               </HStack>
+              <HStack w={"full"} gap={3} alignItems={"center"}>
+                <Text fontSize={"sm"} color={"gray.500"} fontWeight={"bold"}>
+                  Time:
+                </Text>
+                <Text
+                  fontSize={"md"}
+                  fontWeight={"700"}
+                  ml={2}
+                  color={"gray.700"}
+                >
+                  {timeAgo(review?.updatedAt ?? "")}
+                </Text>
+              </HStack>
             </VStack>
           </VStack>
+
+          {!isPending ? (
+            <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
+              <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>
+                Teacher review
+              </Text>
+
+              <VStack w={"full"} p={3}>
+                <HStack w={"full"} gap={3} alignItems={"center"}>
+                  <Text fontSize={"sm"} color={"gray.500"} fontWeight={"bold"}>
+                    Name:
+                  </Text>
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"700"}
+                    ml={2}
+                    color={"orange.700"}
+                  >
+                    {review?.endedBy?.firstName +
+                      " " +
+                      review?.endedBy?.lastName}
+                  </Text>
+                </HStack>
+                <HStack w={"full"} gap={3} alignItems={"center"}>
+                  <Text fontSize={"sm"} color={"gray.500"} fontWeight={"bold"}>
+                    Email:
+                  </Text>
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"700"}
+                    ml={2}
+                    color={"orange.700"}
+                  >
+                    {review?.endedBy?.email}
+                  </Text>
+                </HStack>
+              </VStack>
+            </VStack>
+          ) : null}
 
           <VStack w={"full"} alignItems={"start"}>
             <Text fontSize={"md"} fontWeight={"bold"} color={"primary.500"}>

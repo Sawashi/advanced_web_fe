@@ -15,7 +15,7 @@ import SvgIcon from "components/SvgIcon";
 import { EReviewStatus } from "enums/classes";
 import { IReview } from "interfaces/classes";
 import moment from "moment";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { gray700, pink600 } from "theme/colors.theme";
 import ReviewModal from "./ReviewModal";
 import Comments from "../Comments/index.ts";
@@ -24,6 +24,57 @@ import { timeAgo } from "utils/common";
 type Props = {
   review: IReview;
   refetch?: () => Promise<void>;
+};
+
+export const StatusRender = ({ review }: { review?: IReview }) => {
+  switch (review?.status) {
+    case EReviewStatus.ACCEPTED:
+      return (
+        <Badge
+          colorScheme="green"
+          fontSize={"xs"}
+          fontWeight={"bold"}
+          bgColor={"green.100"}
+          p={2}
+          borderRadius={6}
+        >
+          <Text fontSize={"xs"} fontWeight={"bold"} color={"green.500"}>
+            Approved
+          </Text>
+        </Badge>
+      );
+    case EReviewStatus.REJECTED:
+      return (
+        <Badge
+          colorScheme="red"
+          fontSize={"xs"}
+          fontWeight={"bold"}
+          bgColor={"red.100"}
+          p={2}
+          borderRadius={6}
+        >
+          <Text fontSize={"xs"} fontWeight={"bold"} color={"red.500"}>
+            Rejected
+          </Text>
+        </Badge>
+      );
+    case EReviewStatus.PENDING:
+    default:
+      return (
+        <Badge
+          colorScheme="yellow"
+          fontSize={"xs"}
+          fontWeight={"bold"}
+          bgColor={"yellow.100"}
+          p={2}
+          borderRadius={6}
+        >
+          <Text fontSize={"xs"} fontWeight={"bold"} color={"yellow.700"}>
+            Pending
+          </Text>
+        </Badge>
+      );
+  }
 };
 
 const ReviewsDetailItem = ({ review, refetch }: Props) => {
@@ -35,57 +86,6 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
 
   const isPending = review?.status === EReviewStatus.PENDING;
-
-  const StatusRender = useCallback(() => {
-    switch (review?.status) {
-      case EReviewStatus.ACCEPTED:
-        return (
-          <Badge
-            colorScheme="green"
-            fontSize={"xs"}
-            fontWeight={"bold"}
-            bgColor={"green.100"}
-            p={2}
-            borderRadius={6}
-          >
-            <Text fontSize={"xs"} fontWeight={"bold"} color={"green.500"}>
-              Approved
-            </Text>
-          </Badge>
-        );
-      case EReviewStatus.REJECTED:
-        return (
-          <Badge
-            colorScheme="red"
-            fontSize={"xs"}
-            fontWeight={"bold"}
-            bgColor={"red.100"}
-            p={2}
-            borderRadius={6}
-          >
-            <Text fontSize={"xs"} fontWeight={"bold"} color={"red.500"}>
-              Rejected
-            </Text>
-          </Badge>
-        );
-      case EReviewStatus.PENDING:
-      default:
-        return (
-          <Badge
-            colorScheme="yellow"
-            fontSize={"xs"}
-            fontWeight={"bold"}
-            bgColor={"yellow.100"}
-            p={2}
-            borderRadius={6}
-          >
-            <Text fontSize={"xs"} fontWeight={"bold"} color={"yellow.700"}>
-              Pending
-            </Text>
-          </Badge>
-        );
-    }
-  }, [review?.status]);
 
   return (
     <VStack w={"full"}>
@@ -442,7 +442,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         fontSize={"md"}
                         fontWeight={"700"}
                         ml={2}
-                        color={"purple.700"}
+                        color={"orange.700"}
                       >
                         {review?.endedBy?.firstName +
                           " " +
@@ -461,7 +461,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         fontSize={"md"}
                         fontWeight={"700"}
                         ml={2}
-                        color={"purple.700"}
+                        color={"orange.700"}
                       >
                         {review?.endedBy?.email}
                       </Text>
