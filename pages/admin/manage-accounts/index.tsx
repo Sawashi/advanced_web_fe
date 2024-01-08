@@ -45,6 +45,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { IRegisterSchema, RegisterSchema } from "constants/validation/auth";
 import React from "react";
 import { createUserByAdmin } from "API/post/post.auth.sign-up";
+import routes from "routes";
 const ManageAccounts = () => {
   const [userLists, setUserLists] = useState<IUser[]>();
   const [ListToShow, setListToShow] = useState<IUser[]>();
@@ -151,11 +152,7 @@ const ManageAccounts = () => {
       try {
         const res = await getCurrentUser();
         if (res.role !== "admin") {
-          toast({
-            status: "error",
-            description: "Your are not admin",
-          });
-          authStore.logout();
+          router.replace(routes.error[403].value);
         } else {
           getUserListsAtPage(1);
         }
@@ -298,7 +295,7 @@ const ManageAccounts = () => {
                     <Td>{user.createdAt?.toString()}</Td>
                     <Td>{user.role}</Td>
                     <Td>
-                      {user.status == "pending" ? (
+                      {user.role === "user" && (user.status == "active" || user.status == "pending") ? (
                         <Button
                           colorScheme="red"
                           variant="solid"
@@ -309,17 +306,7 @@ const ManageAccounts = () => {
                       ) : (
                         <></>
                       )}
-                      {user.status == "active" ? (
-                        <Button
-                          colorScheme="red"
-                          variant="solid"
-                          onClick={() => onClickBan(user.id ?? "")}
-                        >
-                          Ban
-                        </Button>
-                      ) : (
-                        <></>
-                      )}
+
                       {user.status == "blocked" ? (
                         <Button
                           colorScheme="green"

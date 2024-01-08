@@ -6,6 +6,12 @@ const AdminRouter = {
   manageClass: {
     value: "/admin/manage-classes",
   },
+  profile: {
+    value: "/admin/profile",
+    change_password: {
+      value: "/admin/profile/change-password",
+    },
+  },
 };
 
 export default AdminRouter;

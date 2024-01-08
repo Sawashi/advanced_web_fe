@@ -125,11 +125,11 @@ const SideBar = forwardRef<ISidebarRefProps, ISidebarProps>((_, ref) => {
         <Stack w="full" alignSelf={"end"}>
           <NavLink
             label={EUserPageName.SETTINGS}
-            {...getLinkProps(routes.user.profile.value, "ic-settings", [
+            {...getLinkProps(routes.admin.profile.value, "ic-settings", [
               {
                 label: EUserPageName.CHANGE_PASSWORD,
                 ...getLinkProps(
-                  routes.user.profile.change_password.value,
+                  routes.admin.profile.change_password.value,
                   "ic-password"
                 ),
               },

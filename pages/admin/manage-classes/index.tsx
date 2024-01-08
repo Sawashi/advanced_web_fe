@@ -120,11 +120,7 @@ const ManageClasses = () => {
       try {
         const res = await getCurrentUser();
         if (res.role !== "admin") {
-          toast({
-            status: "error",
-            description: "Your are not admin",
-          });
-          authStore.logout();
+          router.replace(routes.error[403].value);
         } else {
           getClassListAtPage(1);
         }

@@ -1,12 +1,12 @@
-import { HStack, Stack, VStack, chakra, useDisclosure } from "@chakra-ui/react";
-import Head from "next/head";
-import React, { ReactNode } from "react";
+import { HStack, Stack, chakra, useDisclosure } from "@chakra-ui/react";
 import withAuth from "HOCs/withAuth";
 import AdminHeader from "components/Header/AdminHeader";
-import SideBar, { ISidebarRefProps } from "./components/Sidebar";
-import { observer } from "mobx-react";
-import JoinClassModal from "components/pages/HomePage/JoinClassModal";
 import CreateClassModal from "components/pages/Classes/CreateClassModal";
+import JoinClassModal from "components/pages/HomePage/JoinClassModal";
+import { observer } from "mobx-react";
+import Head from "next/head";
+import React, { ReactNode } from "react";
+import SideBar, { ISidebarRefProps } from "./components/Sidebar";
 
 interface IAuthenticationLayoutProps {
   title?: string;
