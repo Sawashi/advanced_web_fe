@@ -1,7 +1,7 @@
 import withAuth from "HOCs/withAuth";
 import { observer } from "mobx-react";
 import UserLayout from "components/Layout/UserLayout";
-import { VStack, Text, HStack } from "@chakra-ui/react";
+import { VStack, Text, HStack, useToast } from "@chakra-ui/react";
 import { useStores } from "hooks/useStores";
 import { useGetClassesAsStudent } from "API/get/get.classes.student";
 import { useEffect, useMemo } from "react";
@@ -19,7 +19,6 @@ const Home = () => {
   const query = {
     limit: 3,
   };
-
   const { data: studentClasses, isLoading: isLoadingStudentClasses } =
     useGetClassesAsStudent(authStore?.user?.id ?? "", query);
 

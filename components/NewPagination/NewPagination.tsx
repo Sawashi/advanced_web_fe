@@ -26,7 +26,6 @@ const NewPagination: React.FC<NewPaginationProps> = ({
   const handleNext = async () => {
     if (activePage < totalPages) {
       setActivePage(activePage + 1);
-      console.log("Active page: " + activePage);
       await getUserListAtPage(activePage + 1);
     }
   };

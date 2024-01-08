@@ -1,12 +1,21 @@
-import { HStack, Stack, VStack, chakra, useDisclosure } from "@chakra-ui/react";
+import {
+  HStack,
+  Stack,
+  VStack,
+  chakra,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import Head from "next/head";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import withAuth from "HOCs/withAuth";
 import UserHeader from "components/Header/UserHeader";
 import SideBar, { ISidebarRefProps } from "./components/Sidebar";
 import { observer } from "mobx-react";
 import JoinClassModal from "components/pages/HomePage/JoinClassModal";
 import CreateClassModal from "components/pages/Classes/CreateClassModal";
+import { useRouter } from "next/router";
+import { useStores } from "hooks/useStores";
 
 interface IAuthenticationLayoutProps {
   title?: string;
@@ -14,6 +23,17 @@ interface IAuthenticationLayoutProps {
 }
 
 const UserLayout = (props: IAuthenticationLayoutProps) => {
+  const toast = useToast();
+  const { authStore } = useStores();
+  useEffect(() => {
+    if (authStore.user.role == "admin" || authStore.user.role == undefined) {
+      toast({
+        status: "error",
+        description: "Your are not user",
+      });
+      authStore.logout();
+    }
+  }, []);
   const { title, children } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
   const {

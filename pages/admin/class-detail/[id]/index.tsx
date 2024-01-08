@@ -166,7 +166,6 @@ const ManageClasses = () => {
         setClassInfo(res);
         const res2 = await getClassAttendees(router.query.id as string);
         const res3 = res2.data.filter((user) => user.role === "student");
-        console.log(res3);
         setAssignableStudentList(res3);
       }
     }
