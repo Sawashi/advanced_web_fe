@@ -2,14 +2,12 @@ import Modal from "components/Modal";
 import React, { useCallback } from "react";
 import {
   Button,
-  Center,
   Code,
   Collapse,
-  Divider,
   HStack,
-  Spinner,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useGetReview } from "API/get/get.review.details";
 import SvgIcon from "components/SvgIcon";
@@ -17,7 +15,12 @@ import { gray700 } from "theme/colors.theme";
 import Comments from "./Comments/index.ts";
 import { StatusRender } from "./TeacherReviewsScene/ReviewDetailsItem";
 import { timeAgo } from "utils/common";
-import { EReviewStatus } from "enums/classes";
+import { EReviewStatus, ETabName } from "enums/classes";
+import { observer } from "mobx-react";
+import { useStores } from "hooks/useStores";
+import { useUpdateReview } from "API/patch/patch.class.update-review";
+import { useRouter } from "next/router";
+import routes from "routes";
 
 type Props = {
   isVisible: boolean;
@@ -26,19 +29,84 @@ type Props = {
 };
 
 const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
+  const toast = useToast();
+  const router = useRouter();
+  const { settingStore, classStore } = useStores();
   const {
     data: review,
     isLoading: isReviewLoading,
     refetch: refetchReview,
   } = useGetReview(reviewId);
-
+  const { mutateAsync: updateReview, isLoading: isUpdatingReview } =
+    useUpdateReview(review?.id ?? "");
+  const { isTeacherOfClass } = classStore;
   const isPending = review?.status === EReviewStatus.PENDING;
+  settingStore.setHeaderLoading(isReviewLoading || isUpdatingReview);
 
   const [isShowMoreExplanation, setIsShowMoreExplanation] =
     React.useState(false);
 
   const onCloseModal = () => {
+    // remove reviewId from query
+    router.replace(routes.classes.details.value(classStore?.currentClass?.id ?? '',
+      ETabName.Reviews
+    ), undefined, { shallow: true });
     onClose();
+  };
+
+  const onReject = async () => {
+    const res = await updateReview({
+      status: EReviewStatus.REJECTED,
+      reviewId: review?.id ?? "",
+    });
+    if (res.status >= 400) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      refetchReview();
+      onCloseModal();
+      return;
+    }
+    toast({
+      title: "Success",
+      description: "Review has been rejected",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    refetchReview();
+    onCloseModal();
+  };
+
+  const onAccept = async () => {
+    const res = await updateReview({
+      status: EReviewStatus.ACCEPTED,
+      finalGrade: review?.studentExpectedGrade ?? 0,
+      reviewId: review?.id ?? "",
+    });
+    if (res.status >= 400) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      onCloseModal();
+      return;
+    }
+    toast({
+      title: "Success",
+      description: "Review has been accepted",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    onCloseModal();
   };
 
   const Title = useCallback(() => {
@@ -49,6 +117,34 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
             Review
           </Text>
           <StatusRender review={review} />
+        </HStack>
+
+        <HStack spacing={5}
+          alignItems={"center"}
+          justifyContent={"flex-end"}
+          display={isTeacherOfClass && isPending ? "flex" : "none"}
+        >
+          <Button
+            backgroundColor={"red.300"}
+            color={"red.600"}
+            size="md"
+            onClick={onReject}
+            w={100}
+            isLoading={isUpdatingReview}
+          >
+            Reject
+          </Button>
+
+          <Button
+            backgroundColor={"green.300"}
+            color={"green.600"}
+            size="md"
+            onClick={onAccept}
+            w={100}
+            isLoading={isUpdatingReview}
+          >
+            Submit
+          </Button>
         </HStack>
       </HStack>
     );
@@ -271,4 +367,4 @@ const ReviewDetails = ({ isVisible, onClose, reviewId }: Props) => {
   );
 };
 
-export default ReviewDetails;
+export default observer(ReviewDetails);

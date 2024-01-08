@@ -237,7 +237,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                 </Text>
               </Tooltip>
 
-              <StatusRender />
+              <StatusRender review={review} />
             </VStack>
           </HStack>
 
