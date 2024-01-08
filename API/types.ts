@@ -10,6 +10,7 @@ export type URLQueryType<T> = {
   exclude?: string | number | null;
   page?: string | number;
   filter?: Object;
+  search?: string;
 } & T;
 
 export type ID = string | number;

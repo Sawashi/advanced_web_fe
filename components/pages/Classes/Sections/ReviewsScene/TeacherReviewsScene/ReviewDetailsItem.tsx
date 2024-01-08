@@ -9,15 +9,16 @@ import {
   Button,
   Collapse,
   Tooltip,
+  Box,
 } from "@chakra-ui/react";
 import SvgIcon from "components/SvgIcon";
 import { EReviewStatus } from "enums/classes";
 import { IReview } from "interfaces/classes";
 import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
-import { gray500, gray700, pink500 } from "theme/colors.theme";
+import { gray700, pink600 } from "theme/colors.theme";
 import ReviewModal from "./ReviewModal";
-import Comments from "./Comments";
+import Comments from "../Comments/index.ts";
 import { timeAgo } from "utils/common";
 
 type Props = {
@@ -116,6 +117,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             _hover={{
               cursor: "pointer",
             }}
+            divider={<Box h={"20px"} w={'2px'} bgColor={"gray.300"} />}
           >
             <HStack flex={1} alignItems={"center"} gap={3}>
               <Avatar
@@ -175,24 +177,53 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                   color={gray700}
                 />
                 <VStack flex={1}>
-                  <Code
-                    fontSize={"md"}
-                    fontWeight={"700"}
-                    borderRadius={6}
-                    p={2}
-                    backgroundColor={
-                      review?.studentCurrentGrade > review?.studentExpectedGrade
-                        ? "red.100"
-                        : "green.100"
-                    }
-                    color={
-                      review?.studentCurrentGrade > review?.studentExpectedGrade
-                        ? "red.500"
-                        : "green.500"
-                    }
-                  >
-                    {review?.studentExpectedGrade}
-                  </Code>
+                  <HStack>
+                    <Code
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      borderRadius={6}
+                      p={2}
+                      backgroundColor={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.100"
+                          : "green.100"
+                      }
+                      color={
+                        review?.studentCurrentGrade >
+                        review?.studentExpectedGrade
+                          ? "red.500"
+                          : "green.500"
+                      }
+                      as={
+                        !!review?.studentFinalGrade &&
+                        Number(review?.studentFinalGrade) !==
+                          Number(review?.studentExpectedGrade)
+                          ? "del"
+                          : "span"
+                      }
+                    >
+                      {review?.studentExpectedGrade}
+                    </Code>
+
+                    <Code
+                      fontSize={"md"}
+                      fontWeight={"700"}
+                      borderRadius={6}
+                      p={2}
+                      backgroundColor={"yellow.100"}
+                      color={"yellow.700"}
+                      display={
+                        !!review?.studentFinalGrade &&
+                        Number(review?.studentFinalGrade) !==
+                          Number(review?.studentExpectedGrade)
+                          ? "inline-block"
+                          : "none"
+                      }
+                    >
+                      {review?.studentFinalGrade}
+                    </Code>
+                  </HStack>
                 </VStack>
               </HStack>
             )}
@@ -220,7 +251,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               alignSelf={"center"}
               color={"gray.400"}
             >
-              <SvgIcon iconName="ic-release.svg" size={20} color={pink500} />
+              <SvgIcon iconName="ic-check-review.svg" size={20} color={pink600} />
             </Button>
           ) : null}
         </HStack>
@@ -334,29 +365,107 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                     >
                       To
                     </Text>
-                    <Code
-                      fontSize={"md"}
-                      fontWeight={"700"}
-                      borderRadius={6}
-                      p={2}
-                      backgroundColor={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.100"
-                          : "green.100"
-                      }
-                      color={
-                        review?.studentCurrentGrade >
-                        review?.studentExpectedGrade
-                          ? "red.500"
-                          : "green.500"
-                      }
-                    >
-                      {review?.studentExpectedGrade}
-                    </Code>
+                    <HStack>
+                      <Code
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        borderRadius={6}
+                        p={2}
+                        backgroundColor={
+                          review?.studentCurrentGrade >
+                          review?.studentExpectedGrade
+                            ? "red.100"
+                            : "green.100"
+                        }
+                        color={
+                          review?.studentCurrentGrade >
+                          review?.studentExpectedGrade
+                            ? "red.500"
+                            : "green.500"
+                        }
+                        as={
+                          !!review?.studentFinalGrade &&
+                          Number(review?.studentFinalGrade) !==
+                            Number(review?.studentExpectedGrade)
+                            ? "del"
+                            : "span"
+                        }
+                      >
+                        {review?.studentExpectedGrade}
+                      </Code>
+
+                      <Code
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        borderRadius={6}
+                        p={2}
+                        backgroundColor={"yellow.100"}
+                        color={"yellow.700"}
+                        display={
+                          !!review?.studentFinalGrade &&
+                          Number(review?.studentFinalGrade) !==
+                            Number(review?.studentExpectedGrade)
+                            ? "inline-block"
+                            : "none"
+                        }
+                      >
+                        {review?.studentFinalGrade}
+                      </Code>
+                    </HStack>
                   </VStack>
                 </HStack>
               </VStack>
+
+              {!isPending ? (
+                <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
+                  <Text
+                    fontSize={"md"}
+                    fontWeight={"bold"}
+                    color={"primary.500"}
+                  >
+                    Teacher
+                  </Text>
+
+                  <VStack w={"full"} p={3}>
+                    <HStack w={"full"} gap={3} alignItems={"center"}>
+                      <Text
+                        fontSize={"sm"}
+                        color={"gray.500"}
+                        fontWeight={"bold"}
+                      >
+                        Name:
+                      </Text>
+                      <Text
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        ml={2}
+                        color={"purple.700"}
+                      >
+                        {review?.endedBy?.firstName +
+                          " " +
+                          review?.endedBy?.lastName}
+                      </Text>
+                    </HStack>
+                    <HStack w={"full"} gap={3} alignItems={"center"}>
+                      <Text
+                        fontSize={"sm"}
+                        color={"gray.500"}
+                        fontWeight={"bold"}
+                      >
+                        Email:
+                      </Text>
+                      <Text
+                        fontSize={"md"}
+                        fontWeight={"700"}
+                        ml={2}
+                        color={"purple.700"}
+                      >
+                        {review?.endedBy?.email}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                </VStack>
+              ) : null}
 
               <VStack
                 w={"full"}

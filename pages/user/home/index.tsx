@@ -1,7 +1,7 @@
 import withAuth from "HOCs/withAuth";
 import { observer } from "mobx-react";
 import UserLayout from "components/Layout/UserLayout";
-import { VStack, Text, HStack, useToast } from "@chakra-ui/react";
+import { VStack, Text, HStack, Box, useToast } from "@chakra-ui/react";
 import { useStores } from "hooks/useStores";
 import { useGetClassesAsStudent } from "API/get/get.classes.student";
 import { useEffect, useMemo } from "react";
@@ -133,11 +133,13 @@ const Home = () => {
                     </HStack>
                   </Link>
                 </HStack>
-                <ClassesList
-                  classes={getValidArray(item?.data)}
-                  typeOfClass={item?.title}
-                  isLoading={settingStore?.isHeaderLoading}
-                />
+                <Box w="full" p={5}>
+                  <ClassesList
+                    classes={getValidArray(item?.data)}
+                    typeOfClass={item?.title}
+                    isLoading={settingStore?.isHeaderLoading}
+                  />
+                </Box>
               </VStack>
             ) : null
           )}

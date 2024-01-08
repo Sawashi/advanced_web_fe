@@ -8,21 +8,21 @@ import {
   TabList,
   Tab,
 } from "@chakra-ui/react";
-import { useGetClassReviews } from "API/get/get.class.reviews";
 import EmptyList from "components/EmptyState/EmptyList";
 import { useStores } from "hooks/useStores";
 import { IClass, IReview } from "interfaces/classes";
 import { observer } from "mobx-react";
 import React from "react";
 import { checkValidArray, getValidArray } from "utils/common";
-import ReviewsDetailItem from "./ReviewDetailsItem";
 import { EReviewStatus } from "enums/classes";
+import ReviewsDetailItem from "./ReviewDetailsItem";
+import { useGetMyReviews } from "API/get/get.class.my-reviews";
 
 interface Props {
   details: IClass;
 }
 
-const TeacherReviewsScene = ({ details }: Props) => {
+const StudentReviewsScene = ({ details }: Props) => {
   const { settingStore } = useStores();
   const [filterStatus, setFilterStatus] = React.useState<EReviewStatus>();
 
@@ -30,12 +30,11 @@ const TeacherReviewsScene = ({ details }: Props) => {
     data: getClassReviews,
     isLoading: isClassReviewsLoading,
     refetch: refetchClassReviews,
-  } = useGetClassReviews(details?.id ?? "", {
+  } = useGetMyReviews(details?.id ?? "", {
     "filter.status": filterStatus,
   });
-
   const { data: getAllClassReviews, isLoading: isAllClassReviewsLoading } =
-    useGetClassReviews(details?.id ?? "");
+    useGetMyReviews(details?.id ?? "");
   const { data: classReviews } = getClassReviews ?? {};
 
   settingStore?.setHeaderLoading(
@@ -97,7 +96,7 @@ const TeacherReviewsScene = ({ details }: Props) => {
         >
           <HStack w={"full"} justifyContent={"space-between"}>
             <Text fontSize={"xl"} fontWeight={"bold"}>
-              Reviews
+              Reviews history
             </Text>
           </HStack>
 
@@ -113,31 +112,34 @@ const TeacherReviewsScene = ({ details }: Props) => {
                 All
               </Tab>
               <Tab
+                color="yellow.900"
                 _selected={{
                   color: "yellow.800",
                   fontWeight: "bold",
                   bg: "yellow.100",
                 }}
               >
-                Pending ⌛️
+                Pending
               </Tab>
               <Tab
+                color="green.900"
                 _selected={{
                   color: "green.500",
                   fontWeight: "bold",
                   bg: "green.100",
                 }}
               >
-                Approved ✅
+                Approved
               </Tab>
               <Tab
+                color="red.900"
                 _selected={{
                   color: "red.500",
                   fontWeight: "bold",
                   bg: "red.100",
                 }}
               >
-                Rejected ❌
+                Rejected
               </Tab>
             </TabList>
           </Tabs>
@@ -157,4 +159,4 @@ const TeacherReviewsScene = ({ details }: Props) => {
   );
 };
 
-export default observer(TeacherReviewsScene);
+export default observer(StudentReviewsScene);
