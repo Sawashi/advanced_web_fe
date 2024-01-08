@@ -19,14 +19,23 @@ const Home = () => {
   const query = {
     limit: 3,
   };
-  const { data: studentClasses, isLoading: isLoadingStudentClasses } =
-    useGetClassesAsStudent(authStore?.user?.id ?? "", query);
+  const {
+    data: studentClasses,
+    isLoading: isLoadingStudentClasses,
+    refetch: refetchStudentClasses,
+  } = useGetClassesAsStudent(authStore?.user?.id ?? "", query);
 
-  const { data: ownedClasses, isLoading: isLoadingOwnedClasses } =
-    useGetClassesAsOwner(authStore?.user?.id ?? "", query);
+  const {
+    data: ownedClasses,
+    isLoading: isLoadingOwnedClasses,
+    refetch: refetchOwnedClasses,
+  } = useGetClassesAsOwner(authStore?.user?.id ?? "", query);
 
-  const { data: teachingClasses, isLoading: isLoadingTeachingClasses } =
-    useGetClassesAsTeacher(authStore?.user?.id ?? "", query);
+  const {
+    data: teachingClasses,
+    isLoading: isLoadingTeachingClasses,
+    refetch: refetchTeachingClasses,
+  } = useGetClassesAsTeacher(authStore?.user?.id ?? "", query);
 
   useEffect(() => {
     settingStore?.setHeaderLoading(
@@ -63,8 +72,22 @@ const Home = () => {
     ];
   }, [studentClasses, ownedClasses, teachingClasses]);
 
+  const refetch = async () => {
+    await refetchStudentClasses();
+    await refetchOwnedClasses();
+    await refetchTeachingClasses();
+  }
+
   return (
-    <UserLayout title="Home">
+    <UserLayout
+      title="Home"
+      onCloseCreateClassModal={() => {
+        refetch()
+      }}
+      onCloseJoinClassModal={() => {
+        refetch()
+      }}
+    >
       <VStack w="full" flex={1} h="full" alignItems={"center"} p={5} gap={5}>
         <Text
           fontSize="2xl"

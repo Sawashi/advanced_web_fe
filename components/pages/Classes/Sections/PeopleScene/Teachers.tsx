@@ -228,6 +228,7 @@ const Teachers = ({
                 w={"full"}
                 flex={1}
                 p={1}
+                style={{ wordBreak: "break-all" }}
               >{`${HOST}/user/classes/join?token=...`}</Code>
               <Button
                 onClick={onGenerateLink}

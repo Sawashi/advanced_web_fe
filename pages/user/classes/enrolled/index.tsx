@@ -35,6 +35,9 @@ const EnrolledClasses = () => {
       onCloseCreateClassModal={() => {
         refetch();
       }}
+      onCloseJoinClassModal={() => {
+        refetch();
+      }}
     >
       <VStack w="full" flex={1} h="full" alignItems={"start"} p={5} gap={5}>
         <Text fontSize="2xl" fontWeight="bold" mb={4}>
