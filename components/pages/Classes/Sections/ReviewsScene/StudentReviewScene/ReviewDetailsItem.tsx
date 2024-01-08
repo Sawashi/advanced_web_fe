@@ -17,7 +17,7 @@ import moment from "moment";
 import { useCallback, useMemo, useState } from "react";
 import { gray700 } from "theme/colors.theme";
 import { timeAgo } from "utils/common";
-import Comments from "../Comments/index.ts";
+import Comments from "../Comments";
 
 type Props = {
   review: IReview;
@@ -276,7 +276,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         fontSize={"md"}
                         fontWeight={"700"}
                         ml={2}
-                        color={"purple.700"}
+                        color={"orange.700"}
                       >
                         {review?.endedBy?.firstName +
                           " " +
@@ -295,7 +295,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         fontSize={"md"}
                         fontWeight={"700"}
                         ml={2}
-                        color={"purple.700"}
+                        color={"orange.700"}
                       >
                         {review?.endedBy?.email}
                       </Text>

@@ -190,6 +190,9 @@ export const GlobalApiRouters = {
 
 export const ReviewApiRouters = {
   get: {
+    review_details: {
+      value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}`,
+    },
     review_comments: {
       value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/comments`,
     },
@@ -213,6 +216,20 @@ export const ReviewApiRouters = {
   patch: {
     update_review: {
       value: (reviewId: ID) => `${API_URL}/reviews/${reviewId}/status`,
+    },
+  },
+};
+
+export const NotificationsApiRouters = {
+  get: {
+    my_notifications: {
+      value: `${API_URL}/notifications`,
+    },
+  },
+  patch: {
+    mark_seen: {
+      value: (notificationId: ID) =>
+        `${API_URL}/notifications/${notificationId}/seen`,
     },
   },
 };

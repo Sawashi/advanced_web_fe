@@ -19,6 +19,7 @@ type ModalProps = {
   title?: React.ReactNode;
   children?: React.ReactNode;
   actions?: React.ReactNode[];
+  scrollBehavior?: "inside" | "outside";
 };
 
 function Modal({
@@ -28,6 +29,7 @@ function Modal({
   title,
   children,
   actions,
+  scrollBehavior,
 }: ModalProps) {
   return (
     <CKModal
@@ -37,6 +39,7 @@ function Modal({
       size={size}
       isOpen={isVisible}
       isCentered
+      scrollBehavior={scrollBehavior}
     >
       <ModalOverlay />
       <ModalContent>

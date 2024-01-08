@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import routes from "routes";
 import { gray500 } from "theme/colors.theme";
+import BellNotifications from "../components/BellNotifications";
 
 export interface IUserHeaderProps {
   onExpand?: () => void;
@@ -98,6 +99,11 @@ const UserHeader = ({
               <MenuItem onClick={onCreateClass}>Create Class</MenuItem>
             </MenuList>
           </Menu>
+
+          <Box me={3}>
+            <BellNotifications />
+          </Box>
+
           <Tooltip
             label={
               <VStack

@@ -1,1 +1,1 @@
-export * from './error'
+export * from '../public/assets/icons/error'

@@ -23,6 +23,7 @@ import { gray500 } from "theme/colors.theme";
 import { IClass } from "interfaces/classes";
 import { ETabName } from "enums/classes";
 import capitalize from "lodash/capitalize";
+import BellNotifications from "../components/BellNotifications";
 
 export interface IClassHeaderProps {
   onExpand?: () => void;
@@ -35,7 +36,6 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
   const { isHeaderLoading, classSectionTab } = settingStore;
   const name =
     (authStore.user?.firstName ?? "") + " " + (authStore.user?.lastName ?? "");
-
   const onClickLogo = () => {
     router.push(routes.user.home.value);
   };
@@ -125,7 +125,8 @@ const ClassHeader = ({ onExpand, classDetails }: IClassHeaderProps) => {
           </Breadcrumb>
         </HStack>
 
-        <HStack alignItems={"center"} gap={3}>
+        <HStack alignItems={"center"} gap={6}>
+          <BellNotifications />
           <Tooltip
             label={
               <VStack

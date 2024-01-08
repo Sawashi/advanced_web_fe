@@ -1,3 +1,5 @@
+import { ENotificationType } from "enums/classes";
+
 export interface IUser {
   [key: string]: any;
   createdAt?: Date;
@@ -14,4 +16,15 @@ export interface IUser {
 
 export interface IVerifyTokenResponse {
   isValidToken: boolean;
+}
+
+export interface INotification {
+  id: string;
+  title: string;
+  description: string;
+  seen: boolean;
+  type: ENotificationType;
+  data: string;
+  createdAt: string;
+  user: IUser;
 }

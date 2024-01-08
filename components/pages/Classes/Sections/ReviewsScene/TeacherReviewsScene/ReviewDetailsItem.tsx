@@ -15,10 +15,10 @@ import SvgIcon from "components/SvgIcon";
 import { EReviewStatus } from "enums/classes";
 import { IReview } from "interfaces/classes";
 import moment from "moment";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { gray700, pink600 } from "theme/colors.theme";
 import ReviewModal from "./ReviewModal";
-import Comments from "../Comments/index.ts";
+import Comments from "../Comments";
 import { timeAgo } from "utils/common";
 
 type Props = {
@@ -26,67 +26,66 @@ type Props = {
   refetch?: () => Promise<void>;
 };
 
+export const StatusRender = ({ review }: { review?: IReview }) => {
+  switch (review?.status) {
+    case EReviewStatus.ACCEPTED:
+      return (
+        <Badge
+          colorScheme="green"
+          fontSize={"xs"}
+          fontWeight={"bold"}
+          bgColor={"green.100"}
+          p={2}
+          borderRadius={6}
+        >
+          <Text fontSize={"xs"} fontWeight={"bold"} color={"green.500"}>
+            Approved
+          </Text>
+        </Badge>
+      );
+    case EReviewStatus.REJECTED:
+      return (
+        <Badge
+          colorScheme="red"
+          fontSize={"xs"}
+          fontWeight={"bold"}
+          bgColor={"red.100"}
+          p={2}
+          borderRadius={6}
+        >
+          <Text fontSize={"xs"} fontWeight={"bold"} color={"red.500"}>
+            Rejected
+          </Text>
+        </Badge>
+      );
+    case EReviewStatus.PENDING:
+    default:
+      return (
+        <Badge
+          colorScheme="yellow"
+          fontSize={"xs"}
+          fontWeight={"bold"}
+          bgColor={"yellow.100"}
+          p={2}
+          borderRadius={6}
+        >
+          <Text fontSize={"xs"} fontWeight={"bold"} color={"yellow.700"}>
+            Pending
+          </Text>
+        </Badge>
+      );
+  }
+};
+
 const ReviewsDetailItem = ({ review, refetch }: Props) => {
   const timeRender = useMemo(() => {
     return timeAgo(review?.createdAt);
   }, [review?.createdAt]);
-
   const [isShowMoreExplanation, setIsShowMoreExplanation] = useState(false);
   const [isShowMoreReview, setIsShowMoreReview] = useState(false);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
 
   const isPending = review?.status === EReviewStatus.PENDING;
-
-  const StatusRender = useCallback(() => {
-    switch (review?.status) {
-      case EReviewStatus.ACCEPTED:
-        return (
-          <Badge
-            colorScheme="green"
-            fontSize={"xs"}
-            fontWeight={"bold"}
-            bgColor={"green.100"}
-            p={2}
-            borderRadius={6}
-          >
-            <Text fontSize={"xs"} fontWeight={"bold"} color={"green.500"}>
-              Approved
-            </Text>
-          </Badge>
-        );
-      case EReviewStatus.REJECTED:
-        return (
-          <Badge
-            colorScheme="red"
-            fontSize={"xs"}
-            fontWeight={"bold"}
-            bgColor={"red.100"}
-            p={2}
-            borderRadius={6}
-          >
-            <Text fontSize={"xs"} fontWeight={"bold"} color={"red.500"}>
-              Rejected
-            </Text>
-          </Badge>
-        );
-      case EReviewStatus.PENDING:
-      default:
-        return (
-          <Badge
-            colorScheme="yellow"
-            fontSize={"xs"}
-            fontWeight={"bold"}
-            bgColor={"yellow.100"}
-            p={2}
-            borderRadius={6}
-          >
-            <Text fontSize={"xs"} fontWeight={"bold"} color={"yellow.700"}>
-              Pending
-            </Text>
-          </Badge>
-        );
-    }
-  }, [review?.status]);
 
   return (
     <VStack w={"full"}>
@@ -117,7 +116,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
             _hover={{
               cursor: "pointer",
             }}
-            divider={<Box h={"20px"} w={'2px'} bgColor={"gray.300"} />}
+            divider={<Box h={"20px"} w={"2px"} bgColor={"gray.300"} />}
           >
             <HStack flex={1} alignItems={"center"} gap={3}>
               <Avatar
@@ -238,7 +237,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                 </Text>
               </Tooltip>
 
-              <StatusRender />
+              <StatusRender review={review} />
             </VStack>
           </HStack>
 
@@ -251,7 +250,11 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
               alignSelf={"center"}
               color={"gray.400"}
             >
-              <SvgIcon iconName="ic-check-review.svg" size={20} color={pink600} />
+              <SvgIcon
+                iconName="ic-check-review.svg"
+                size={20}
+                color={pink600}
+              />
             </Button>
           ) : null}
         </HStack>
@@ -439,7 +442,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         fontSize={"md"}
                         fontWeight={"700"}
                         ml={2}
-                        color={"purple.700"}
+                        color={"orange.700"}
                       >
                         {review?.endedBy?.firstName +
                           " " +
@@ -458,7 +461,7 @@ const ReviewsDetailItem = ({ review, refetch }: Props) => {
                         fontSize={"md"}
                         fontWeight={"700"}
                         ml={2}
-                        color={"purple.700"}
+                        color={"orange.700"}
                       >
                         {review?.endedBy?.email}
                       </Text>

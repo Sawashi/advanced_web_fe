@@ -14,16 +14,16 @@ const withUser = <P extends object>(
     const toast = useToast();
     const { authStore } = useStores();
 
-    useEffect(() => {
-      if (authStore?.user?.id && authStore?.user?.role === EUserRole.ADMIN) {
-        toast({
-          status: "error",
-          description: "You are not user",
-        });
-        // TODO: fix logout - Not force logout - just redirect to forbidden page
-        authStore.logout();
-      }
-    }, [authStore?.user]);
+    // useEffect(() => {
+    //   if (authStore?.user?.id && authStore?.user?.role === EUserRole.ADMIN) {
+    //     toast({
+    //       status: "error",
+    //       description: "You are not user",
+    //     });
+    //     // TODO: fix logout - Not force logout - just redirect to forbidden page
+    //     authStore.logout();
+    //   }
+    // }, [authStore?.user]);
 
     return <WrappedComponent {...props} />;
   };

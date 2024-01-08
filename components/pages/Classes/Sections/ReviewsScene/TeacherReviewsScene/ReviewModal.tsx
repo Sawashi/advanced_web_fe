@@ -20,10 +20,14 @@ import {
   ReviewGradeSchema,
 } from "constants/validation/classes";
 import { IReview } from "interfaces/classes";
-import { EReviewStatus } from "enums/classes";
+import { EReviewStatus, ETabName } from "enums/classes";
 import { useUpdateReview } from "API/patch/patch.class.update-review";
 import SvgIcon from "components/SvgIcon";
 import { gray700 } from "theme/colors.theme";
+import { useStores } from "hooks/useStores";
+import { useRouter } from "next/router";
+import routes from "routes";
+import { StatusRender } from "./ReviewDetailsItem";
 
 type Props = {
   isVisible: boolean;
@@ -33,6 +37,9 @@ type Props = {
 
 const ReviewModal = ({ isVisible, onClose, review }: Props) => {
   const { mutateAsync: updateReview, isLoading } = useUpdateReview(review?.id);
+  const isPending = review?.status === EReviewStatus.PENDING;
+  const { classStore } = useStores();
+  const router = useRouter();
   const toast = useToast();
   const method = useForm<IReviewGradeSchema>({
     defaultValues: {
@@ -54,11 +61,19 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
   const expectedGrade = method.watch("finalGrade");
 
   const onCloseModal = () => {
+    router.replace(
+      routes.classes.details.value(
+        classStore?.currentClass?.id ?? "",
+        ETabName.Reviews
+      ),
+      undefined,
+      { shallow: true }
+    );
     onClose();
     reset();
   };
 
-  const onReject = async (values: IReviewGradeSchema) => {
+  const onReject = async () => {
     const res = await updateReview({
       status: EReviewStatus.REJECTED,
       reviewId: review?.id,
@@ -120,11 +135,14 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
   const Title = useCallback(() => {
     return (
       <HStack w="full" justifyContent={"space-between"}>
-        <Text fontSize={20} fontWeight={600}>
-          Review
-        </Text>
+        <HStack>
+          <Text fontSize={20} fontWeight={600}>
+            Review
+          </Text>
+          <StatusRender review={review} />
+        </HStack>
 
-        <HStack spacing={5}>
+        <HStack spacing={5} display={isPending ? "flex" : "none"}>
           <Button
             backgroundColor={"red.300"}
             color={"red.600"}
@@ -132,6 +150,7 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
             onClick={handleSubmit(onReject)}
             w={100}
             isLoading={isLoading}
+            border={"none"}
           >
             Reject
           </Button>
@@ -144,13 +163,14 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
             onClick={handleSubmit(onAccept)}
             w={100}
             isLoading={isLoading}
+            border={"none"}
           >
             Submit
           </Button>
         </HStack>
       </HStack>
     );
-  }, [isValid, isLoading]);
+  }, [isValid, isLoading, isPending]);
 
   return (
     <Modal
@@ -185,12 +205,14 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
                 </Text>
               </VStack>
 
-              <FormInput
-                name="finalGrade"
-                placeholder="The grade you want to give"
-                isRequired={true}
-                label="Final grade"
-              />
+              {isPending ? (
+                <FormInput
+                  name="finalGrade"
+                  placeholder="The grade you want to give"
+                  isRequired={true}
+                  label="Final grade"
+                />
+              ) : null}
 
               <VStack
                 w={"full"}
@@ -247,6 +269,57 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
                     </HStack>
                   </VStack>
                 </VStack>
+
+                {!isPending ? (
+                  <VStack w={"full"} maxW={"container.lg"} alignItems={"start"}>
+                    <Text
+                      fontSize={"md"}
+                      fontWeight={"bold"}
+                      color={"primary.500"}
+                    >
+                      Teacher review
+                    </Text>
+
+                    <VStack w={"full"} p={3}>
+                      <HStack w={"full"} gap={3} alignItems={"center"}>
+                        <Text
+                          fontSize={"sm"}
+                          color={"gray.500"}
+                          fontWeight={"bold"}
+                        >
+                          Name:
+                        </Text>
+                        <Text
+                          fontSize={"md"}
+                          fontWeight={"700"}
+                          ml={2}
+                          color={"orange.700"}
+                        >
+                          {review?.endedBy?.firstName +
+                            " " +
+                            review?.endedBy?.lastName}
+                        </Text>
+                      </HStack>
+                      <HStack w={"full"} gap={3} alignItems={"center"}>
+                        <Text
+                          fontSize={"sm"}
+                          color={"gray.500"}
+                          fontWeight={"bold"}
+                        >
+                          Email:
+                        </Text>
+                        <Text
+                          fontSize={"md"}
+                          fontWeight={"700"}
+                          ml={2}
+                          color={"orange.700"}
+                        >
+                          {review?.endedBy?.email}
+                        </Text>
+                      </HStack>
+                    </VStack>
+                  </VStack>
+                ) : null}
 
                 <VStack w={"full"} alignItems={"start"}>
                   <Text
@@ -390,7 +463,9 @@ const ReviewModal = ({ isVisible, onClose, review }: Props) => {
               </VStack>
             </VStack>
 
-            <VStack alignItems={"start"} w={"full"}>
+            <VStack alignItems={"start"} w={"full"}
+              display={isPending ? "flex" : "none"}
+            >
               <Text fontWeight={600}>To submit a review:</Text>
               <UnorderedList>
                 <ListItem key={1}>
