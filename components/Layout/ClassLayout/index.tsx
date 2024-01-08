@@ -15,6 +15,7 @@ import SideBar, { ISidebarRefProps } from "../UserLayout/components/Sidebar";
 import ClassHeader from "components/Header/ClassHeader";
 import { IClass } from "interfaces/classes";
 import { useStores } from "hooks/useStores";
+import { EUserRole } from "enums/auth";
 
 interface IClassLayoutProps {
   title?: string;
@@ -27,10 +28,10 @@ const ClassLayout = (props: IClassLayoutProps) => {
   const { authStore } = useStores();
   const toast = useToast();
   useEffect(() => {
-    if (authStore.user.role == "admin" || authStore.user.role == undefined) {
+    if (authStore?.user?.id && authStore?.user?.role === EUserRole.ADMIN) {
       toast({
         status: "error",
-        description: "Your are not user",
+        description: "You are not user",
       });
       authStore.logout();
     }

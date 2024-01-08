@@ -12,3 +12,7 @@ export enum ELoginSocial {
   GOOGLE = "google",
   FACEBOOK = "facebook",
 }
+
+export enum EUserRole {
+  ADMIN = "admin",
+}

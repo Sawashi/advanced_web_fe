@@ -14,8 +14,8 @@ import SideBar, { ISidebarRefProps } from "./components/Sidebar";
 import { observer } from "mobx-react";
 import JoinClassModal from "components/pages/HomePage/JoinClassModal";
 import CreateClassModal from "components/pages/Classes/CreateClassModal";
-import { useRouter } from "next/router";
 import { useStores } from "hooks/useStores";
+import { EUserRole } from "enums/auth";
 
 interface IAuthenticationLayoutProps {
   title?: string;
@@ -25,15 +25,17 @@ interface IAuthenticationLayoutProps {
 const UserLayout = (props: IAuthenticationLayoutProps) => {
   const toast = useToast();
   const { authStore } = useStores();
+
   useEffect(() => {
-    if (authStore.user.role == "admin" || authStore.user.role == undefined) {
+    if (authStore?.user?.id && authStore?.user?.role === EUserRole.ADMIN) {
       toast({
         status: "error",
-        description: "Your are not user",
+        description: "You are not user",
       });
       authStore.logout();
     }
   }, []);
+  
   const { title, children } = props;
   const sideBarRef = React.useRef<ISidebarRefProps>(null);
   const {
