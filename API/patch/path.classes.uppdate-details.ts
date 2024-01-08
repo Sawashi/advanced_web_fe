@@ -1,7 +1,7 @@
 import { api } from "API";
 import { ClassesApiRouters, ID } from "API/router.api";
 import { IResponseData } from "API/types";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 export const patchUpdateClassDetails = async ({
   name,
@@ -23,6 +23,7 @@ export const patchUpdateClassDetails = async ({
 };
 
 export const useUpdateClassDetails = (classId: ID) => {
+  const queryClient = useQueryClient();
   return useMutation<
     IResponseData<{}>,
     Error,
@@ -34,5 +35,8 @@ export const useUpdateClassDetails = (classId: ID) => {
   >({
     mutationFn: patchUpdateClassDetails,
     mutationKey: [ClassesApiRouters.patch.update_class_details.value(classId)],
+    onSuccess: async () => {
+      await Promise.all([queryClient.refetchQueries()]);
+    },
   });
 };
